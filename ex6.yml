@@ -1,0 +1,17 @@
+# the alpha parameter
+alpha: 0.125
+# global data-size (excluding spacer for boundary conditions or ghosts)
+global_size: { height: 60, width: 12 }
+# degree of parallelism
+parallelism: { height: 1, width: 1 }
+# PDI configuration
+pdi:
+  metadata: # small values for which PDI keeps a copy
+    ii:     int
+    dsize:  { type: int, size: 2 }
+    psize:  { type: int, size: 2 }
+    pcoord: { type: int, size: 2 }
+  data: # values for which PDI does not keep a copy
+    main_field: { type: double, sizes: [ '$dsize[0]', '$dsize[1]' ] }
+  plugins:
+    test:

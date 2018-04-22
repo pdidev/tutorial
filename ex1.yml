@@ -1,0 +1,6 @@
+# the alpha parameter
+alpha: 0.125
+# global data-size (excluding spacer for boundary conditions or ghosts)
+global_size: { height: 60, width: 12 }
+# degree of parallelism
+parallelism: { height: 1, width: 1 }

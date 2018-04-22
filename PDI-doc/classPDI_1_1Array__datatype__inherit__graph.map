@@ -1,0 +1,4 @@
+<map id="PDI::Array_datatype" name="PDI::Array_datatype">
+<area shape="rect" id="node2" href="$classPDI_1_1Datatype.html" title="{PDI::Datatype\n||+ ~Datatype()\l+ clone_type()\l+ densify()\l+ dense()\l+ datasize()\l+ buffersize()\l+ alignment()\l}" alt="" coords="34,175,149,340"/>
+<area shape="rect" id="node3" href="$classPDI_1_1Datatype__template.html" title="{PDI::Datatype_template\n||+ ~Datatype_template()\l+ clone()\l+ evaluate()\l+ load()\l}" alt="" coords="5,5,177,127"/>
+</map>

@@ -1,0 +1,7 @@
+<map id="PDI::Data_descriptor::ref" name="PDI::Data_descriptor::ref">
+<area shape="rect" id="node2" href="$classPDI_1_1Data__descriptor.html#ad96a445e91ce85ffc2d7c837f138b28c" title="PDI::Data_descriptor\l::share" alt="" coords="228,5,380,47"/>
+<area shape="rect" id="node3" href="$classPDI_1_1Data__descriptor.html#a1f20afe7938a747f545a6809ce115fd0" title="PDI::Data_descriptor\l::release" alt="" coords="228,71,380,112"/>
+<area shape="rect" id="node4" href="$classPDI_1_1Data__descriptor.html#ae01594aac136d2ca58e4c34cb9112c7c" title="PDI::Data_descriptor\l::reclaim" alt="" coords="228,136,380,177"/>
+<area shape="rect" id="node6" href="$pdi_8cxx.html#a8dcd0c81d7697ea473a55bd57efb717d" title="PDI_access" alt="" coords="255,202,353,229"/>
+<area shape="rect" id="node5" href="$classPDI_1_1Data__descriptor.html#ad4beb5d1669377ebe722ffb85e0f7951" title="PDI::Data_descriptor\l::~Data_descriptor" alt="" coords="428,136,580,177"/>
+</map>

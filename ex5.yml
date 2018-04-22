@@ -1,0 +1,28 @@
+# the alpha parameter
+alpha: 0.125
+# global data-size (excluding spacer for boundary conditions or ghosts)
+global_size: { height: 60, width: 12 }
+# degree of parallelism
+parallelism: { height: 1, width: 1 }
+# PDI configuration
+pdi:
+  metadata: # small values for which PDI keeps a copy
+    ii:     int
+    dsize:  { type: int, size: 2 }
+    psize:  { type: int, size: 2 }
+    pcoord: { type: int, size: 2 }
+  data: # values for which PDI does not keep a copy
+    main_field: { type: double, sizes: [ '$dsize[0]', '$dsize[1]' ] }
+  plugins:
+    test:
+    decl_hdf5:
+      - file: ex5-meta${pcoord[0]}x${pcoord[1]}.h5
+        write: [ dsize, psize ]
+      - file: ex5-data${pcoord[0]}x${pcoord[1]}.h5
+        on_event: finalization
+        when: '$ii>0&$ii<2'
+        write:
+          ii: # name of the PDI data to write
+            dataset: 'iter1/ii' # dataset name in file, $-expressions can be used here, "/" separate groups in path
+          main_field:
+            dataset: 'iter1/main_field'

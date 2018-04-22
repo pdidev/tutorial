@@ -1,0 +1,6 @@
+<map id="PDI::Data_descriptor::reclaim" name="PDI::Data_descriptor::reclaim">
+<area shape="rect" id="node2" href="$classPDI_1_1Data__descriptor.html#a518b9fd7e942a742ac75c4537bc677a8" title="PDI::Data_descriptor::ref" alt="" coords="205,5,380,32"/>
+<area shape="rect" id="node3" href="$classPDI_1_1Data__descriptor.html#a4f68c4d432519377da35df709ca56125" title="PDI::Data_descriptor\l::metadata" alt="" coords="217,57,369,98"/>
+<area shape="rect" id="node4" href="$classPDI_1_1Ref__any.html#a92c53a0398732686e7b50480d4e2d82b" title="PDI::Ref_any::copy" alt="" coords="223,123,363,149"/>
+<area shape="rect" id="node5" href="$classPDI_1_1Ref__any.html#a2f653ad7b6152b4c1f027ed155c12e25" title="PDI::Ref_any::release" alt="" coords="214,173,371,200"/>
+</map>
