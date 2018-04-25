@@ -177,15 +177,15 @@ int main( int argc, char* argv[] )
 	int ii=0;
 	
 	// share useful configuration bits with PDI
-	PDI_share("ii",         &ii,     PDI_OUT);
+	PDI_share("ii",         &ii,    PDI_OUT);
 	PDI_reclaim("ii");
-	PDI_share("pcoord",     &pcoord, PDI_OUT);
+	PDI_share("pcoord",     pcoord, PDI_OUT);
 	PDI_reclaim("pcoord");
-	PDI_share("dsize",      &dsize,  PDI_OUT);
+	PDI_share("dsize",      dsize,  PDI_OUT);
 	PDI_reclaim("dsize");
-	PDI_share("psize",      &psize,  PDI_OUT);
+	PDI_share("psize",      psize,  PDI_OUT);
 	PDI_reclaim("psize");
-	PDI_share("main_field", &cur,    PDI_OUT);
+	PDI_share("main_field", cur,    PDI_OUT);
 	PDI_reclaim("main_field");
 	
 	// the main loop
@@ -205,11 +205,12 @@ int main( int argc, char* argv[] )
 		// swap the current and next values
 		double (*tmp)[dsize[1]] = cur; cur = next; next = tmp;
 	}
-	// finally share the loop counter & main field after the main loop body
-	PDI_share("ii",         &ii, PDI_OUT);
+	// finally share the main field after the main loop body
 	PDI_share("main_field", cur, PDI_OUT);
-	PDI_reclaim("main_field");
+	// as well as the loop counter
+	PDI_share("ii",         &ii, PDI_OUT);
 	PDI_reclaim("ii");
+	PDI_reclaim("main_field");
 	
 	// finalize PDI
 	PDI_finalize();

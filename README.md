@@ -18,6 +18,7 @@ cmake .
 ## Ex1. Getting started
 
 Ex1 is a simple MPI stencil code.
+There is no output in the code yet, so we can not see its result.
 Examine the source code, compile it and run it.
 ```bash
 make ex1        # compile the code
@@ -57,7 +58,7 @@ llsubmit ex3.sh # run the code
 ```
 
 We need to fill 2 sections in the yaml file:
-* the `metadata` section to indicate to PDI the type of the fields that are exposed,
+* the `data` section to indicate to PDI the type of the fields that are exposed,
 * the `decl_hdf5` for the configuration of the Decl'HDF5 plugin
 
 Only dsize is written as of now, let's add `psize` and `pcoord` to match the content expected described in `ex3.out`.
@@ -79,7 +80,7 @@ llsubmit ex4.sh # run the code
 ```
 
 Unlike the other fields we manipulated until now, the type of `main_field` is not fully known, its size is dynamic.
-By moving other fields in the metadata section, we can reference them from "$ expressions" in the configuration file.
+By moving other fields in the `metadata` section, we can reference them from "$ expressions" in the configuration file.
 This can be used to specify a dynamic size for `main_field`.
 
 Unlike the other fields we manipulated until now, `main_field` is exposed multiple times.

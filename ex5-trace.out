@@ -25,9 +25,8 @@
 [PDI test plugin] The test plugin received an event: loop
 [PDI test plugin]  <<= data stop being available to the test plugin: main_field
 [PDI test plugin]  <<= data stop being available to the test plugin: ii
-[PDI test plugin]  =>> data becoming available to the test plugin: ii
 [PDI test plugin]  =>> data becoming available to the test plugin: main_field
-[PDI test plugin] The test plugin received an event: finalization
-[PDI test plugin]  <<= data stop being available to the test plugin: main_field
+[PDI test plugin]  =>> data becoming available to the test plugin: ii
 [PDI test plugin]  <<= data stop being available to the test plugin: ii
+[PDI test plugin]  <<= data stop being available to the test plugin: main_field
 [PDI test plugin] Goodbye from the test plugin!
