@@ -132,7 +132,7 @@ int main( int argc, char* argv[] )
 	MPI_Comm main_comm = MPI_COMM_WORLD;
 	
 	// initialize PDI, it can replace our main communicator by its own
-	PDI_init(PC_get(conf, ".pdi"), &main_comm);
+	PDI_init(PC_get(conf, ".pdi"));
 	
 	// load the MPI rank & size
 	int psize_1d;  MPI_Comm_size(main_comm, &psize_1d);

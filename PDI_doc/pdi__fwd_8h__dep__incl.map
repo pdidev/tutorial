@@ -1,0 +1,36 @@
+<map id="/home/jbigot/data/projects/pdi/pdi/include/pdi/pdi_fwd.h" name="/home/jbigot/data/projects/pdi/pdi/include/pdi/pdi_fwd.h">
+<area shape="rect" id="node2" href="$array__datatype_8h.html" title="/home/jbigot/data/projects\l/pdi/pdi/include/pdi/array\l_datatype.h" alt="" coords="1735,571,1919,627"/>
+<area shape="rect" id="node9" href="$context_8h.html" title="/home/jbigot/data/projects\l/pdi/pdi/include/pdi/context.h" alt="" coords="2911,675,3111,716"/>
+<area shape="rect" id="node12" href="$global__context_8h.html" title="/home/jbigot/data/projects\l/pdi/pdi/src/global_context.h" alt="" coords="3461,764,3658,805"/>
+<area shape="rect" id="node13" href="$data__descriptor__impl_8h.html" title="/home/jbigot/data/projects\l/pdi/pdi/src/data_descriptor_impl.h" alt="" coords="3304,853,3543,895"/>
+<area shape="rect" id="node17" href="$data__descriptor_8h.html" title="/home/jbigot/data/projects\l/pdi/pdi/include/pdi/data\l_descriptor.h" alt="" coords="3287,571,3471,627"/>
+<area shape="rect" id="node19" href="$datatype_8h.html" title="/home/jbigot/data/projects\l/pdi/pdi/include/pdi/datatype.h" alt="" coords="1959,392,2168,433"/>
+<area shape="rect" id="node20" href="$record__datatype_8h.html" title="/home/jbigot/data/projects\l/pdi/pdi/include/pdi/record\l_datatype.h" alt="" coords="467,571,651,627"/>
+<area shape="rect" id="node22" href="$ref__any_8h.html" title="/home/jbigot/data/projects\l/pdi/pdi/include/pdi/ref_any.h" alt="" coords="2625,481,2827,523"/>
+<area shape="rect" id="node23" href="$expression_8h.html" title="/home/jbigot/data/projects\l/pdi/pdi/include/pdi/expression.h" alt="" coords="807,578,1029,619"/>
+<area shape="rect" id="node25" href="$tools_8h.html" title="/home/jbigot/data/projects\l/pdi/pdi/include/pdi/python\l/tools.h" alt="" coords="2405,571,2591,627"/>
+<area shape="rect" id="node26" href="$scalar__datatype_8h.html" title="/home/jbigot/data/projects\l/pdi/pdi/include/pdi/scalar\l_datatype.h" alt="" coords="1409,571,1593,627"/>
+<area shape="rect" id="node28" href="$datatype__template_8h.html" title="/home/jbigot/data/projects\l/pdi/pdi/include/pdi/datatype\l_template.h" alt="" coords="3020,288,3219,344"/>
+<area shape="rect" id="node29" href="$error_8h.html" title="/home/jbigot/data/projects\l/pdi/pdi/include/pdi/error.h" alt="" coords="992,392,1177,433"/>
+<area shape="rect" id="node32" href="$logger_8h.html" title="/home/jbigot/data/projects\l/pdi/pdi/include/pdi/logger.h" alt="" coords="2733,199,2927,240"/>
+<area shape="rect" id="node33" href="$plugin_8h.html" title="/home/jbigot/data/projects\l/pdi/pdi/include/pdi/plugin.h" alt="" coords="3440,675,3631,716"/>
+<area shape="rect" id="node35" href="$paraconf__wrapper_8h.html" title="/home/jbigot/data/projects\l/pdi/pdi/include/pdi/paraconf\l_wrapper.h" alt="" coords="1196,95,1395,151"/>
+<area shape="rect" id="node3" href="$array__datatype_8cxx.html" title="/home/jbigot/data/projects\l/pdi/pdi/src/array_datatype.cxx" alt="" coords="597,675,812,716"/>
+<area shape="rect" id="node4" href="$datatype__template_8cxx.html" title="/home/jbigot/data/projects\l/pdi/pdi/src/datatype_template.cxx" alt="" coords="1025,764,1261,805"/>
+<area shape="rect" id="node5" href="$expression_8cxx.html" title="/home/jbigot/data/projects\l/pdi/pdi/src/expression.cxx" alt="" coords="1888,764,2076,805"/>
+<area shape="rect" id="node6" href="$python_2pdi_8cxx.html" title="/home/jbigot/data/projects\l/pdi/pdi/src/python/pdi.cxx" alt="" coords="2240,853,2425,895"/>
+<area shape="rect" id="node7" href="$tools_8cxx.html" title="/home/jbigot/data/projects\l/pdi/pdi/src/python/tools.cxx" alt="" coords="2317,764,2513,805"/>
+<area shape="rect" id="node8" href="$ref__any_8cxx.html" title="/home/jbigot/data/projects\l/pdi/pdi/src/ref_any.cxx" alt="" coords="1791,675,1975,716"/>
+<area shape="rect" id="node10" href="$context_8cxx.html" title="/home/jbigot/data/projects\l/pdi/pdi/src/context.cxx" alt="" coords="2690,764,2874,805"/>
+<area shape="rect" id="node11" href="$data__descriptor__impl_8cxx.html" title="/home/jbigot/data/projects\l/pdi/pdi/src/data_descriptor\l_impl.cxx" alt="" coords="1251,943,1446,999"/>
+<area shape="rect" id="node15" href="$pdi_8cxx.html" title="/home/jbigot/data/projects\l/pdi/pdi/src/pdi.cxx" alt="" coords="3971,853,4155,895"/>
+<area shape="rect" id="node16" href="$plugin_8cxx.html" title="/home/jbigot/data/projects\l/pdi/pdi/src/plugin.cxx" alt="" coords="3050,764,3234,805"/>
+<area shape="rect" id="node14" href="$global__context_8cxx.html" title="/home/jbigot/data/projects\l/pdi/pdi/src/global_context.cxx" alt="" coords="4161,950,4371,991"/>
+<area shape="rect" id="node18" href="$data__descriptor_8cxx.html" title="/home/jbigot/data/projects\l/pdi/pdi/src/data_descriptor.cxx" alt="" coords="3706,675,3925,716"/>
+<area shape="rect" id="node27" href="$datatype_8cxx.html" title="/home/jbigot/data/projects\l/pdi/pdi/src/datatype.cxx" alt="" coords="2253,481,2437,523"/>
+<area shape="rect" id="node21" href="$record__datatype_8cxx.html" title="/home/jbigot/data/projects\l/pdi/pdi/src/record_datatype.cxx" alt="" coords="300,675,523,716"/>
+<area shape="rect" id="node24" href="$scalar__datatype_8cxx.html" title="/home/jbigot/data/projects\l/pdi/pdi/src/scalar_datatype.cxx" alt="" coords="939,675,1159,716"/>
+<area shape="rect" id="node30" href="$error_8cxx.html" title="/home/jbigot/data/projects\l/pdi/pdi/src/error.cxx" alt="" coords="863,481,1047,523"/>
+<area shape="rect" id="node31" href="$paraconf__wrapper_8cxx.html" title="/home/jbigot/data/projects\l/pdi/pdi/src/paraconf_wrapper.cxx" alt="" coords="250,481,485,523"/>
+<area shape="rect" id="node34" href="$logger_8cxx.html" title="/home/jbigot/data/projects\l/pdi/pdi/src/logger.cxx" alt="" coords="2738,295,2922,337"/>
+</map>

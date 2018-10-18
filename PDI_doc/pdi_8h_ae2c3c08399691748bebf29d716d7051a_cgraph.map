@@ -1,0 +1,5 @@
+<map id="PDI_finalize" name="PDI_finalize">
+<area shape="rect" id="node2" href="$classPDI_1_1Global__context.html#a9de4e403f6919016c6a8a26fd82a9b94" title="PDI::Global_context\l::context" alt="" coords="151,5,296,47"/>
+<area shape="rect" id="node3" href="$classPDI_1_1Global__context.html#ac513ebf3880a1068ba39ebd4ec4ab818" title="PDI::Global_context\l::logger" alt="" coords="151,71,296,112"/>
+<area shape="rect" id="node4" href="$classPDI_1_1Global__context.html#a95ba43bb00715271615a10d7c9e59c30" title="PDI::Global_context\l::finalize" alt="" coords="151,136,296,177"/>
+</map>

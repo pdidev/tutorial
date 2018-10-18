@@ -8,11 +8,11 @@ parallelism: { height: 1, width: 1 }
 pdi:
   metadata: # small values for which PDI keeps a copy
     ii:     int
-    dsize:  { type: int, size: 2 }
-    psize:  { type: int, size: 2 }
-    pcoord: { type: int, size: 2 }
+    dsize:  { type: array, subtype: int, size: 2 }
+    psize:  { type: array, subtype: int, size: 2 }
+    pcoord: { type: array, subtype: int, size: 2 }
   data: # values for which PDI does not keep a copy
-    main_field: { type: double, sizes: [ '62', '14' ] } # we can use $ expressions in type definitions
+    main_field: { type: array, subtype: double, size: [ '62', '14' ] } # we can use $ expressions in type definitions
   plugins:
     decl_hdf5:
       - file: ex4-meta${pcoord[0]}x${pcoord[1]}.h5  # we can use $ expressions in file names

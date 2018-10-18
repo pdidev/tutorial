@@ -115,7 +115,7 @@ Match the content as expected in `ex5-hdf5.out`.
 ## Ex6. Simplifying the code
 
 As you can notice, the PDI code is quite redundant.
-In this exercise, we will use `PDI_expose` and `PDI_transaction_*` to simplify the code while keeping the exact same behaviour.
+In this exercise, we will use `PDI_expose` and `PDI_multi_expose` to simplify the code while keeping the exact same behaviour.
 
 Examine the source code, compile it and run it.
 ```bash
@@ -127,9 +127,8 @@ There are lots of matched `PDI_share`/`PDI_reclaim` in the code.
 Replace these by `PDI_expose` that is the exact equivalent of a `PDI_share` followed by a matching `PDI_reclaim`.
 
 This replacement is not possible for interlaced `PDI_share`/`PDI_reclaim` with events in the middle.
-This case is however handled by `PDI_transaction_*`, enclosing `PDI_expose` inside `PDI_transaction_begin`/`PDI_transaction_end` delays the reclaims until the end of the transaction.
-It also triggers an event when all the share of the transaction are done.
-Replace the remaining `PDI_share`/`PDI_reclaim` by `PDI_expose`s and `PDI_transaction_*`.
+This case is however handled by `PDI_multi_expose` call that exposes all data, then triggers an event and finally does all the reclaim in reverse order.
+Replace the remaining `PDI_share`/`PDI_reclaim` by `PDI_expose`s and `PDI_multi_expose`s.
 
 Ensure that your code keeps the exact same behaviour by comparing its trace to `ex6.out`
 

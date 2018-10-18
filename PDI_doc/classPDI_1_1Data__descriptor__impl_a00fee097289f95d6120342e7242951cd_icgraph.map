@@ -1,0 +1,10 @@
+<map id="PDI::Data_descriptor_impl::metadata" name="PDI::Data_descriptor_impl::metadata">
+<area shape="rect" id="node2" href="$classPDI_1_1Data__descriptor__impl.html#a2cf21a84e04ad98ecef668c4986a47e4" title="PDI::Data_descriptor\l_impl::~Data_descriptor_impl" alt="" coords="205,5,408,47"/>
+<area shape="rect" id="node3" href="$classPDI_1_1Data__descriptor__impl.html#afa9b374221afb10e73a7405cc9369645" title="PDI::Data_descriptor\l_impl::metadata" alt="" coords="231,71,383,112"/>
+<area shape="rect" id="node4" href="$classPDI_1_1Data__descriptor__impl.html#adb5530d2a46c093c6cc03a8ed1d45fd7" title="PDI::Data_descriptor\l_impl::ref" alt="" coords="231,188,383,229"/>
+<area shape="rect" id="node6" href="$classPDI_1_1Data__descriptor__impl.html#a63809cc6270b2a1e7c8b57b9fd0aeedd" title="PDI::Data_descriptor\l_impl::release" alt="" coords="456,123,608,164"/>
+<area shape="rect" id="node7" href="$classPDI_1_1Data__descriptor__impl.html#a799ecffb5b3234c677c0aeb7b0b72ac7" title="PDI::Data_descriptor\l_impl::reclaim" alt="" coords="456,253,608,295"/>
+<area shape="rect" id="node8" href="$classPDI_1_1Data__descriptor__impl.html#aa61ea26a18c822351411755f90c2486b" title="PDI::Data_descriptor\l_impl::empty" alt="" coords="231,305,383,347"/>
+<area shape="rect" id="node9" href="$classPDI_1_1Data__descriptor__impl.html#a34460fdabdf0c63cbf9d06f559196f8d" title="PDI::Data_descriptor\l_impl::share" alt="" coords="231,371,383,412"/>
+<area shape="rect" id="node5" href="$classPDI_1_1Data__descriptor__impl.html#ae8113dda0a9b7d787ab27a3d1f62f66a" title="PDI::Data_descriptor\l_impl::share" alt="" coords="456,188,608,229"/>
+</map>

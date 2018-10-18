@@ -1,32 +1,34 @@
-[PDI test plugin] Welcome to the test plugin!
-[PDI test plugin] The test plugin received an event: initialization
-[PDI test plugin]  =>> data becoming available to the test plugin: ii
-[PDI test plugin]  <<= data stop being available to the test plugin: ii
-[PDI test plugin]  =>> data becoming available to the test plugin: pcoord
-[PDI test plugin]  <<= data stop being available to the test plugin: pcoord
-[PDI test plugin]  =>> data becoming available to the test plugin: dsize
-[PDI test plugin]  <<= data stop being available to the test plugin: dsize
-[PDI test plugin]  =>> data becoming available to the test plugin: psize
-[PDI test plugin]  <<= data stop being available to the test plugin: psize
-[PDI test plugin]  =>> data becoming available to the test plugin: main_field
-[PDI test plugin]  <<= data stop being available to the test plugin: main_field
-[PDI test plugin]  =>> data becoming available to the test plugin: ii
-[PDI test plugin]  =>> data becoming available to the test plugin: main_field
-[PDI test plugin] The test plugin received an event: loop
-[PDI test plugin]  <<= data stop being available to the test plugin: main_field
-[PDI test plugin]  <<= data stop being available to the test plugin: ii
-[PDI test plugin]  =>> data becoming available to the test plugin: ii
-[PDI test plugin]  =>> data becoming available to the test plugin: main_field
-[PDI test plugin] The test plugin received an event: loop
-[PDI test plugin]  <<= data stop being available to the test plugin: main_field
-[PDI test plugin]  <<= data stop being available to the test plugin: ii
-[PDI test plugin]  =>> data becoming available to the test plugin: ii
-[PDI test plugin]  =>> data becoming available to the test plugin: main_field
-[PDI test plugin] The test plugin received an event: loop
-[PDI test plugin]  <<= data stop being available to the test plugin: main_field
-[PDI test plugin]  <<= data stop being available to the test plugin: ii
-[PDI test plugin]  =>> data becoming available to the test plugin: main_field
-[PDI test plugin]  =>> data becoming available to the test plugin: ii
-[PDI test plugin]  <<= data stop being available to the test plugin: ii
-[PDI test plugin]  <<= data stop being available to the test plugin: main_field
-[PDI test plugin] Goodbye from the test plugin!
+*** info: (Test-plugin) Welcome to the test plugin!
+*** info: Initialization successful
+*** info: (Test-plugin) The test plugin received an event: initialization
+*** info: (Test-plugin) =>> data becoming available to the test plugin: ii
+*** info: (Test-plugin) <<= data stop being available to the test plugin: ii
+*** info: (Test-plugin) =>> data becoming available to the test plugin: pcoord
+*** info: (Test-plugin) <<= data stop being available to the test plugin: pcoord
+*** info: (Test-plugin) =>> data becoming available to the test plugin: dsize
+*** info: (Test-plugin) <<= data stop being available to the test plugin: dsize
+*** info: (Test-plugin) =>> data becoming available to the test plugin: psize
+*** info: (Test-plugin) <<= data stop being available to the test plugin: psize
+*** info: (Test-plugin) =>> data becoming available to the test plugin: main_field
+*** info: (Test-plugin) <<= data stop being available to the test plugin: main_field
+*** info: (Test-plugin) =>> data becoming available to the test plugin: ii
+*** info: (Test-plugin) =>> data becoming available to the test plugin: main_field
+*** info: (Test-plugin) The test plugin received an event: loop
+*** info: (Test-plugin) <<= data stop being available to the test plugin: main_field
+*** info: (Test-plugin) <<= data stop being available to the test plugin: ii
+*** info: (Test-plugin) =>> data becoming available to the test plugin: ii
+*** info: (Test-plugin) =>> data becoming available to the test plugin: main_field
+*** info: (Test-plugin) The test plugin received an event: loop
+*** info: (Test-plugin) <<= data stop being available to the test plugin: main_field
+*** info: (Test-plugin) <<= data stop being available to the test plugin: ii
+*** info: (Test-plugin) =>> data becoming available to the test plugin: ii
+*** info: (Test-plugin) =>> data becoming available to the test plugin: main_field
+*** info: (Test-plugin) The test plugin received an event: loop
+*** info: (Test-plugin) <<= data stop being available to the test plugin: main_field
+*** info: (Test-plugin) <<= data stop being available to the test plugin: ii
+*** info: (Test-plugin) =>> data becoming available to the test plugin: main_field
+*** info: (Test-plugin) =>> data becoming available to the test plugin: ii
+*** info: (Test-plugin) <<= data stop being available to the test plugin: ii
+*** info: (Test-plugin) <<= data stop being available to the test plugin: main_field
+*** info: Finalization
+*** info: (Test-plugin) Goodbye from the test plugin!

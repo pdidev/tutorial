@@ -8,23 +8,24 @@ parallelism: { height: 3, width: 1 }
 pdi:
   metadata: # small values for which PDI keeps a copy
     ii:     int
-    dsize:  { type: int, size: 2 }
-    psize:  { type: int, size: 2 }
-    pcoord: { type: int, size: 2 }
+    dsize:  { type: array, subtype: int, size: 2 }
+    psize:  { type: array, subtype: int, size: 2 }
+    pcoord: { type: array, subtype: int, size: 2 }
   data: # values for which PDI does not keep a copy
-    main_field: { type: double, sizes: [ '$dsize[0]', '$dsize[1]' ] }
+    main_field: { type: array, subtype: double, size: [ '$dsize[0]', '$dsize[1]' ] }
   plugins:
+    mpi:
     decl_hdf5:
-      file: ex7-data${pcoord[0]}x${pcoord[1]}.h5
-      #communicator: world
+      file: ex8-data${pcoord[0]}x${pcoord[1]}.h5
+      #communicator: $MPI_COMM_WORLD
       datasets:
-        main_field: { type: double, sizes: [ '$dsize[0]-2', '$dsize[1]-2' ] }
+        main_field: { type: array, subtype: double, size: [ '$dsize[0]-2', '$dsize[1]-2' ] }
       write:
         main_field:
-          when: '$ii=1'
+          when: '$ii=2'
           memory_selection:
             size:  ['$dsize[0]-2', '$dsize[1]-2']
             start: [1, 1]
-          #dataset_selection:
-            #size:  ['$dsize[0]-2', '$dsize[1]-2']
+          dataset_selection:
+            size:  ['$dsize[0]-2', '$dsize[1]-2']
             #start: [0, 0]

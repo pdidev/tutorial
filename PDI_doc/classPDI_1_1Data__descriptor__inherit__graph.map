@@ -1,0 +1,3 @@
+<map id="PDI::Data_descriptor" name="PDI::Data_descriptor">
+<area shape="rect" id="node2" href="$classPDI_1_1Data__descriptor__impl.html" title="{PDI::Data_descriptor_impl\n|&#45; Ref_holder\l&#45; m_context\l&#45; m_refs\l&#45; m_type\l&#45; m_name\l&#45; m_metadata\l|+ Data_descriptor_impl()\l+ ~Data_descriptor_impl()\l+ default_type()\l+ default_type()\l+ metadata()\l+ metadata()\l+ name()\l+ ref()\l+ empty()\l+ share()\l+ share()\l+ release()\l+ reclaim()\l&#45; Data_descriptor_impl()\l&#45; Data_descriptor_impl()\l&#45; operator=()\l&#45; operator=()\l}" alt="" coords="5,292,192,677"/>
+</map>

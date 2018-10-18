@@ -22,34 +22,34 @@
 #=============================================================================
 
 cmake_minimum_required(VERSION 3.9)
-project(pdi_examples LANGUAGES C CXX Fortran)
+project(pdi_examples LANGUAGES C)
+
+find_package(MPI REQUIRED COMPONENTS C)
+find_package(paraconf REQUIRED)
+find_package(PDI 0.3 REQUIRED)
+
 set(CMAKE_C_STANDARD 99)
 
-find_package(MPI REQUIRED COMPONENTS C CXX Fortran)
-find_package(paraconf REQUIRED)
-find_package(pdi REQUIRED)
-find_library(LIB_M m DOC "The math library")
-
 add_executable(ex1 ex1.c)
-target_link_libraries(ex1 m paraconf MPI::MPI_C)
+target_link_libraries(ex1 m MPI::MPI_C paraconf::paraconf)
 
 add_executable(ex2 ex2.c)
-target_link_libraries(ex2 m paraconf MPI::MPI_C pdi)
+target_link_libraries(ex2 m MPI::MPI_C paraconf::paraconf PDI::pdi)
 
 add_executable(ex3 ex3.c)
-target_link_libraries(ex3 m paraconf MPI::MPI_C pdi)
+target_link_libraries(ex3 m MPI::MPI_C paraconf::paraconf PDI::pdi)
 
 add_executable(ex4 ex4.c)
-target_link_libraries(ex4 m paraconf MPI::MPI_C pdi)
+target_link_libraries(ex4 m MPI::MPI_C paraconf::paraconf PDI::pdi)
 
 add_executable(ex5 ex5.c)
-target_link_libraries(ex5 m paraconf MPI::MPI_C pdi)
+target_link_libraries(ex5 m MPI::MPI_C paraconf::paraconf PDI::pdi)
 
 add_executable(ex6 ex6.c)
-target_link_libraries(ex6 m paraconf MPI::MPI_C pdi)
+target_link_libraries(ex6 m MPI::MPI_C paraconf::paraconf PDI::pdi)
 
 add_executable(ex7 ex7.c)
-target_link_libraries(ex7 m paraconf MPI::MPI_C pdi)
+target_link_libraries(ex7 m MPI::MPI_C paraconf::paraconf PDI::pdi)
 
 add_executable(ex8 ex8.c)
-target_link_libraries(ex8 m paraconf MPI::MPI_C pdi)
+target_link_libraries(ex8 m MPI::MPI_C paraconf::paraconf PDI::pdi)

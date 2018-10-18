@@ -1,6 +1,0 @@
-<map id="PDI::Datatype_template" name="PDI::Datatype_template">
-<area shape="rect" id="node2" href="$classPDI_1_1Datatype.html" title="{PDI::Datatype\n||+ ~Datatype()\l+ clone_type()\l+ densify()\l+ dense()\l+ datasize()\l+ buffersize()\l+ alignment()\l}" alt="" coords="201,175,315,340"/>
-<area shape="rect" id="node3" href="$classPDI_1_1Array__datatype.html" title="{PDI::Array_datatype\n|&#45; m_subtype\l&#45; m_size\l&#45; m_start\l&#45; m_subsize\l|+ Array_datatype()\l+ Array_datatype()\l+ subtype()\l+ size()\l+ start()\l+ subsize()\l+ clone()\l+ clone_type()\l+ densify()\l+ evaluate()\l+ dense()\l+ datasize()\l+ buffersize()\l+ alignment()\l}" alt="" coords="5,388,153,700"/>
-<area shape="rect" id="node4" href="$classPDI_1_1Record__datatype.html" title="{PDI::Record_datatype\n|&#45; m_members\l&#45; m_buffersize\l|+ Record_datatype()\l+ members()\l+ clone()\l+ clone_type()\l+ densify()\l+ evaluate()\l+ dense()\l+ datasize()\l+ buffersize()\l+ alignment()\l}" alt="" coords="178,432,338,656"/>
-<area shape="rect" id="node5" href="$classPDI_1_1Scalar__datatype.html" title="{PDI::Scalar_datatype\n|&#45; m_size\l&#45; m_align\l&#45; m_kind\l|+ Scalar_datatype()\l+ Scalar_datatype()\l+ kind()\l+ clone()\l+ clone_type()\l+ densify()\l+ evaluate()\l+ dense()\l+ datasize()\l+ buffersize()\l+ alignment()\l}" alt="" coords="362,417,517,671"/>
-</map>
