@@ -1,22 +1,46 @@
-\page Getting_started Getting started with PDI
+\page Getting_started Getting started with %PDI
 
-Once PDI is \ref Installation "installed" and you have understood its
+Once %PDI is \ref Installation "installed" and you have understood its
 \ref Concepts "core concepts", you can start using it in your code.
 
-# Environment required on the poincare machine
+# Environment
 
-Add the following line at the end of your bashrc & profile file to load the PDI library:
+This hands-on has been tested on the
+[Poincare](https://groupes.renater.fr/wiki/poincare/) machine but it should be
+easy to adapt to another machine.
+
+## Poincare machine
+
+The file `/gpfslocal/pub/pdi-env.sh` should be pre-loaded in your environment.
+To check it is, please execute the `pdi` command:
+
 ```bash
-source /gpfslocal/pub/pdi-training-env.bash
+$ pdi
+PDI is available!
 ```
-then log out and in again.
 
-Setup the compilation by detecting all dependencies (MPI, paraconf, PDI, ...) using cmake:
+When %PDI is correctly loaded, you can proceed with getting the sources for the
+hands-on tutorial.
+Normally, one would clone from
+[gitlab](https://gitlab.maisondelasimulation.fr/PDI/PDI_hands-on), but as it is
+unavailable due to power maintenance, you can clone locally.
+
 ```bash
+git clone /gpfslocal/pub/pdi/PDI_hands-on.git
+```
+
+Setup the compilation by detecting all dependencies (MPI, paraconf, %PDI, ...)
+using cmake:
+```bash
+cd PDI_hands-on
 cmake .
 ```
 
-# Ex1. Getting started
+Now you're ready to work, **good luck**!
+
+# Tutorial
+
+## Ex1. Getting started
 
 Ex1 is a simple MPI stencil code.
 There is no output in the code yet, so we can not see its result.
@@ -30,10 +54,10 @@ Play with and understand the code parameters in ex1.yml
 
 Run the code with 3 MPI processes.
 
-# Ex2. Now with some PDI
+## Ex2. Now with some PDI
 
-Ex2 is the same code as ex1 with PDI calls added.
-The PDI test plugin is used to trace PDI calls.
+Ex2 is the same code as ex1 with %PDI calls added.
+The %PDI test plugin is used to trace %PDI calls.
 
 Examine the source code, compile it and run it.
 ```bash
@@ -46,11 +70,11 @@ Add the required `PDI_share` and `PDI_reclaim` calls to match the output of `ex2
 Notice that some share/reclaim pairs come one after the other while others are interlaced.
 Is one better than the other?
 
-# Ex3. HDF5 through PDI
+## Ex3. HDF5 through PDI
 
 Let's take the code from ex2 and make it output some HDF5 data.
-No need to touch the C code here, the PDI yaml file should be enough.
-We have replaced the PDI test plugin by the Decl'HDF5 plugin.
+No need to touch the C code here, the %PDI yaml file should be enough.
+We have replaced the %PDI test plugin by the Decl'HDF5 plugin.
 
 Examine the yaml, compile the code and run it.
 ```bash
@@ -59,12 +83,12 @@ llsubmit ex3.sh # run the code
 ```
 
 We need to fill 2 sections in the yaml file:
-* the `data` section to indicate to PDI the type of the fields that are exposed,
+* the `data` section to indicate to %PDI the type of the fields that are exposed,
 * the `decl_hdf5` for the configuration of the Decl'HDF5 plugin
 
 Only dsize is written as of now, let's add `psize` and `pcoord` to match the content expected described in `ex3.out`.
 
-# Ex4. Writing some real data
+## Ex4. Writing some real data
 
 We keep the same code and touch only the yaml file again.
 
@@ -90,7 +114,7 @@ Only write `main_field` at the second iteration (when `ii==0`).
 
 Change the parallelism degree to 2 in height (don't forget to use 2 processes in ex4.sh) and try to match the expected content described in `ex4.out`.
 
-# Ex5. Introducing events
+## Ex5. Introducing events
 
 In ex4, we wrote 2 pieces of data to `ex4-data*.h5`, but the file is opened and closed for each and every write.
 Since Decl'HDF5 only sees the data appear one after the other, it does not keep the file open.
@@ -109,13 +133,13 @@ With the test plugin, check that the event is indeed triggered at the expected t
 Use the `on_event` mechanism to trigger the write of `ii` and `main_field`.
 This mechanism can be combined with a `when` directive, in that case the write is only executed when both mechanisms agree.
 
-Also notice the extended syntax that make it possible to write data to a dataset with a name different from the data in PDI.
+Also notice the extended syntax that make it possible to write data to a dataset with a name different from the data in %PDI.
 Use this mechanism to write main_field at iterations 1 and 2, in two distinct groups.
 Match the content as expected in `ex5-hdf5.out`.
 
-# Ex6. Simplifying the code
+## Ex6. Simplifying the code
 
-As you can notice, the PDI code is quite redundant.
+As you can notice, the %PDI code is quite redundant.
 In this exercise, we will use `PDI_expose` and `PDI_multi_expose` to simplify the code while keeping the exact same behaviour.
 
 Examine the source code, compile it and run it.
@@ -133,7 +157,7 @@ Replace the remaining `PDI_share`/`PDI_reclaim` by `PDI_expose`s and `PDI_multi_
 
 Ensure that your code keeps the exact same behaviour by comparing its trace to `ex6.out`
 
-# Ex7. writing a selection
+## Ex7. writing a selection
 
 In this exercise, we will only write a selection of the data to the HDF5 file.
 
@@ -153,7 +177,7 @@ You can also add dimensions, write the 2D array excluding ghosts as a slab of a 
 Write iterations 1 to 3 inclusive into dimensions 0 to 2.
 Match the expected output described in `ex7-bis.out`.
 
-# Ex8. going parallel
+## Ex8. going parallel
 
 Running the current code in parallel should already work and yield one file per process containing the local data block.
 In this execise we will write one single file with parallel HDF5 whose content should be independant from the number of processes used.
@@ -175,7 +199,7 @@ By uncommenting the communicator directive (only world supported now), we switch
 
 You can experiment with other plugins
 * FTI: efficient fault tolerance support
-* user-code: run and compose your own functions on the data exposed through PDI
+* user-code: run and compose your own functions on the data exposed through %PDI
 
-Take a look at the examples in the PDI repository:
-`https://gitlab.maisondelasimulation.fr/jbigot/pdi/tree/v0.1/example`
+Take a look at the examples in the %PDI repository:
+`https://gitlab.maisondelasimulation.fr/jbigot/pdi/tree/v0.4/example`
