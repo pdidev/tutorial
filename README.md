@@ -1,8 +1,9 @@
-# PDI hands-on
+\page Getting_started Getting started with PDI
 
-simple exercises to manipulate PDI
+Once PDI is \ref Installation "installed" and you have understood its
+\ref Concepts "core concepts", you can start using it in your code.
 
-## Environment required on the poincare machine
+# Environment required on the poincare machine
 
 Add the following line at the end of your bashrc & profile file to load the PDI library:
 ```bash
@@ -15,7 +16,7 @@ Setup the compilation by detecting all dependencies (MPI, paraconf, PDI, ...) us
 cmake .
 ```
 
-## Ex1. Getting started
+# Ex1. Getting started
 
 Ex1 is a simple MPI stencil code.
 There is no output in the code yet, so we can not see its result.
@@ -29,7 +30,7 @@ Play with and understand the code parameters in ex1.yml
 
 Run the code with 3 MPI processes.
 
-## Ex2. Now with some PDI
+# Ex2. Now with some PDI
 
 Ex2 is the same code as ex1 with PDI calls added.
 The PDI test plugin is used to trace PDI calls.
@@ -45,7 +46,7 @@ Add the required `PDI_share` and `PDI_reclaim` calls to match the output of `ex2
 Notice that some share/reclaim pairs come one after the other while others are interlaced.
 Is one better than the other?
 
-## Ex3. HDF5 through PDI
+# Ex3. HDF5 through PDI
 
 Let's take the code from ex2 and make it output some HDF5 data.
 No need to touch the C code here, the PDI yaml file should be enough.
@@ -63,7 +64,7 @@ We need to fill 2 sections in the yaml file:
 
 Only dsize is written as of now, let's add `psize` and `pcoord` to match the content expected described in `ex3.out`.
 
-## Ex4. Writing some real data
+# Ex4. Writing some real data
 
 We keep the same code and touch only the yaml file again.
 
@@ -89,7 +90,7 @@ Only write `main_field` at the second iteration (when `ii==0`).
 
 Change the parallelism degree to 2 in height (don't forget to use 2 processes in ex4.sh) and try to match the expected content described in `ex4.out`.
 
-## Ex5. Introducing events
+# Ex5. Introducing events
 
 In ex4, we wrote 2 pieces of data to `ex4-data*.h5`, but the file is opened and closed for each and every write.
 Since Decl'HDF5 only sees the data appear one after the other, it does not keep the file open.
@@ -112,7 +113,7 @@ Also notice the extended syntax that make it possible to write data to a dataset
 Use this mechanism to write main_field at iterations 1 and 2, in two distinct groups.
 Match the content as expected in `ex5-hdf5.out`.
 
-## Ex6. Simplifying the code
+# Ex6. Simplifying the code
 
 As you can notice, the PDI code is quite redundant.
 In this exercise, we will use `PDI_expose` and `PDI_multi_expose` to simplify the code while keeping the exact same behaviour.
@@ -132,7 +133,7 @@ Replace the remaining `PDI_share`/`PDI_reclaim` by `PDI_expose`s and `PDI_multi_
 
 Ensure that your code keeps the exact same behaviour by comparing its trace to `ex6.out`
 
-## Ex7. writing a selection
+# Ex7. writing a selection
 
 In this exercise, we will only write a selection of the data to the HDF5 file.
 
@@ -152,7 +153,7 @@ You can also add dimensions, write the 2D array excluding ghosts as a slab of a 
 Write iterations 1 to 3 inclusive into dimensions 0 to 2.
 Match the expected output described in `ex7-bis.out`.
 
-## Ex8. going parallel
+# Ex8. going parallel
 
 Running the current code in parallel should already work and yield one file per process containing the local data block.
 In this execise we will write one single file with parallel HDF5 whose content should be independant from the number of processes used.
@@ -170,7 +171,7 @@ By uncommenting the communicator directive (only world supported now), we switch
 * Ensure the dataset selection of each process does not overlap with the others.
 * Try to match the output from `ex8.out` that should be independant from the number of processes used.
 
-## What next ?
+# What next ?
 
 You can experiment with other plugins
 * FTI: efficient fault tolerance support
