@@ -1,7 +1,0 @@
-<map id="PDI::Scalar_datatype::debug_string" name="PDI::Scalar_datatype::debug_string">
-<area shape="rect" id="node2" href="$classPDI_1_1Scalar__datatype.html#a553f70f9bdc343bc96659a31cdf19529" title="PDI::Scalar_datatype\l::kind" alt="" coords="208,5,363,47"/>
-<area shape="rect" id="node3" href="$classPDI_1_1Scalar__datatype.html#aa1e4967c4b564a06ee80d2d9f3499931" title="PDI::Scalar_datatype\l::dense" alt="" coords="208,71,363,112"/>
-<area shape="rect" id="node4" href="$classPDI_1_1Scalar__datatype.html#a8e0bb04f38f016e1050aae8ce95aa14d" title="PDI::Scalar_datatype\l::buffersize" alt="" coords="208,136,363,177"/>
-<area shape="rect" id="node5" href="$classPDI_1_1Scalar__datatype.html#ad8883c6045742e19ee34606681e2fcd4" title="PDI::Scalar_datatype\l::datasize" alt="" coords="208,201,363,243"/>
-<area shape="rect" id="node6" href="$classPDI_1_1Scalar__datatype.html#a19cafc9d088635f5826f3c2cdc9246ee" title="PDI::Scalar_datatype\l::alignment" alt="" coords="208,267,363,308"/>
-</map>

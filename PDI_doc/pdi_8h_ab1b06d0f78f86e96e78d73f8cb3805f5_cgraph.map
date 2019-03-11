@@ -1,6 +1,0 @@
-<map id="PDI_init" name="PDI_init">
-<area shape="rect" id="node2" href="$classPDI_1_1Global__context.html#a20281f105cdf8d2b5002e89b3b076b3a" title="PDI::Global_context\l::init" alt="" coords="124,5,269,47"/>
-<area shape="rect" id="node4" href="$classPDI_1_1Global__context.html#a9de4e403f6919016c6a8a26fd82a9b94" title="PDI::Global_context\l::context" alt="" coords="124,71,269,112"/>
-<area shape="rect" id="node5" href="$classPDI_1_1Global__context.html#ac513ebf3880a1068ba39ebd4ec4ab818" title="PDI::Global_context\l::logger" alt="" coords="124,136,269,177"/>
-<area shape="rect" id="node3" href="$classPDI_1_1Global__context.html#aa075da0d1d585067a3daacdbc57d9505" title="PDI::Global_context\l::Global_context" alt="" coords="317,5,463,47"/>
-</map>

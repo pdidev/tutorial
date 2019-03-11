@@ -1,8 +1,0 @@
-<map id="PDI::Data_descriptor_impl::reclaim" name="PDI::Data_descriptor_impl::reclaim">
-<area shape="rect" id="node2" href="$classPDI_1_1Data__descriptor__impl.html#a00fee097289f95d6120342e7242951cd" title="PDI::Data_descriptor\l_impl::metadata" alt="" coords="411,5,563,47"/>
-<area shape="rect" id="node3" href="$classPDI_1_1Data__descriptor__impl.html#adb5530d2a46c093c6cc03a8ed1d45fd7" title="PDI::Data_descriptor\l_impl::ref" alt="" coords="208,64,360,105"/>
-<area shape="rect" id="node6" href="$classPDI_1_1Ref__any.html#a92c53a0398732686e7b50480d4e2d82b" title="PDI::Ref_any::copy" alt="" coords="214,130,354,157"/>
-<area shape="rect" id="node7" href="$classPDI_1_1Ref__any.html#a2f653ad7b6152b4c1f027ed155c12e25" title="PDI::Ref_any::release" alt="" coords="205,181,363,207"/>
-<area shape="rect" id="node4" href="$classPDI_1_1Error.html#a96f2da1344848f7862d6d4227ba7c82a" title="PDI::Error::status" alt="" coords="423,71,550,98"/>
-<area shape="rect" id="node5" href="$classPDI_1_1Error.html#aca3b34b8350235c8455bfe56236c4454" title="PDI::Error::what" alt="" coords="427,122,546,149"/>
-</map>

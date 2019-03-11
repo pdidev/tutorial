@@ -1,6 +1,0 @@
-<map id="PDI_event" name="PDI_event">
-<area shape="rect" id="node2" href="$classPDI_1_1Global__context.html#a9de4e403f6919016c6a8a26fd82a9b94" title="PDI::Global_context\l::context" alt="" coords="141,5,287,47"/>
-<area shape="rect" id="node3" href="$classPDI_1_1Global__context.html#a1ce31d6999286d62b4954260354740ba" title="PDI::Global_context\l::event" alt="" coords="141,71,287,112"/>
-<area shape="rect" id="node4" href="$classPDI_1_1Error.html#a96f2da1344848f7862d6d4227ba7c82a" title="PDI::Error::status" alt="" coords="335,53,461,79"/>
-<area shape="rect" id="node5" href="$classPDI_1_1Error.html#aca3b34b8350235c8455bfe56236c4454" title="PDI::Error::what" alt="" coords="339,103,457,130"/>
-</map>

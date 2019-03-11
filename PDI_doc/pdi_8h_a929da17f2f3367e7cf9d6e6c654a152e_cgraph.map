@@ -1,8 +1,0 @@
-<map id="PDI_transaction_end" name="PDI_transaction_end">
-<area shape="rect" id="node2" href="$pdi_8cxx.html#af047cf4c39c3e80684372feb273cc06d" title="PDI_event" alt="" coords="213,63,301,90"/>
-<area shape="rect" id="node7" href="$pdi_8cxx.html#abf58b7c146cbf7e3341245f60cec0f7e" title="PDI_reclaim" alt="" coords="208,13,307,39"/>
-<area shape="rect" id="node3" href="$classPDI_1_1Global__context.html#a9de4e403f6919016c6a8a26fd82a9b94" title="PDI::Global_context\l::context" alt="" coords="355,5,500,47"/>
-<area shape="rect" id="node4" href="$classPDI_1_1Global__context.html#a1ce31d6999286d62b4954260354740ba" title="PDI::Global_context\l::event" alt="" coords="355,71,500,112"/>
-<area shape="rect" id="node5" href="$classPDI_1_1Error.html#a96f2da1344848f7862d6d4227ba7c82a" title="PDI::Error::status" alt="" coords="548,53,675,79"/>
-<area shape="rect" id="node6" href="$classPDI_1_1Error.html#aca3b34b8350235c8455bfe56236c4454" title="PDI::Error::what" alt="" coords="552,103,671,130"/>
-</map>

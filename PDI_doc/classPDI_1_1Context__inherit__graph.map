@@ -1,3 +1,0 @@
-<map id="PDI::Context" name="PDI::Context">
-<area shape="rect" id="node2" href="$classPDI_1_1Global__context.html" title="{PDI::Global_context\n|&#45; m_logger\l&#45; m_datatype_parsers\l&#45; m_descriptors\l&#45; m_plugins\l&#45; s_context\l|+ Global_context()\l+ desc()\l+ desc()\l+ operator[]()\l+ operator[]()\l+ begin()\l+ end()\l+ event()\l+ logger()\l+ datatype()\l+ add_datatype()\l+ init()\l+ initialized()\l+ context()\l+ finalize()\l&#45; Global_context()\l&#45; Global_context()\l}" alt="" coords="5,307,165,677"/>
-</map>

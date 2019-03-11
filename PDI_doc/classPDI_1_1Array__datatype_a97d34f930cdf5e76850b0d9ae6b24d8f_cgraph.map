@@ -1,8 +1,0 @@
-<map id="PDI::Array_datatype::destroy_data" name="PDI::Array_datatype::destroy_data">
-<area shape="rect" id="node2" href="$classPDI_1_1Array__datatype.html#a6f9201d70ad6f5dcb52ce714f543f447" title="PDI::Array_datatype\l::subtype" alt="" coords="226,5,374,47"/>
-<area shape="rect" id="node3" href="$classPDI_1_1Array__datatype.html#a9ba8909f75de2d4f18749fe9362a28d2" title="PDI::Array_datatype\l::simple" alt="" coords="226,71,374,112"/>
-<area shape="rect" id="node4" href="$classPDI_1_1Datatype.html#a341a15d47396f1cd9bb12e43a5cd5a40" title="PDI::Datatype::buffersize" alt="" coords="213,137,387,163"/>
-<area shape="rect" id="node5" href="$classPDI_1_1Array__datatype.html#ac8bc6acc7335a71d63e1a19f2227d2f9" title="PDI::Array_datatype\l::start" alt="" coords="226,188,374,229"/>
-<area shape="rect" id="node6" href="$classPDI_1_1Array__datatype.html#ab50be2accef49e18e36c9ac96d196a04" title="PDI::Array_datatype\l::subsize" alt="" coords="226,253,374,295"/>
-<area shape="rect" id="node7" href="$classPDI_1_1Datatype.html#a73bcba3fb827468daeda6ab0a4fd92b5" title="PDI::Datatype::destroy_data" alt="" coords="201,319,399,346"/>
-</map>

@@ -1,6 +1,0 @@
-<map id="PDI::Global_context::logger" name="PDI::Global_context::logger">
-<area shape="rect" id="node2" href="$classPDI_1_1Data__descriptor__impl.html#a2cf21a84e04ad98ecef668c4986a47e4" title="PDI::Data_descriptor\l_impl::~Data_descriptor_impl" alt="" coords="199,5,401,47"/>
-<area shape="rect" id="node3" href="$classPDI_1_1Global__context.html#a1f3e6d548f1663a45febb56d9c116430" title="PDI::Global_context\l::datatype" alt="" coords="227,71,373,112"/>
-<area shape="rect" id="node4" href="$pdi_8cxx.html#a3dc660be40c93c169337e3d2692b2ed0" title="Initialization / Finalization stuff. " alt="" coords="265,137,335,163"/>
-<area shape="rect" id="node5" href="$pdi_8cxx.html#a53d83851dcb286b25c8f7061d00d997b" title="PDI_finalize" alt="" coords="251,187,349,214"/>
-</map>

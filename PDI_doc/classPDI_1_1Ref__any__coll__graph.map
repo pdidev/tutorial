@@ -1,4 +1,0 @@
-<map id="PDI::Ref_any&lt; R, W &gt;" name="PDI::Ref_any&lt; R, W &gt;">
-<area shape="rect" id="node2" href="$classPDI_1_1Ref__base.html" title="{PDI::Ref_base\n||+ type()\l+ hash()\l# Ref_base()\l# Ref_base()\l# Ref_base()\l# operator=()\l# operator=()\l# get_content()\l# do_copy()\l}" alt="" coords="41,292,160,487"/>
-<area shape="rect" id="node3" href="$structPDI_1_1Ref__base_1_1Referenced.html" title="{PDI::Ref_base::Referenced\n|+ m_buffer\l+ m_delete\l+ m_type\l+ m_owners\l+ m_read_locks\l+ m_write_locks\l+ m_notifications\l|+ Referenced()\l+ Referenced()\l+ Referenced()\l+ Referenced()\l+ ~Referenced()\l}" alt="" coords="5,5,196,229"/>
-</map>

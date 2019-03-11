@@ -1,6 +1,0 @@
-<map id="PDI::Expression::Impl" name="PDI::Expression::Impl">
-<area shape="rect" id="node2" href="$structPDI_1_1Expression_1_1Impl_1_1Int__literal.html" title="{PDI::Expression::Impl\l::Int_literal\n|+ m_value\l|+ Int_literal()\l+ clone()\l+ to_long()\l+ to_ref()\l+ parse()\l}" alt="" coords="5,233,159,384"/>
-<area shape="rect" id="node3" href="$structPDI_1_1Expression_1_1Impl_1_1Operation.html" title="{PDI::Expression::Impl\l::Operation\n|+ m_first_operand\l+ m_operands\l|+ clone()\l+ to_long()\l+ to_ref()\l+ parse()\l+ op_level()\l+ parse_operator()\l}" alt="" coords="183,219,336,399"/>
-<area shape="rect" id="node4" href="$structPDI_1_1Expression_1_1Impl_1_1Reference__expression.html" title="{PDI::Expression::Impl\l::Reference_expression\n|+ m_referenced\l+ m_idx\l|+ clone()\l+ to_long()\l+ to_ref()\l+ parse()\l}" alt="" coords="361,233,531,384"/>
-<area shape="rect" id="node5" href="$structPDI_1_1Expression_1_1Impl_1_1String__literal.html" title="{PDI::Expression::Impl\l::String_literal\n|+ start\l+ values\l|+ clone()\l+ to_long()\l+ to_string()\l+ to_ref()\l+ parse()\l}" alt="" coords="556,226,709,391"/>
-</map>

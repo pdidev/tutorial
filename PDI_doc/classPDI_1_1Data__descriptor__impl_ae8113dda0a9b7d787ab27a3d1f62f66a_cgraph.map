@@ -1,7 +1,0 @@
-<map id="PDI::Data_descriptor_impl::share" name="PDI::Data_descriptor_impl::share">
-<area shape="rect" id="node2" href="$classPDI_1_1Data__descriptor__impl.html#a00fee097289f95d6120342e7242951cd" title="PDI::Data_descriptor\l_impl::metadata" alt="" coords="405,5,557,47"/>
-<area shape="rect" id="node3" href="$classPDI_1_1Ref__any.html#ad8d6851233a405e0e1c27d2e762c6cb9" title="PDI::Ref_any::get" alt="" coords="216,218,347,245"/>
-<area shape="rect" id="node4" href="$classPDI_1_1Data__descriptor__impl.html#adb5530d2a46c093c6cc03a8ed1d45fd7" title="PDI::Data_descriptor\l_impl::ref" alt="" coords="205,101,357,143"/>
-<area shape="rect" id="node5" href="$classPDI_1_1Error.html#a96f2da1344848f7862d6d4227ba7c82a" title="PDI::Error::status" alt="" coords="418,97,545,123"/>
-<area shape="rect" id="node6" href="$classPDI_1_1Error.html#aca3b34b8350235c8455bfe56236c4454" title="PDI::Error::what" alt="" coords="422,151,541,178"/>
-</map>
