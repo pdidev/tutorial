@@ -9,6 +9,6 @@
 #@ job_type         = mpich
 #@ environment      = COPY_ALL 
 #@ queue
-. /gpfslocal/pub/pdi-training-env.bash
+. /gpfslocal/pub/pdi/training-env.bash
 
 mpirun -n $LOADL_TOTAL_TASKS ./ex2

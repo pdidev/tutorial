@@ -11,22 +11,32 @@ easy to adapt to another machine.
 
 ## Poincare machine
 
-The file `/gpfslocal/pub/pdi-env.sh` should be pre-loaded in your environment.
-To check it is, please execute the `pdi` command:
+You should load the file `/gpfslocal/pub/pdi/training-env.bash` in your
+environment.
+To do that, you must source it in every shell you open.
 
 ```bash
+$  source /gpfslocal/pub/pdi/training-env.bash 
+(load) gnu version 7.3.0
+Using gnu compiler to configure openmpi wrappers...
+(load) openmpi version 2.1.3_gnu73
+(load) hdf5 version 1.10.2_gnu73_openmpi2
+(load) PDI version 0.4.0_gnu73_openmpi2
+(load) git version 2.19.1
+(load) cmake version 3.9.4
+PDI training environment loaded!
 $ pdi
-PDI is available!
+PDI training environment is available!
 ```
 
+# Setup
+
 When %PDI is correctly loaded, you can proceed with getting the sources for the
-hands-on tutorial.
-Normally, one would clone from
-[gitlab](https://gitlab.maisondelasimulation.fr/PDI/PDI_hands-on), but as it is
-unavailable due to power maintenance, you can clone locally.
+hands-on tutorial from
+[gitlab](https://gitlab.maisondelasimulation.fr/PDI/PDI_hands-on).
 
 ```bash
-git clone /gpfslocal/pub/pdi/PDI_hands-on.git
+git clone https://gitlab.maisondelasimulation.fr/PDI/PDI_hands-on.git
 ```
 
 Setup the compilation by detecting all dependencies (MPI, paraconf, %PDI, ...)
