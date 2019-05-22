@@ -1,7 +1,4 @@
-\page Getting_started Getting started with %PDI
-
-Once %PDI is \ref Installation "installed" and you have understood its
-\ref Concepts "core concepts", you can start using it in your code.
+\page Hands_on Hands-on
 
 # Environment
 
