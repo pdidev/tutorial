@@ -3,7 +3,7 @@ alpha: 0.125
 # global data-size (excluding spacer for boundary conditions or ghosts)
 global_size: { height: 60, width: 12 }
 # degree of parallelism
-parallelism: { height: 1, width: 1 }
+parallelism: { height: 3, width: 1 }
 # PDI configuration
 pdi:
   metadata: # small values for which PDI keeps a copy
@@ -14,16 +14,18 @@ pdi:
   data: # values for which PDI does not keep a copy
     main_field: { type: array, subtype: double, size: [ '$dsize[0]', '$dsize[1]' ] }
   plugins:
+    mpi:
     decl_hdf5:
-      file: ex7-data${pcoord[0]}x${pcoord[1]}.h5
+      file: ex9.h5
+      communicator: $MPI_COMM_WORLD
       datasets:
-        main_field: { type: array, subtype: double, size: [ 3, '$dsize[0]-2', '$dsize[1]-2' ] }
+        main_field: { type: array, subtype: double, size: [ '$psize[0]*($dsize[0]-2)', '$psize[1]*($dsize[1]-2)' ] }
       write:
         main_field:
-          when: '$ii>0 & $ii<4'
+          when: '$ii=2'
           memory_selection:
             size:  ['$dsize[0]-2', '$dsize[1]-2']
             start: [1, 1]
           dataset_selection:
-            size:  [1, '$dsize[0]-2', '$dsize[1]-2']
-            start: ['$ii-1', 0, 0]
+            size:  ['$dsize[0]-2', '$dsize[1]-2']
+            start: ['$pcoord[0]*($dsize[0]-2)', '$pcoord[1]*($dsize[1]-2)']

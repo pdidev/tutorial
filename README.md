@@ -70,7 +70,7 @@ Fill 2 sections in the yaml file:
 * the `decl_hdf5` for the configuration of \ref Decl_HDF5_plugin
 
 Only dsize is written as of now, let's add `psize` and `pcoord` to match the
-content expected described in `ex3_result.h5` (use `h5dump` command to see content of HDF5 file).
+content expected described in `ex3.h5dump` (use `h5dump` command to see content of HDF5 file).
 
 ## Ex4. Writing some real data
 
@@ -96,7 +96,7 @@ In order not to overwrite it every time it is exposed, we can add a `when`
 condition to restrict its output.
 Only write `main_field` at the second iteration (when `ii==0`).
 
-Change the parallelism degree to 2 in height and try to match the expected content described in `ex4_result.h5`.
+Change the parallelism degree to 2 in height and try to match the expected content described in `ex4.h5dump`.
 
 ## Ex5. Introducing events
 
@@ -120,7 +120,7 @@ Also notice the extended syntax that make it possible to write data to a dataset
 with a name different from the data in %PDI.
 Use this mechanism to write main_field at iterations 1 and 2, in two distinct
 groups `iter1` and `iter2`.
-Match the content as expected in `ex5_result.h5`.
+Match the content as expected in `ex5.h5dump`.
 
 ## Ex6. Simplifying the code
 
@@ -196,7 +196,7 @@ And the graphical representation:
 \image html PDI_hdf5_selection_advanced.jpg
 
 Write iterations 1 to 3 inclusive into dimensions 0 to 2.
-Match the expected output described in `ex8_result.h5`.
+Match the expected output described in `ex8.h5dump`.
 
 ## Ex9. Going parallel
 
