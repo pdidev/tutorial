@@ -1,0 +1,36 @@
+[PDI][Decl'HDF5][000000][10:35:05] *** info: Plugin loaded successfully
+[PDI][Test-plugin][10:35:05] *** info: Welcome to the test plugin!
+[PDI][10:35:05] *** info: Initialization successful
+[PDI][Test-plugin][10:35:05] *** info: The test plugin received an event: initialization
+[PDI][Test-plugin][10:35:05] *** info: =>> data becoming available to the test plugin: ii
+[PDI][Test-plugin][10:35:05] *** info: <<= data stop being available to the test plugin: ii
+[PDI][Test-plugin][10:35:05] *** info: =>> data becoming available to the test plugin: pcoord
+[PDI][Test-plugin][10:35:05] *** info: <<= data stop being available to the test plugin: pcoord
+[PDI][Test-plugin][10:35:05] *** info: =>> data becoming available to the test plugin: dsize
+[PDI][Test-plugin][10:35:05] *** info: <<= data stop being available to the test plugin: dsize
+[PDI][Test-plugin][10:35:05] *** info: =>> data becoming available to the test plugin: psize
+[PDI][Test-plugin][10:35:05] *** info: <<= data stop being available to the test plugin: psize
+[PDI][Test-plugin][10:35:05] *** info: =>> data becoming available to the test plugin: main_field
+[PDI][Test-plugin][10:35:05] *** info: <<= data stop being available to the test plugin: main_field
+[PDI][Test-plugin][10:35:05] *** info: =>> data becoming available to the test plugin: ii
+[PDI][Test-plugin][10:35:05] *** info: =>> data becoming available to the test plugin: main_field
+[PDI][Test-plugin][10:35:05] *** info: The test plugin received an event: loop
+[PDI][Test-plugin][10:35:05] *** info: <<= data stop being available to the test plugin: main_field
+[PDI][Test-plugin][10:35:05] *** info: <<= data stop being available to the test plugin: ii
+[PDI][Test-plugin][10:35:05] *** info: =>> data becoming available to the test plugin: ii
+[PDI][Test-plugin][10:35:05] *** info: =>> data becoming available to the test plugin: main_field
+[PDI][Test-plugin][10:35:05] *** info: The test plugin received an event: loop
+[PDI][Test-plugin][10:35:05] *** info: <<= data stop being available to the test plugin: main_field
+[PDI][Test-plugin][10:35:05] *** info: <<= data stop being available to the test plugin: ii
+[PDI][Test-plugin][10:35:05] *** info: =>> data becoming available to the test plugin: ii
+[PDI][Test-plugin][10:35:05] *** info: =>> data becoming available to the test plugin: main_field
+[PDI][Test-plugin][10:35:05] *** info: The test plugin received an event: loop
+[PDI][Test-plugin][10:35:05] *** info: <<= data stop being available to the test plugin: main_field
+[PDI][Test-plugin][10:35:05] *** info: <<= data stop being available to the test plugin: ii
+[PDI][Test-plugin][10:35:05] *** info: =>> data becoming available to the test plugin: main_field
+[PDI][Test-plugin][10:35:05] *** info: =>> data becoming available to the test plugin: ii
+[PDI][Test-plugin][10:35:05] *** info: <<= data stop being available to the test plugin: ii
+[PDI][Test-plugin][10:35:05] *** info: <<= data stop being available to the test plugin: main_field
+[PDI][10:35:05] *** info: Finalization
+[PDI][Test-plugin][10:35:05] *** info: Goodbye from the test plugin!
+[PDI][Decl'HDF5][000000][10:35:05] *** info: Closing plugin

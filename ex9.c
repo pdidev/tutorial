@@ -126,12 +126,12 @@ int main( int argc, char* argv[] )
 	MPI_Init(&argc, &argv);
 	
 	// load the configuration tree
-	PC_tree_t conf = PC_parse_path("ex8.yml");
+	PC_tree_t conf = PC_parse_path("ex9.yml");
 	
 	// NEVER USE MPI_COMM_WORLD IN THE CODE, use our own communicator main_comm instead
 	MPI_Comm main_comm = MPI_COMM_WORLD;
 	
-	// initialize PDI, it can replace our main communicator by its own
+	// initialize PDI
 	PDI_init(PC_get(conf, ".pdi"));
 	
 	// load the MPI rank & size

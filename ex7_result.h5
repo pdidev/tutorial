@@ -1,0 +1,25 @@
+HDF5 "ex7-data0x0.h5" {
+GROUP "/" {
+   DATASET "dsize" {
+      DATATYPE  H5T_STD_I32LE
+      DATASPACE  SIMPLE { ( 2 ) / ( 2 ) }
+      DATA {
+      (0): 62, 14
+      }
+   }
+   DATASET "main_field" {
+      DATATYPE  H5T_IEEE_F64LE
+      DATASPACE  SIMPLE { ( 14 ) / ( 14 ) }
+      DATA {
+      (0): 1e+06, 125000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+      }
+   }
+   DATASET "psize" {
+      DATATYPE  H5T_STD_I32LE
+      DATASPACE  SIMPLE { ( 2 ) / ( 2 ) }
+      DATA {
+      (0): 1, 1
+      }
+   }
+}
+}

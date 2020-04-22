@@ -1,0 +1,31 @@
+[PDI][Trace-plugin][15:11:44] *** info: Welcome!
+[PDI][15:11:44] *** warning: Data is not defined in specification tree
+[PDI][15:11:44] *** info: Initialization successful
+[PDI][Trace-plugin][15:11:44] *** info: =>>   data becoming available in the store: ii
+[PDI][Trace-plugin][15:11:44] *** info: <<= data stop being available in the store: ii
+[PDI][Trace-plugin][15:11:44] *** info: =>>   data becoming available in the store: pcoord
+[PDI][Trace-plugin][15:11:44] *** info: <<= data stop being available in the store: pcoord
+[PDI][Trace-plugin][15:11:44] *** info: =>>   data becoming available in the store: dsize
+[PDI][Trace-plugin][15:11:44] *** info: <<= data stop being available in the store: dsize
+[PDI][Trace-plugin][15:11:44] *** info: =>>   data becoming available in the store: psize
+[PDI][Trace-plugin][15:11:44] *** info: <<= data stop being available in the store: psize
+[PDI][Trace-plugin][15:11:44] *** info: =>>   data becoming available in the store: main_field
+[PDI][Trace-plugin][15:11:44] *** info: <<= data stop being available in the store: main_field
+[PDI][Trace-plugin][15:11:44] *** info: =>>   data becoming available in the store: ii
+[PDI][Trace-plugin][15:11:44] *** info: =>>   data becoming available in the store: main_field
+[PDI][Trace-plugin][15:11:44] *** info: <<= data stop being available in the store: main_field
+[PDI][Trace-plugin][15:11:44] *** info: <<= data stop being available in the store: ii
+[PDI][Trace-plugin][15:11:44] *** info: =>>   data becoming available in the store: ii
+[PDI][Trace-plugin][15:11:44] *** info: =>>   data becoming available in the store: main_field
+[PDI][Trace-plugin][15:11:44] *** info: <<= data stop being available in the store: main_field
+[PDI][Trace-plugin][15:11:44] *** info: <<= data stop being available in the store: ii
+[PDI][Trace-plugin][15:11:44] *** info: =>>   data becoming available in the store: ii
+[PDI][Trace-plugin][15:11:44] *** info: =>>   data becoming available in the store: main_field
+[PDI][Trace-plugin][15:11:44] *** info: <<= data stop being available in the store: main_field
+[PDI][Trace-plugin][15:11:44] *** info: <<= data stop being available in the store: ii
+[PDI][Trace-plugin][15:11:44] *** info: =>>   data becoming available in the store: main_field
+[PDI][Trace-plugin][15:11:44] *** info: =>>   data becoming available in the store: ii
+[PDI][Trace-plugin][15:11:44] *** info: <<= data stop being available in the store: ii
+[PDI][Trace-plugin][15:11:44] *** info: <<= data stop being available in the store: main_field
+[PDI][15:11:44] *** info: Finalization
+[PDI][Trace-plugin][15:11:44] *** info: Goodbye!

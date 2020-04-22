@@ -22,7 +22,7 @@
 #=============================================================================
 
 cmake_minimum_required(VERSION 3.9)
-project(pdi_examples LANGUAGES C)
+project(pdi_examples LANGUAGES C CXX)
 
 find_package(MPI REQUIRED COMPONENTS C)
 find_package(paraconf REQUIRED)
@@ -53,3 +53,6 @@ target_link_libraries(ex7 m MPI::MPI_C paraconf::paraconf PDI::pdi)
 
 add_executable(ex8 ex8.c)
 target_link_libraries(ex8 m MPI::MPI_C paraconf::paraconf PDI::pdi)
+
+add_executable(ex9 ex9.c)
+target_link_libraries(ex9 m MPI::MPI_C paraconf::paraconf PDI::pdi)
