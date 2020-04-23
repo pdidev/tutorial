@@ -16,7 +16,7 @@ pdi:
   plugins:
     mpi:
     decl_hdf5:
-      file: ex9.h5
+      file: ex8.h5
       communicator: $MPI_COMM_WORLD
       datasets:
         main_field: { type: array, subtype: double, size: [ '$psize[0]*($dsize[0]-2)', '$psize[1]*($dsize[1]-2)' ] }

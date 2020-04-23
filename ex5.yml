@@ -14,13 +14,13 @@ pdi:
   data: # values for which PDI does not keep a copy
     main_field: { type: array, subtype: double, size: [ '$dsize[0]', '$dsize[1]' ] }
   plugins:
-    test:
+    trace: ~
     decl_hdf5:
       file: ex5.h5
-      on_event: loop
-      when: '$ii>0&$ii<3'
+      on_event: ""
+      when: ""  # `&'' is an `and' operaton
       write:
         ii: # name of the PDI data to write
-          dataset: 'iter/ii' # dataset name in file, $-expressions can be used here, "/" separate groups in path
+          dataset: 'iter${}/ii' # dataset name in file, $-expressions can be used here, "/" separate groups in path
         main_field:
-          dataset: 'iter/main_field'
+          dataset: 'iter${}/main_field'

@@ -17,7 +17,7 @@ where `pdi_path` is your path to installed PDI directory.
 
 Next, setup the compilation by detecting all dependencies:
 ```bash
-cd PDI_hands-on
+cd PDI-hands-on
 cmake .
 ```
 
@@ -35,15 +35,19 @@ pdirun mpirun -n 1 ./ex?
 ```
 Where `?` is the number of the exercise.
 
+%PDI is focusing on I/O operations. You should focus on the `main` function.
+There is no need to fully dive in `iter` and `exchange` functions.
+
 ## Ex1. Getting started
 
 Ex1 is an implementation \ref heat_algorithm mentioned in \ref PDI_example.
 If you didn't read it yet, it is recommended to do it before continuing. 
-There is no input/output operations in the code yet, so we can not see its result.
+Examine the source code, compile it and run it. There is no input/output
+operations in the code yet, so we can not see its result.
 
 Play with and understand the code parameters in `ex1.yml`.
 
-Set values in `ex1.yaml` to be able to run the code with 3 MPI processes.
+Set values in `ex1.yml` to be able to run the code with 3 MPI processes.
 
 ## Ex2. Now with some PDI
 
@@ -51,7 +55,7 @@ Ex2 is the same code as ex1 with %PDI calls added in main function. The
 \ref trace_plugin is used to trace %PDI calls.
 
 Add the required `PDI_share` and `PDI_reclaim` calls to match the output of
-`ex2.log` file.
+`ex2.log` file. Change only the `ex2.c` file. 
 
 Notice that some share/reclaim pairs come one after the other while others are interlaced.
 Is one better than the other? If you do not know the answer to this question, please endure
@@ -69,13 +73,16 @@ Fill 2 sections in the yaml file:
   exposed,
 * the `decl_hdf5` for the configuration of \ref Decl_HDF5_plugin
 
-Only dsize is written as of now, let's add `psize` and `pcoord` to match the
+Only `dsize` is written as of now, let's add `psize` and `pcoord` to match the
 content expected described in `ex3.h5dump` (use `h5dump` command to see content of HDF5 file).
 
+\warning If you rerun exercise, remember to delete your old `ex3.h5` file, because the data will not be overwritten.
+
 ## Ex4. Writing some real data
+It is recommended to read \ref pdi_integration of \ref PDI_example before continuing. 
 
 In this exercise each MPI process will write its local matrix
-to separete HDF5 file. Touch only the yaml file again.
+to separete HDF5 files. Touch only the yaml file again.
 
 This time:
 * write the real 2D data contained in `main_field`,
@@ -94,9 +101,9 @@ Unlike the other fields we manipulated until now, `main_field` is exposed
 multiple times.
 In order not to overwrite it every time it is exposed, we can add a `when`
 condition to restrict its output.
-Only write `main_field` at the second iteration (when `ii==0`).
+Only write `main_field` at the second iteration (when `ii==1`).
 
-Change the parallelism degree to 2 in height and try to match the expected content described in `ex4.h5dump`.
+Set the parallelism degree to 2 in height and try to match the expected content described in `ex4.h5dump`.
 
 ## Ex5. Introducing events
 
@@ -108,18 +115,19 @@ Since `ii` and `main_field` are shared in an interlaced way, they are both
 available at the same time and could be written without opening the file twice.
 We have to use events for that.
 
-Call %PDI event named `loop` when both `ii` and `main_field` are shared.
+There are 3 main tasks in this exercise:
+1. Call %PDI event named `loop` when both `ii` and `main_field` are shared.
 With the \ref trace_plugin, check that the event is indeed triggered at the expected
 time as described in `ex5.log`.
 
-Use the `on_event` mechanism to trigger the write of `ii` and `main_field`.
+2. Use the `on_event` mechanism to trigger the write of `ii` and `main_field`.
 This mechanism can be combined with a `when` directive, in that case the write
 is only executed when both mechanisms agree.
 
-Also notice the extended syntax that make it possible to write data to a dataset
-with a name different from the data in %PDI.
-Use this mechanism to write main_field at iterations 1 and 2, in two distinct
-groups `iter1` and `iter2`.
+3. Also notice the extended syntax that make it possible to write data to a dataset
+with a name different from the data in %PDI. Use this mechanism to write main_field
+at iterations 1 and 2, in two distinct groups `iter1` and `iter2`.
+
 Match the content as expected in `ex5.h5dump`.
 
 ## Ex6. Simplifying the code
@@ -137,7 +145,9 @@ events in the middle.
 This case is however handled by `PDI_multi_expose` call that exposes all data,
 then triggers an event and finally does all the reclaim in reverse order.
 Replace the remaining `PDI_share`/`PDI_reclaim` by `PDI_expose`s and
-`PDI_multi_expose`s.
+`PDI_multi_expose`s. There is one `PDI_share`/`PDI_reclaim` you can not replace.
+
+Touch only the C file in this exercise.
 
 Ensure that your code keeps the exact same behaviour by comparing its trace to
 `ex6.log`.
@@ -153,50 +163,62 @@ selection in the dataset where to write.
 - `memory_selection` tells what part to take from the data.
 - `dataset_selection` tells where to write this part of data in file.
 
+Restrict the selection to the second line from the data and write it to a
+one-dimensional dataset in file.
+
+Touch only the yaml file in this exercise.
+
+Match the expected output described in `ex7.out`.
+
 Here is an example:
 ```yaml
-memory_selection:
-  size: [8, 8]
-  subsize: [4, 4]
-  start: [4, 4]
-dataset_selection:
-  size: [8, 8]
-  subsize: [4, 4]
-  start: [4, 0]
+data:
+  matrix: {type: array, subtype: int, size: [8,8]}
+
+...
+    datasets:
+      matrix: {type: array, subtype: int, size: 8}
+...
+        memory_selection:
+          size: [1, 8]
+          start: [4, 0]
+        dataset_selection:
+          size: 8
 ```
 The graphical representation:
 
 \image html PDI_hdf5_selection.jpg
 
-
-
-Restrict the selection to the second line from the data and write it to a
-one-dimensional dataset in file.
-Match the expected output described in `ex7.out`.
-
 ## Ex8. Writing an advanced selection
 
 You can also add dimensions, write the 2D array excluding ghosts as a slab of a
 3D dataset including a dimension for the time-iteration.
+Write iterations 1 to 3 inclusive into dimensions 0 to 2.
+
+Touch only the yaml file in this exercise.
+
+Match the expected output described in `ex8.h5dump`.
+
 
 Here is an example:
 ```yaml
-memory_selection:
-  size: [8, 8]
-  subsize: [4, 4]
-  start: [4, 4]
-dataset_selection:
-  size: [3, 8, 8]
-  subsize: [1, 4, 4]
-  start: [$ii, 4, 0]
+data:
+  matrix: {type: array, subtype: int, size: [8,8]}
+
+...
+    datasets:
+      matrix: {type: array, subtype: int, size: [3, 8, 8]}
+...
+        memory_selection:
+          size: [8, 8]
+        dataset_selection:
+          size: [1, 8, 8]
+          start: [$ii, 0, 0]
 ```
 
 And the graphical representation:
 
 \image html PDI_hdf5_selection_advanced.jpg
-
-Write iterations 1 to 3 inclusive into dimensions 0 to 2.
-Match the expected output described in `ex8.h5dump`.
 
 ## Ex9. Going parallel
 
@@ -207,12 +229,16 @@ should be independent from the number of processes used.
 
 We loaded the `mpi` plugin to make sharing MPI communicators possible.
 
-By uncommenting the `communicator` directive of \ref Decl_HDF5_plugin, we can now
+There are several tasks in this exercise:
+1. Uncomment the `communicator` directive of \ref Decl_HDF5_plugin, we can now
 switch to parallel I/O.
-* Change the file name so all processes open the same file.
-* Change the dataset dimension to take the full parallel size into account.
-* Ensure the dataset selection of each process does not overlap with the others.
-* Try to match the output from `ex9.out` that should be independant from the number of processes used.
+2. Change the file name so all processes open the same file.
+3. Set the size of `main_field` in `datasets` tree to take the global matrix into account. Hint: use psize.
+4. Ensure the dataset selection of each process does not overlap with the others. Hint: use pcoord
+
+Try to match the output from `ex9.out` that should be independant from the number of processes used.
+
+Touch only the yaml file in this exercise.
 
 Here is graphical representation:
 

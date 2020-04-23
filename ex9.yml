@@ -19,13 +19,13 @@ pdi:
       file: ex9-data${pcoord[0]}x${pcoord[1]}.h5
       #communicator: $MPI_COMM_WORLD
       datasets:
-        main_field: { type: array, subtype: double, size: [ '$dsize[0]-2', '$dsize[1]-2' ] }
+        main_field: { type: array, subtype: double, size: [ , ] }
       write:
         main_field:
           when: '$ii=2'
           memory_selection:
-            size:  ['$dsize[0]-2', '$dsize[1]-2']
-            start: [1, 1]
+            size:  [ , ]
+            start: [ , ]
           dataset_selection:
-            size:  ['$dsize[0]-2', '$dsize[1]-2']
-            #start: [0, 0]
+            size:  [ , ]
+            start: [ , ]

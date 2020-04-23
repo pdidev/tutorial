@@ -204,8 +204,7 @@ int main( int argc, char* argv[] )
 	// finally share the main field after the main loop body
 	PDI_share("main_field", cur, PDI_OUT);
 	// as well as the loop counter
-	PDI_share("ii",         &ii, PDI_OUT);
-	PDI_reclaim("ii");
+	PDI_expose("ii",         &ii, PDI_OUT);
 	PDI_reclaim("main_field");
 	
 	// finalize PDI
