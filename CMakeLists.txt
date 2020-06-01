@@ -22,11 +22,11 @@
 #=============================================================================
 
 cmake_minimum_required(VERSION 3.9)
-project(pdi_examples LANGUAGES C CXX)
+project(pdi_examples LANGUAGES C)
 
 find_package(MPI REQUIRED COMPONENTS C)
-find_package(paraconf REQUIRED)
-find_package(PDI 0.3 REQUIRED)
+find_package(paraconf REQUIRED COMPONENTS C)
+find_package(PDI 0.7 REQUIRED COMPONENTS C)
 
 set(CMAKE_C_STANDARD 99)
 
