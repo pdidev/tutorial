@@ -1,6 +1,6 @@
-# Hands-on tutorial {#Hands_on}
+\page Hands_on Hands-on tutorial
 
-## Setup
+# Setup
 
 \warning
 You need to [install](Installation.html) %PDI before proceeding with this
@@ -23,7 +23,7 @@ pdirun cmake .
 Now you're ready to work, **good luck**!
 
 
-## Tutorial
+# Tutorial
 
 For each exercise, once you've modified it, you can compile it by running the
 following command:
@@ -40,7 +40,7 @@ pdirun mpirun -n 1 ./ex?
 Where `?` is again the number of the exercise.
 
 
-### Ex1. Getting started
+## Ex1. Getting started
 
 Ex1. implements a simple heat equation solver using an explicit forward finite
 difference scheme parallelized with MPI as described in the
@@ -69,7 +69,7 @@ If you've never heard about yaml, have a quick look at
 * Set values in `ex1.yml` to be able to run the code with 3 MPI processes.
 
 
-### Ex2. Now with some PDI
+## Ex2. Now with some PDI
 
 Ex2. is the same code as ex1. with %PDI calls added in main function.
 The %PDI [Trace plugin](tra`PDIce_plugin.html) is used to trace %PDI calls.
@@ -87,7 +87,7 @@ Is one better than the other?
 If you do not know the answer to this question, please wait until Ex5. :)
 
 
-### Ex3. HDF5 through PDI
+## Ex3. HDF5 through PDI
 
 Let's take the code from ex2. and make it output some HDF5 data.
 No need to touch the C code here, the %PDI yaml file should be enough.
@@ -109,7 +109,7 @@ If you rerun the exercise, remember to delete your old `ex3.h5` file, because
 the data will not be overwritten.
 
 
-### Ex4. Writing some real data
+## Ex4. Writing some real data
 
 In this exercise each MPI process will write its local matrix
 to separete HDF5 files.
@@ -137,7 +137,7 @@ Set the parallelism degree to 2 in height and try to match the expected content
 described in `ex4.h5dump`.
 
 
-### Ex5. Introducing events
+## Ex5. Introducing events
 
 In ex4, there were 2 pieces of data to `ex4-data*.h5`, but the file is opened
 and closed for each and every write.
@@ -165,7 +165,7 @@ There are 3 main tasks in this exercise:
 Match the content as expected in `ex5.h5dump`.
 
 
-### Ex6. Simplifying the code
+## Ex6. Simplifying the code
 
 As you can notice, the %PDI code is quite redundant.
 In this exercise, you will use `::PDI_expose` and `::PDI_multi_expose` to
@@ -189,7 +189,7 @@ Ensure that your code keeps the exact same behaviour by comparing its trace to
 `ex6.log`.
 
 
-### Ex7. Writing a selection
+## Ex7. Writing a selection
 
 In this exercise, you will only write a selection (part) of the data to the HDF5
 file.
@@ -228,7 +228,7 @@ The graphical representation:
 ![graphical representation](PDI_hdf5_selection.jpg)
 
 
-### Ex8. Writing an advanced selection
+## Ex8. Writing an advanced selection
 
 You can also add dimensions, write the 2D array excluding ghosts as a slab of a
 3D dataset including a dimension for the time-iteration.
@@ -260,7 +260,7 @@ And the graphical representation:
 ![graphical representation](PDI_hdf5_selection_advanced.jpg)
 
 
-### Ex9. Going parallel
+## Ex9. Going parallel
 
 Running the current code in parallel should already work and yield one file per
 process containing the local data block.
@@ -291,7 +291,7 @@ Here is graphical representation of the parallel I/O:
 ![graphical representation of the parallel I/O](PDI_hdf5_parallel.jpg)
 
 
-## What next ?
+# What next ?
 
 You can experiment with other [plugins](Plugins.html).
 Have a look at the
