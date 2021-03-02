@@ -2,14 +2,14 @@
 alpha: 0.125
 # global data-size (excluding spacer for boundary conditions or ghosts)
 global_size: { height: 60, width: 12 }
-# degree of parallelism
+# degree of parallelism (number of blocks in each dimension)
 parallelism: { height: 1, width: 1 }
 # PDI configuration
 pdi:
   data:
-    ii:     int
-    dsize:  { type: array, subtype: int, size: 2 }
+    ii: int
+    dsize: { type: array, subtype: int, size: 2 }
   plugins:
     decl_hdf5:
       file: ex3.h5
-      write: [ dsize , , ]
+      write: [ dsize , ... ]

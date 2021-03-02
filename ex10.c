@@ -126,12 +126,12 @@ int main( int argc, char* argv[] )
 	MPI_Init(&argc, &argv);
 	
 	// load the configuration tree
-	PC_tree_t conf = PC_parse_path("ex6.yml");
+	PC_tree_t conf = PC_parse_path("ex10.yml");
 	
 	// NEVER USE MPI_COMM_WORLD IN THE CODE, use our own communicator main_comm instead
 	MPI_Comm main_comm = MPI_COMM_WORLD;
 	
-	// initialize PDI, it can replace our main communicator by its own
+	// initialize PDI
 	PDI_init(PC_get(conf, ".pdi"));
 	
 	// load the MPI rank & size
@@ -178,25 +178,19 @@ int main( int argc, char* argv[] )
 	int ii=0;
 	
 	// share useful configuration bits with PDI
-	PDI_share("ii",         &ii,    PDI_OUT);
-	PDI_reclaim("ii");
-	PDI_share("pcoord",     pcoord, PDI_OUT);
-	PDI_reclaim("pcoord");
-	PDI_share("dsize",      dsize,  PDI_OUT);
-	PDI_reclaim("dsize");
-	PDI_share("psize",      psize,  PDI_OUT);
-	PDI_reclaim("psize");
-	PDI_share("main_field", cur,    PDI_OUT);
-	PDI_reclaim("main_field");
+	PDI_expose("ii",         &ii,    PDI_OUT);
+	PDI_expose("pcoord",     pcoord, PDI_OUT);
+	PDI_expose("dsize",      dsize,  PDI_OUT);
+	PDI_expose("psize",      psize,  PDI_OUT);
+	PDI_expose("main_field", cur,    PDI_OUT);
 	
 	// the main loop
 	for (; ii<10; ++ii) {
 		// share the loop counter & main field at each iteration
-		PDI_share("ii",         &ii, PDI_OUT);
-		PDI_share("main_field", cur, PDI_OUT);
-		PDI_event("loop");
-		PDI_reclaim("main_field");
-		PDI_reclaim("ii");
+		PDI_multi_expose("loop",
+				"ii",         &ii, PDI_OUT,
+				"main_field", cur, PDI_OUT,
+				NULL);
 		
 		// compute the values for the next iteration
 		iter(cur, next);
@@ -208,11 +202,10 @@ int main( int argc, char* argv[] )
 		double (*tmp)[dsize[1]] = cur; cur = next; next = tmp;
 	}
 	// finally share the main field as well as the loop counter after the loop
-	PDI_share("main_field", cur, PDI_OUT);
-	PDI_share("ii",         &ii, PDI_OUT);
-	PDI_event("finalization");
-	PDI_reclaim("ii");
-	PDI_reclaim("main_field");
+	PDI_multi_expose("finalization",
+	        "main_field", cur, PDI_OUT,
+	        "ii",         &ii, PDI_OUT,
+	        NULL);
 	
 	// finalize PDI
 	PDI_finalize();

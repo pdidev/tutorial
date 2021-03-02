@@ -190,7 +190,7 @@ int main( int argc, char* argv[] )
 	PDI_reclaim("main_field");
 	
 	// the main loop
-	for (; ii<3; ++ii) {
+	for (; ii<10; ++ii) {
 		// share the loop counter & main field at each iteration
 		PDI_share("ii",         &ii, PDI_OUT);
 		PDI_share("main_field", cur, PDI_OUT);

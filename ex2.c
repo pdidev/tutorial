@@ -181,7 +181,7 @@ int main( int argc, char* argv[] )
 	PDI_reclaim("ii");
 	
 	// the main loop
-	for (; ii<3; ++ii) {
+	for (; ii<10; ++ii) {
 		// share the loop counter at each iteration
 		PDI_share("ii",         &ii, PDI_OUT);
 		PDI_reclaim("ii");

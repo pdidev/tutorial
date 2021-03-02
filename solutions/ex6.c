@@ -201,11 +201,11 @@ int main( int argc, char* argv[] )
 		// swap the current and next values
 		double (*tmp)[dsize[1]] = cur; cur = next; next = tmp;
 	}
-	// finally share the main field after the main loop body
-	PDI_share("main_field", cur, PDI_OUT);
-	// as well as the loop counter
-	PDI_expose("ii",         &ii, PDI_OUT);
-	PDI_reclaim("main_field");
+	// finally share the main field as well as the loop counter after the loop
+	PDI_multi_expose("finalization",
+	        "main_field", cur, PDI_OUT,
+	        "ii",         &ii, PDI_OUT,
+	        NULL);
 	
 	// finalize PDI
 	PDI_finalize();
@@ -223,3 +223,4 @@ int main( int argc, char* argv[] )
 	fprintf(stderr, "[%d] SUCCESS\n", pcoord_1d);
 	return EXIT_SUCCESS;
 }
+

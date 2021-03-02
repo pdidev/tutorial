@@ -172,7 +172,7 @@ int main( int argc, char* argv[] )
 	int ii=0;
 	
 	// the main loop
-	for (; ii<3; ++ii) {
+	for (; ii<10; ++ii) {
 		// compute the values for the next iteration
 		iter(cur, next);
 		

@@ -1,36 +1,33 @@
-[PDI][Decl'HDF5][000000][10:35:05] *** info: Plugin loaded successfully
-[PDI][Test-plugin][10:35:05] *** info: Welcome to the test plugin!
-[PDI][10:35:05] *** info: Initialization successful
-[PDI][Test-plugin][10:35:05] *** info: The test plugin received an event: initialization
-[PDI][Test-plugin][10:35:05] *** info: =>> data becoming available to the test plugin: ii
-[PDI][Test-plugin][10:35:05] *** info: <<= data stop being available to the test plugin: ii
-[PDI][Test-plugin][10:35:05] *** info: =>> data becoming available to the test plugin: pcoord
-[PDI][Test-plugin][10:35:05] *** info: <<= data stop being available to the test plugin: pcoord
-[PDI][Test-plugin][10:35:05] *** info: =>> data becoming available to the test plugin: dsize
-[PDI][Test-plugin][10:35:05] *** info: <<= data stop being available to the test plugin: dsize
-[PDI][Test-plugin][10:35:05] *** info: =>> data becoming available to the test plugin: psize
-[PDI][Test-plugin][10:35:05] *** info: <<= data stop being available to the test plugin: psize
-[PDI][Test-plugin][10:35:05] *** info: =>> data becoming available to the test plugin: main_field
-[PDI][Test-plugin][10:35:05] *** info: <<= data stop being available to the test plugin: main_field
-[PDI][Test-plugin][10:35:05] *** info: =>> data becoming available to the test plugin: ii
-[PDI][Test-plugin][10:35:05] *** info: =>> data becoming available to the test plugin: main_field
-[PDI][Test-plugin][10:35:05] *** info: The test plugin received an event: loop
-[PDI][Test-plugin][10:35:05] *** info: <<= data stop being available to the test plugin: main_field
-[PDI][Test-plugin][10:35:05] *** info: <<= data stop being available to the test plugin: ii
-[PDI][Test-plugin][10:35:05] *** info: =>> data becoming available to the test plugin: ii
-[PDI][Test-plugin][10:35:05] *** info: =>> data becoming available to the test plugin: main_field
-[PDI][Test-plugin][10:35:05] *** info: The test plugin received an event: loop
-[PDI][Test-plugin][10:35:05] *** info: <<= data stop being available to the test plugin: main_field
-[PDI][Test-plugin][10:35:05] *** info: <<= data stop being available to the test plugin: ii
-[PDI][Test-plugin][10:35:05] *** info: =>> data becoming available to the test plugin: ii
-[PDI][Test-plugin][10:35:05] *** info: =>> data becoming available to the test plugin: main_field
-[PDI][Test-plugin][10:35:05] *** info: The test plugin received an event: loop
-[PDI][Test-plugin][10:35:05] *** info: <<= data stop being available to the test plugin: main_field
-[PDI][Test-plugin][10:35:05] *** info: <<= data stop being available to the test plugin: ii
-[PDI][Test-plugin][10:35:05] *** info: =>> data becoming available to the test plugin: main_field
-[PDI][Test-plugin][10:35:05] *** info: =>> data becoming available to the test plugin: ii
-[PDI][Test-plugin][10:35:05] *** info: <<= data stop being available to the test plugin: ii
-[PDI][Test-plugin][10:35:05] *** info: <<= data stop being available to the test plugin: main_field
-[PDI][10:35:05] *** info: Finalization
-[PDI][Test-plugin][10:35:05] *** info: Goodbye from the test plugin!
-[PDI][Decl'HDF5][000000][10:35:05] *** info: Closing plugin
+[PDI][Trace-plugin] *** info: Welcome!
+[PDI][Trace-plugin] *** info: !!!                            named event: initialization
+[PDI][Trace-plugin] *** info: =>>   data becoming available in the store: ii
+[PDI][Trace-plugin] *** info: <<= data stop being available in the store: ii
+[PDI][Trace-plugin] *** info: =>>   data becoming available in the store: pcoord
+[PDI][Trace-plugin] *** info: <<= data stop being available in the store: pcoord
+[PDI][Trace-plugin] *** info: =>>   data becoming available in the store: dsize
+[PDI][Trace-plugin] *** info: <<= data stop being available in the store: dsize
+[PDI][Trace-plugin] *** info: =>>   data becoming available in the store: psize
+[PDI][Trace-plugin] *** info: <<= data stop being available in the store: psize
+[PDI][Trace-plugin] *** info: =>>   data becoming available in the store: main_field
+[PDI][Trace-plugin] *** info: <<= data stop being available in the store: main_field
+[PDI][Trace-plugin] *** info: =>>   data becoming available in the store: ii
+[PDI][Trace-plugin] *** info: =>>   data becoming available in the store: main_field
+[PDI][Trace-plugin] *** info: !!!                            named event: loop
+[PDI][Trace-plugin] *** info: <<= data stop being available in the store: main_field
+[PDI][Trace-plugin] *** info: <<= data stop being available in the store: ii
+[PDI][Trace-plugin] *** info: =>>   data becoming available in the store: ii
+[PDI][Trace-plugin] *** info: =>>   data becoming available in the store: main_field
+[PDI][Trace-plugin] *** info: !!!                            named event: loop
+[PDI][Trace-plugin] *** info: <<= data stop being available in the store: main_field
+[PDI][Trace-plugin] *** info: <<= data stop being available in the store: ii
+[PDI][Trace-plugin] *** info: =>>   data becoming available in the store: ii
+[PDI][Trace-plugin] *** info: =>>   data becoming available in the store: main_field
+[PDI][Trace-plugin] *** info: !!!                            named event: loop
+[PDI][Trace-plugin] *** info: <<= data stop being available in the store: main_field
+[PDI][Trace-plugin] *** info: <<= data stop being available in the store: ii
+[PDI][Trace-plugin] *** info: =>>   data becoming available in the store: main_field
+[PDI][Trace-plugin] *** info: =>>   data becoming available in the store: ii
+[PDI][Trace-plugin] *** info: !!!                            named event: finalization
+[PDI][Trace-plugin] *** info: <<= data stop being available in the store: ii
+[PDI][Trace-plugin] *** info: <<= data stop being available in the store: main_field
+[PDI][Trace-plugin] *** info: Goodbye!

@@ -185,7 +185,7 @@ int main( int argc, char* argv[] )
 	PDI_expose("main_field", cur,    PDI_OUT);
 	
 	// the main loop
-	for (; ii<3; ++ii) {
+	for (; ii<10; ++ii) {
 		// share the loop counter & main field at each iteration
 		PDI_multi_expose("loop",
 				"ii",         &ii, PDI_OUT,
@@ -201,12 +201,11 @@ int main( int argc, char* argv[] )
 		// swap the current and next values
 		double (*tmp)[dsize[1]] = cur; cur = next; next = tmp;
 	}
-	// finally share the main field after the main loop body
-	PDI_share("main_field", cur, PDI_OUT);
-	// as well as the loop counter
-	PDI_share("ii",         &ii, PDI_OUT);
-	PDI_reclaim("ii");
-	PDI_reclaim("main_field");
+	// finally share the main field as well as the loop counter after the loop
+	PDI_multi_expose("finalization",
+	        "main_field", cur, PDI_OUT,
+	        "ii",         &ii, PDI_OUT,
+	        NULL);
 	
 	// finalize PDI
 	PDI_finalize();
