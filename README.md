@@ -1,7 +1,7 @@
 \page Hands_on Hands-on tutorial
 
 In this tutorial, you will build a PDI-enabled application step-by-step from a
-PDI-free base.
+%PDI-free base.
 You will end-up building the C version of the
 \ref PDI_example "example provided with PDI" for the the
 \ref trace_plugin "Trace", \ref Decl_HDF5_plugin "Decl'HDF5", and
@@ -40,7 +40,7 @@ cd PDI_tutorial
 ```
 
 
-## compilation
+## Compilation
 
 Before compilation, configure the tutorial by detecting all dependencies:
 ```bash
@@ -137,7 +137,11 @@ Here, the %PDI \ref trace_plugin "Trace plugin" is used to trace %PDI calls.
 
 * Add the required `::PDI_share` and `::PDI_reclaim` calls to match the output
   of `ex2.log` file (only the lines matching `[Trace-plugin]` have been kept).
-  You only need to change the `ex2.c` file.
+  You only need to change the `ex2.c` file. You can easily check if the files
+  are the same by:
+```bash
+  diff ex2.log <(grep Trace-plugin ex2.juwels.log)
+```
 
 \attention
 Notice that some share/reclaim pairs come one after the other while others are
@@ -162,8 +166,12 @@ tree.
 In its configuration, the `dsize` variable is written.
 
 * Write the `psize` and `pcoord` variables in addition to `dsize` to match the
-  content expected as described in the `ex3.h5dump` file (use the `h5dump`
-  command to see the content of the HDF5 file).
+  content expected as described in the `ex3.h5dump` text file (use the `h5dump`
+  command to see the content of your HDF5 output file). You can easily check if the files
+  are the same by:
+```bash
+  diff ex3.h5dump <(h5dump ex3.h5)
+```
 
 To achieve this result, you will need to fill 2 sections in the YAML file.
 
@@ -214,7 +222,7 @@ times along execution.
 In order not to overwrite it every time it is exposed, you need to add a `when`
 condition to restrict its output.
 
-* Only write `main_field` at the second iteration (when `ii==1`) and match the
+* Only write `main_field` at the second iteration (when `ii=1`) and match the
   expected content as described in `ex4.h5dump`.
 
 
@@ -229,7 +237,7 @@ available to %PDI at the same time and could be written without opening the file
 twice.
 You have to use events for that, you will modify both the C and YAML file.
 
-* Examine the YAML file and source code, compile and run.
+* Examine the YAML file and source code.
 
 * In the C file, trigger a %PDI event named `loop` when both `ii` and
   `main_field` are shared.
@@ -271,7 +279,10 @@ then triggers an event and finally does all the reclaim in reverse order.
 * Replace the remaining `::PDI_share`/`::PDI_reclaim` by `::PDI_expose`s and
   `::PDI_multi_expose`s and ensure that your code keeps the exact same behaviour
   by comparing its trace to `ex6.log` (only the lines matching `[Trace-plugin]`
-  have been kept).
+  have been kept). You can easily check if the files are the same by:
+```bash
+  diff ex6.log <(grep Trace-plugin ex6.juwels.log)
+```
 
 
 ## Ex7. Writing a selection
@@ -281,13 +292,17 @@ excluding ghosts to the HDF5 file.
 Once again, you only need to modify the YAML file in this exercise, no need to
 touch the C file.
 
-* Examine the YAML file, compile the code and run it.
+* Examine the YAML file and compile the code.
 
 As you can notice, now the dataset is independently described in the file.
 
 * Restrict the selection to the non-ghost part of the array in memory (excluding
   one element on each side).
   You should be able to match the expected output described in `ex7.h5dump`.
+  You can easily check if the files are the same by:
+```bash
+  diff ex7.h5dump <(h5dump ex7-data0x0.h5)
+```
 
 You can achieve this by using the `memory_selection` directive that specifies
 the selection of data from memory to write.
@@ -305,14 +320,18 @@ including a dimension for time.
 Once again, you only need to modify the YAML file in this exercise, no need to
 touch the C file.
 
-* Examine the YAML file, compile the code and run it.
+* Examine the YAML file and compile the code.
 
 Notice how the dataset is now extended with an additional dimension for three
 time-steps.
 
 * Write the 2D selection from `main_field` at iterations 1 to 3 inclusive into
   slices at coordinate 0 to 2 of first dimension of the 3D dataset.
-  Match the expected output described in `ex8.h5dump`.
+  Match the expected output described in `ex8.h5dump`. You can easily check if
+  the files are the same by:
+```bash
+  diff ex8.h5dump <(h5dump ex8-data0x0.h5)
+```
 
 You can achieve this by using the `dataset_selection` directive that specifies
 the selection where to write in the file dataset.
@@ -331,7 +350,7 @@ should be independent from the number of processes used.
 Once again, you only need to modify the YAML file in this exercise, no need to
 touch the C file.
 
-* Examine the YAML file, compile the code and run it.
+* Examine the YAML file and compile the code.
 
 The `mpi` plugin was loaded to make sharing MPI communicators possible.
 
@@ -349,7 +368,10 @@ The `mpi` plugin was loaded to make sharing MPI communicators possible.
   coordinate of the local data block (use `pcoord`).
 
 Match the output from `ex9.h5dump`, that should be independent from the number
-of processes used.
+of processes used. You can easily check if the files are the same by:
+```bash
+  diff ex9.h5dump <(h5dump ex9.h5)
+```
 
 ![graphical representation of the parallel I/O](PDI_hdf5_parallel.jpg)
 
@@ -363,7 +385,7 @@ to post-process the data in situ before writing it to HDF5.
 Here, you will write the square root of the raw data to HDF5 instead of the
 data itself.
 
-* Examine the YAML file, compile the code and run it.
+* Examine the YAML file and compile the code.
 
 Notice that the Decl'HDF5 configuration was simplified, no memory selection is
 applied, the when condition disappeared.
@@ -383,6 +405,12 @@ chained this way.
   the data exposed in `main_field`.
 
 * Modify the Decl'HDF5 configuration to write the new data exposed from Python.
+
+* Match the output from `ex10.h5dump`. You can easily check if the files are the
+  same by:
+```bash
+  diff ex10.h5dump <(h5dump ex10.h5)
+```
 
 \attention
 In a more realistic setup, one would typically not write much code in the YAML
