@@ -11,19 +11,17 @@ Additional [examples are available for the other plugins](https://gitlab.maisond
 
 # Setup
 
-## PDI Installation
+\attention
+To run this hands-on tutorial, you first need to \ref Installation "install PDI"
+and setup your environment.
 
-To run this hands-on tutorial, you will of course first need to
-\ref Installation "install PDI" and setup your environment.
+## PDI installation
 
-On Juwels, PDI is pre-installed as part of the training2022 environment.
-To load it, just run:
-```bash
-source /p/project/training2022/setup
-```
+\ref Installation "PDI installation" is documented in a
+\ref Installation "dedicated page".
 
 
-## Setup the hands-on tutorial
+## Hands-on tutorial setup
 
 Once %PDI is installed, you can proceed with getting the sources for the
 hands-on tutorial from [github](https://github.com/pdidev/tutorial):
@@ -32,51 +30,42 @@ git clone https://github.com/pdidev/tutorial.git
 cd tutorial
 ```
 
-On Juwels, you can just copy the content from
-`${PROJECT_training2022}/PDI_tutorial`:
-```bash
-cp -R ${PROJECT_training2022}/PDI_tutorial .
-cd PDI_tutorial
-```
-
 
 ## Compilation
 
 Before compilation, configure the tutorial by detecting all dependencies:
 ```bash
-cmake .
+pdirun cmake .
 ```
 
-For each exercise, once you've modified it, you can compile it by running the
-following command:
+\attention
+If you installed PDI in a standard path, the `pdirun` prefix is never required.
+
+Once you have correctly modified each exercise according to instructions, you
+can compile it by running:
 ```bash
-make ex?
+pdirun make ex?
 ```
 Where `?` is the number of the exercise.
 
 
 ## Execution
 
-In order to speedup the execution on Juwels, it's a good idea to use `salloc` to
-reserve one node:
-```bash
-salloc --reservation=parallel-io-day3 -N 1
-```
-
 You can run each exercise with the following command:
 ```bash
-srun -n 4 ./ex?
+pdirun mpirun -n 4 ./ex?
 ```
 Where `?` is the number of the exercise and 4 represents the number of MPI
 processes to use.
 
-In order to generate clean logs into a file however, the command should be
-expanded as follow (for example for ex2.):
+To store the logs for later comparison, you can use the following command (for
+example for ex2.):
 ```bash
-UCX_LOG_LEVEL=error srun -n 1 -o ex2.juwels.log -e all ./ex2
+pdirun mpirun -n 1 ./ex2 > ex2.result.log
 ```
 
 Now you're ready to work, **good luck**!
+
 
 # PDI-free code
 
@@ -140,7 +129,7 @@ Here, the %PDI \ref trace_plugin "Trace plugin" is used to trace %PDI calls.
   You only need to change the `ex2.c` file. You can easily check if the files
   are the same by running the command:
 ```bash
-  diff ex2.log <(grep Trace-plugin ex2.juwels.log)
+  diff ex2.log <(grep Trace-plugin ex2.result.log)
 ```
 
 \attention
@@ -167,8 +156,9 @@ In its configuration, the `dsize` variable is written.
 
 * Write the `psize` and `pcoord` variables in addition to `dsize` to match the
   content expected as described in the `ex3.h5dump` text file (use the `h5dump`
-  command to see the content of your HDF5 output file in the same format as the `.h5dump` file). You can easily check if the files
-  are the same by running the command:
+  command to see the content of your HDF5 output file in the same format as the
+  `.h5dump` file). You can easily check if the files are the same by running the
+  command:
 ```bash
   diff ex3.h5dump <(h5dump ex3.h5)
 ```
@@ -281,7 +271,7 @@ then triggers an event and finally does all the reclaim in reverse order.
   by comparing its trace to `ex6.log` (only the lines matching `[Trace-plugin]`
   have been kept). You can easily check if the files are the same by running:
 ```bash
-  diff ex6.log <(grep Trace-plugin ex6.juwels.log)
+  diff ex6.log <(grep Trace-plugin ex6.result.log)
 ```
 
 
