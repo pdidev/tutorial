@@ -60,3 +60,5 @@ target_link_libraries(ex9 m MPI::MPI_C paraconf::paraconf PDI::pdi)
 
 add_executable(ex10 ex10.c)
 target_link_libraries(ex10 m MPI::MPI_C paraconf::paraconf PDI::pdi)
+
+add_subdirectory(ex11/)

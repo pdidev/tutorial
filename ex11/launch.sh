@@ -14,11 +14,6 @@ NWORKERPNODE=4                  # Number of Dask workers per node
 
 SCHEFILE=scheduler.json
 
-source $WORKDIR/spack/share/spack/setup-env.sh
-spack load pdiplugin-deisa
-spack load /hbohtbo #pdiplugin-mpi
-spack load py-bokeh 
-
 # Launch Dask Scheduler in a 1 Node and save the connection information in $SCHEFILE
 echo launching Scheduler 
 srun --cpu-bind=verbose --ntasks=1 --nodes=1 -l \
@@ -29,7 +24,7 @@ srun --cpu-bind=verbose --ntasks=1 --nodes=1 -l \
 
 # Wait for the SCHEFILE to be created 
 while ! [ -f $SCHEFILE ]; do
-    sleep 3
+    sleep 1
     echo -n .
 done
 
@@ -50,7 +45,7 @@ srun  --cpu-bind=verbose  -l \
      
 # Launch the simulation code
 echo Running Simulation 
-pdirun srun  --ntasks=$NPROC --ntasks-per-node=$NPROCPNODE  -l ./simulation  &
+srun  --ntasks=$NPROC --ntasks-per-node=$NPROCPNODE  -l ./simulation  &
 
 # Wait for the client process to be finished 
 wait $client_pid
