@@ -1,4 +1,4 @@
-\page Hands_on Hands-on tutorial
+# Hands-on tutorial {#Hands_on}
 
 In this tutorial, you will build a PDI-enabled application step-by-step from a
 PDI-free base.
@@ -9,19 +9,19 @@ You will end-up building the C version of the
 Additional [examples are available for the other plugins](https://gitlab.maisondelasimulation.fr/pdidev/pdi/-/tree/master/example).
 
 
-# Setup
+## Setup
 
 \attention
 To run this hands-on tutorial, you first need to \ref Installation "install PDI"
 and setup your environment.
 
-## PDI installation
+### PDI installation
 
 \ref Installation "PDI installation" is documented in a
 \ref Installation "dedicated page".
 
 
-## Hands-on tutorial setup
+### Hands-on tutorial setup
 
 Once %PDI is installed, you can proceed with getting the sources for the
 hands-on tutorial from [github](https://github.com/pdidev/tutorial):
@@ -31,7 +31,7 @@ cd tutorial
 ```
 
 
-## Compilation
+### Compilation
 
 Before compilation, configure the tutorial by detecting all dependencies:
 ```bash
@@ -49,7 +49,7 @@ make ex?
 Where `?` is the number of the exercise.
 
 
-## Execution
+### Execution
 
 You can run each exercise with the following command:
 ```bash
@@ -67,9 +67,9 @@ example for ex2.):
 Now you're ready to work, **good luck**!
 
 
-# PDI-free code
+## PDI-free code
 
-## Ex1. Getting started
+### Ex1. Getting started
 
 Ex1. implements a simple heat equation solver using an explicit forward finite
 difference scheme parallelized with MPI.
@@ -113,9 +113,9 @@ srun -n 4 ./ex1
 ```
 
 
-# PDI core & trace plugin
+## PDI core & trace plugin
 
-## Ex2. Now with some PDI
+### Ex2. Now with some PDI
 
 Ex2. is the same code as that of ex1. with %PDI calls added in `main` function.
 In our YAML file (`ex2.yml`), a new sub-tree has been added under the `pdi` key.
@@ -139,9 +139,9 @@ Is one better than the other?
 If you do not know the answer to this question, just wait until Ex5. :)
 
 
-# Decl'HDF5 plugin
+## Decl'HDF5 plugin
 
-## Ex3. HDF5 through PDI
+### Ex3. HDF5 through PDI
 
 In this exercise, the code is the same as in ex2.
 No need to touch the C code here, modification of the YAML file (`ex3.yml`)
@@ -180,7 +180,7 @@ Since we write to the same location independently of the MPI rank, this exercise
 will fail if more than one MPI rank is used.
 
 
-## Ex4. Writing some real data
+### Ex4. Writing some real data
 
 In this exercise each MPI process will write its local 2D array block contained
 in the `main_field` variable to a separate HDF5 file.
@@ -216,7 +216,7 @@ condition to restrict its output.
   expected content as described in `ex4.h5dump`.
 
 
-## Ex5. Introducing events
+### Ex5. Introducing events
 
 In ex4., two variables were written to `ex4-data*.h5`, but the file was opened
 and closed for each and every write.
@@ -246,7 +246,7 @@ You have to use events for that, you will modify both the C and YAML file.
   Your output should match the content described in `ex5.h5dump`.
 
 
-## Ex6. Simplifying the code
+### Ex6. Simplifying the code
 
 As you can notice, the %PDI code is quite redundant.
 In this exercise, you will use `::PDI_expose` and `::PDI_multi_expose` to
@@ -275,7 +275,7 @@ then triggers an event and finally does all the reclaim in reverse order.
 ```
 
 
-## Ex7. Writing a selection
+### Ex7. Writing a selection
 
 In this exercise, you will only write a selection of the 2D array in memory
 excluding ghosts to the HDF5 file.
@@ -300,7 +300,7 @@ the selection of data from memory to write.
 ![graphical representation](PDI_hdf5_selection.jpg)
 
 
-## Ex8. Selecting on the dataset size
+### Ex8. Selecting on the dataset size
 
 In this exercise, you will once again change the YAML file to handle a selection
 in the dataset in addition to the selection in memory from the previous
@@ -329,9 +329,9 @@ the selection where to write in the file dataset.
 ![graphical representation](PDI_hdf5_selection_advanced.jpg)
 
 
-# parallel Decl'HDF5
+## parallel Decl'HDF5
 
-## Ex9. Going parallel
+### Ex9. Going parallel
 
 Running the code from the previous exercises in parallel should already work and
 yield one file per process containing the local data block.
@@ -366,9 +366,9 @@ of processes used. You can easily check if the files are the same by running:
 ![graphical representation of the parallel I/O](PDI_hdf5_parallel.jpg)
 
 
-# Pycall
+## Pycall
 
-## Ex10. Post-processing the data in python
+### Ex10. Post-processing the data in python
 
 In this exercise, you will once again modify the YAML file only and use python
 to post-process the data in situ before writing it to HDF5.
@@ -407,7 +407,7 @@ In a more realistic setup, one would typically not write much code in the YAML
 file directly, but would instead call functions specified in a `.py` file on
 the side.
 
-# What next ?
+## What next ?
 
 In this tutorial, you used the C API of %PDI and from YAML, you used the 
 \ref trace_plugin "Trace", \ref Decl_HDF5_plugin "Decl'HDF5", and
