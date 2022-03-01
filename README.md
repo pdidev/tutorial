@@ -35,7 +35,7 @@ cd tutorial
 
 Before compilation, configure the tutorial by detecting all dependencies:
 ```bash
-cmake .
+pdirun cmake .
 ```
 
 \attention
@@ -44,7 +44,7 @@ If you installed PDI in a standard path, the `pdirun` prefix is never required.
 Once you have correctly modified each exercise according to instructions, you
 can compile it by running:
 ```bash
-make ex?
+pdirun make ex?
 ```
 Where `?` is the number of the exercise.
 
@@ -53,7 +53,7 @@ Where `?` is the number of the exercise.
 
 You can run each exercise with the following command:
 ```bash
-/usr/bin/srun -n 4 ./ex?
+pdirun mpirun -n 4 ./ex?
 ```
 Where `?` is the number of the exercise and 4 represents the number of MPI
 processes to use.
@@ -61,7 +61,7 @@ processes to use.
 To store the logs for later comparison, you can use the following command (for
 example for ex2.):
 ```bash
-/usr/bin/srun -n 1 ./ex2 > ex2.result.log
+pdirun mpirun -n 1 ./ex2 > ex2.result.log
 ```
 
 Now you're ready to work, **good luck**!
