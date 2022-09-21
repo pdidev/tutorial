@@ -160,7 +160,7 @@ In its configuration, the `dsize` variable is written.
   `.h5dump` file). You can easily check if the files are the same by running the
   command:
 ```bash
-  diff ex3.h5dump <(h5dump ex3.h5)
+  diff ex3.h5dump <(h5dump ex3*.h5)
 ```
 
 To achieve this result, you will need to fill 2 sections in the YAML file.
@@ -214,7 +214,9 @@ condition to restrict its output.
 
 * Only write `main_field` at the second iteration (when `ii=1`) and match the
   expected content as described in `ex4.h5dump`.
-
+```bash
+  diff ex4.h5dump <(h5dump ex4*.h5)
+```
 
 ### Ex5. Introducing events
 
@@ -233,7 +235,11 @@ You have to use events for that, you will modify both the C and YAML file.
   `main_field` are shared.
   With the \ref trace_plugin "Trace plugin", check that the event is indeed
   triggered at the expected time as described in `ex5.log` (only the lines
-  matching `[Trace-plugin]` have been kept).
+  matching `[Trace-plugin]` have been kept). You can check if the files are the
+  same by running:
+```bash
+  diff ex5.log <(grep Trace-plugin ex5.result.log)
+```
 
 * Use the `on_event` mechanism to trigger the write of `ii` and `main_field`.
   This mechanism can be combined with a `when` directive, in that case the
@@ -244,6 +250,9 @@ You have to use events for that, you will modify both the C and YAML file.
   Use this mechanism to write `main_field` at iterations 1 and 2, in two
   distinct groups `iter1` and `iter2`.
   Your output should match the content described in `ex5.h5dump`.
+```bash
+  diff ex5.h5dump <(h5dump ex5*.h5)
+```
 
 
 ### Ex6. Simplifying the code
@@ -291,7 +300,7 @@ As you can notice, now the dataset is independently described in the file.
   You should be able to match the expected output described in `ex7.h5dump`.
   You can easily check if the files are the same by running:
 ```bash
-  diff ex7.h5dump <(h5dump ex7-data0x0.h5)
+  diff ex7.h5dump <(h5dump ex7*.h5)
 ```
 
 You can achieve this by using the `memory_selection` directive that specifies
@@ -320,7 +329,7 @@ time-steps.
   Match the expected output described in `ex8.h5dump`. You can easily check if
   the files are the same by running:
 ```bash
-  diff ex8.h5dump <(h5dump ex8-data0x0.h5)
+  diff ex8.h5dump <(h5dump ex8*.h5)
 ```
 
 You can achieve this by using the `dataset_selection` directive that specifies
@@ -360,7 +369,7 @@ The `mpi` plugin was loaded to make sharing MPI communicators possible.
 Match the output from `ex9.h5dump`, that should be independent from the number
 of processes used. You can easily check if the files are the same by running:
 ```bash
-  diff ex9.h5dump <(h5dump ex9.h5)
+  diff ex9.h5dump <(h5dump ex9*.h5)
 ```
 
 ![graphical representation of the parallel I/O](PDI_hdf5_parallel.jpg)
@@ -399,7 +408,7 @@ chained this way.
 * Match the output from `ex10.h5dump`. You can easily check if the files are the
   same by running:
 ```bash
-  diff ex10.h5dump <(h5dump ex10.h5)
+  diff ex10.h5dump <(h5dump ex10*.h5)
 ```
 
 \attention
