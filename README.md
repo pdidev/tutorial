@@ -61,7 +61,7 @@ processes to use.
 To store the logs for later comparison, you can use the following command (for
 example for ex2.):
 ```bash
-pdirun mpirun -n 1 ./ex2 > ex2.result.log
+pdirun mpirun -n 1 ./ex2 | tee ex2.result.log
 ```
 
 Now you're ready to work, **good luck**!
