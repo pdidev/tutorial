@@ -7,4 +7,5 @@ parallelism: { height: 1, width: 1 }
 # PDI configuration
 pdi:
   plugins:
-    trace: ~
+    trace:
+      logging: { pattern: '[PDI][%n-plugin] *** %l: %v' }

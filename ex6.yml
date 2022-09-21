@@ -14,4 +14,5 @@ pdi:
   data: # values for which PDI does not keep a copy
     main_field: { type: array, subtype: double, size: [ '$dsize[0]', '$dsize[1]' ] }
   plugins:
-    trace: ~
+    trace:
+      logging: { pattern: '[PDI][%n-plugin] *** %l: %v' }
