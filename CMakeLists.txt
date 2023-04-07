@@ -1,6 +1,5 @@
 #=============================================================================
-# Copyright (c) 2016-2017 Matthieu Haefele
-# Copyright (C) 2015-2019 Commissariat a l'energie atomique et aux energies alternatives (CEA)
+# Copyright (C) 2015-2023 Commissariat a l'energie atomique et aux energies alternatives (CEA)
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -26,8 +25,8 @@ project(pdi_examples LANGUAGES C)
 
 find_package(spdlog)
 find_package(MPI REQUIRED COMPONENTS C)
-find_package(paraconf REQUIRED COMPONENTS C)
-find_package(PDI 0.7 REQUIRED COMPONENTS C)
+find_package(paraconf 1.0.0 REQUIRED COMPONENTS C)
+find_package(PDI 1.0.0 REQUIRED COMPONENTS C)
 
 set(CMAKE_C_STANDARD 99)
 
