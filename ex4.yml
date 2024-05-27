@@ -7,16 +7,21 @@ parallelism: { height: 2 , width: 1 }
 # PDI configuration
 pdi:
   metadata: # small values for which PDI keeps a copy
+    #*** add ii as metadata
     ii: int
     dsize: { type: array, subtype: int, size: 2 }
     psize: { type: array, subtype: int, size: 2 }
     pcoord: { type: array, subtype: int, size: 2 }
+
   data: # values for which PDI does not keep a copy
-    main_field: { type: array, subtype: double, size: [ "" , "" ] } # we can use $ expressions in type definitions
+    #*** add main_field to the data section, use $-expression to define its size
+    #...
   plugins:
     decl_hdf5:
       - file: ex4-meta${pcoord[0]}x${pcoord[1]}.h5  # we can use $ expressions in file names
         write: [ dsize, psize ]
       - file: ex4-data${pcoord[0]}x${pcoord[1]}.h5
-        when: ""  # we can use $-expressions in conditions
+        #*** use when clause to limit the output to one iteration
+        # we can use $ expressions in conditions
+        #...
         write: [ ii, main_field ]
