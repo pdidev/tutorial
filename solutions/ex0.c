@@ -34,13 +34,13 @@
 int dsize[2];
 
 /// 2D size of the process grid as [HEIGHT, WIDTH]
-int psize[2];
+int psize[2]={1,1};
 
 /// 2D rank of the local process in the process grid as [YY, XX]
 int pcoord[2];
 
 /// the alpha coefficient used in the computation
-double alpha;
+double alpha = 0.1;
 
 /** Initialize the data all to 0 except for the left border (XX==0) initialized to 1 million
  * \param[out] dat the local data to initialize
@@ -123,27 +123,21 @@ int main( int argc, char* argv[] )
 {
 	MPI_Init(&argc, &argv);
 	
-	// load the configuration tree
-	PC_tree_t conf = PC_parse_path("ex1.yml");
+	//*** load the configuration tree
+	PC_tree_t conf = PC_parse_path("ex0.yml");
 	
 	// NEVER USE MPI_COMM_WORLD IN THE CODE, use our own communicator main_comm instead
 	MPI_Comm main_comm = MPI_COMM_WORLD;
 
+	//*** initialize PDI
 	PDI_init(PC_get(conf, ".pdi"));
 	
 	// load the MPI rank & size
 	int psize_1d;  MPI_Comm_size(main_comm, &psize_1d);
 	int pcoord_1d; MPI_Comm_rank(main_comm, &pcoord_1d);
-		
-	//*** load the alpha parameter
-	//...
 	
+	// load the global data-size
 	int global_size[2]={12,12};
-	//*** load the global data-size
-	//...
-	
-	//*** load the parallelism configuration
-	//...
 	
 	// check the configuration is coherent
 	assert(global_size[0]%psize[0]==0);
@@ -181,9 +175,10 @@ int main( int argc, char* argv[] )
 		double (*tmp)[dsize[1]] = cur; cur = next; next = tmp;
 	}
 	
+	//*** finalize PDI
 	PDI_finalize();
 
-	// destroy the paraconf configuration tree
+	//*** destroy the paraconf configuration tree
 	PC_tree_destroy(&conf);
 	
 	// free the allocated memory
