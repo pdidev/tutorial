@@ -23,12 +23,15 @@
 cmake_minimum_required(VERSION 3.9)
 project(pdi_examples LANGUAGES C)
 
-find_package(spdlog)
+#find_package(ispdlog)
 find_package(MPI REQUIRED COMPONENTS C)
 find_package(paraconf 1.0.0 REQUIRED COMPONENTS C)
 find_package(PDI 1.0.0 REQUIRED COMPONENTS C)
 
 set(CMAKE_C_STANDARD 99)
+
+add_executable(ex0 ex0.c)
+target_link_libraries(ex0 m MPI::MPI_C paraconf::paraconf)
 
 add_executable(ex1 ex1.c)
 target_link_libraries(ex1 m MPI::MPI_C paraconf::paraconf)
