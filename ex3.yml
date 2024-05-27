@@ -6,10 +6,10 @@ global_size: { height: 60, width: 12 }
 parallelism: { height: 1, width: 1 }
 # PDI configuration
 pdi:
-  data:
-    ii: int
-    dsize: { type: array, subtype: int, size: 2 }
+  #*** describe the metadata dsize, psize, pcoord
+  #...
+
   plugins:
-    decl_hdf5:
-      file: ex3.h5
-      write: [ dsize , ... ]
+    #*** use the decl_hdf5 plugin, write a file with content the metadata above
+    #...
+    
