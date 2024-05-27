@@ -29,7 +29,6 @@
 #include <time.h>
 
 #include <paraconf.h>
-// load the PDI header
 #include <pdi.h>
 
 /// size of the local data as [HEIGHT, WIDTH] including ghosts & boundary constants

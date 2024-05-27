@@ -29,6 +29,8 @@
 #include <time.h>
 
 #include <paraconf.h>
+//*** include the pdi header
+//...
 
 /// size of the local data as [HEIGHT, WIDTH] including ghosts & boundary constants
 int dsize[2];
