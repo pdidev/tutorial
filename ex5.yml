@@ -15,15 +15,20 @@ pdi:
     main_field: { type: array, subtype: double, size: [ '$dsize[0]', '$dsize[1]' ] }
   plugins:
     trace:
-      logging: { pattern: '[PDI][%n-plugin] *** %l: %v' }
     decl_hdf5:
       - file: ex5-meta${pcoord[0]}x${pcoord[1]}.h5
         write: [ dsize, psize ]
       - file: ex5-data${pcoord[0]}x${pcoord[1]}.h5
-        on_event: ""
-        when: '$ii>0 & ' # `&' is a local `and' operation
+        #*** enable the output upon the event
+        #...
+        #*** enable the output when ii>0 and(&) ii<3
+        #...
         write:
           ii: # name of the PDI data to write
-            dataset: 'iter${}/ii' # dataset name in file, $-expressions can be used here, "/" separate groups in path
+            #*** give the dataset that you want to write into for ii
+            # $-expressions can be used to difine dataset name in file, , "/" separate groups in path
+            #...
           main_field:
-            dataset: 'iter${}/main_field'
+            #*** give the dataset that you want to write into for main_field
+            # $-expressions can be used to difine dataset name in file, , "/" separate groups in path
+            #...

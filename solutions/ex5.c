@@ -178,22 +178,20 @@ int main( int argc, char* argv[] )
 	int ii=0;
 	
 	// share useful configuration bits with PDI
-	PDI_share("ii",         &ii,    PDI_OUT);
-	PDI_reclaim("ii");
 	PDI_share("pcoord",     pcoord, PDI_OUT);
 	PDI_reclaim("pcoord");
 	PDI_share("dsize",      dsize,  PDI_OUT);
 	PDI_reclaim("dsize");
 	PDI_share("psize",      psize,  PDI_OUT);
 	PDI_reclaim("psize");
-	PDI_share("main_field", cur,    PDI_OUT);
-	PDI_reclaim("main_field");
+
 	
 	// the main loop
-	for (; ii<3; ++ii) {
+	for (; ii<10; ++ii) {
 		// share the loop counter & main field at each iteration
 		PDI_share("ii",         &ii, PDI_OUT);
 		PDI_share("main_field", cur, PDI_OUT);
+		//*** use PDI_event to prevent redundant open/close of the output file
 		PDI_event("loop");
 		PDI_reclaim("main_field");
 		PDI_reclaim("ii");
