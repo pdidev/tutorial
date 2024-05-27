@@ -178,11 +178,9 @@ int main( int argc, char* argv[] )
 	int ii=0;
 	
 	// share useful configuration bits with PDI
-	PDI_expose("ii",         &ii,    PDI_OUT);
 	PDI_expose("pcoord",     pcoord, PDI_OUT);
 	PDI_expose("dsize",      dsize,  PDI_OUT);
 	PDI_expose("psize",      psize,  PDI_OUT);
-	PDI_expose("main_field", cur,    PDI_OUT);
 	
 	// the main loop
 	for (; ii<10; ++ii) {
