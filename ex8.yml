@@ -17,13 +17,15 @@ pdi:
     decl_hdf5:
       file: ex8-data${pcoord[0]}x${pcoord[1]}.h5
       datasets:
-        main_field: { type: array, subtype: double, size: [ 3, '$dsize[0]-2', '$dsize[1]-2' ] }
+        #*** add one dimention to main_field datasets to represent the time step
+        main_field: { type: array, subtype: double, size: [ '$dsize[0]-2', '$dsize[1]-2' ] }
       write:
         main_field:
-          when: '$ii>0 & $ii<4'
+          #*** modify the when clause to match the time dimension defined in main_field datasets 
+          #...
+          when: '$ii=1'
           memory_selection:
             size: ['$dsize[0]-2', '$dsize[1]-2']
             start: [1, 1]
-          dataset_selection:
-            size: [ , , ] # the size of our selection in the dataset
-            start: [ , , ] # the start coordinate of our selection in the dataset
+          #*** use dataset_selection to specify the position of data at each time step 
+          #...
