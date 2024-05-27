@@ -178,20 +178,20 @@ int main( int argc, char* argv[] )
 	int ii=0;
 	
 	// share useful configuration bits with PDI
-	PDI_share("ii",         &ii,    PDI_OUT);
-	PDI_reclaim("ii");
+	//*** use PDI_expose to replace PDI_share + reclaim
+	//...
 	PDI_share("pcoord",     pcoord, PDI_OUT);
 	PDI_reclaim("pcoord");
 	PDI_share("dsize",      dsize,  PDI_OUT);
 	PDI_reclaim("dsize");
 	PDI_share("psize",      psize,  PDI_OUT);
 	PDI_reclaim("psize");
-	PDI_share("main_field", cur,    PDI_OUT);
-	PDI_reclaim("main_field");
 	
 	// the main loop
 	for (; ii<10; ++ii) {
 		// share the loop counter & main field at each iteration
+		//*** use PDI_multi_expose to replace PDI_share + event + reclaim
+		//...
 		PDI_share("ii",         &ii, PDI_OUT);
 		PDI_share("main_field", cur, PDI_OUT);
 		PDI_event("loop");
@@ -208,11 +208,13 @@ int main( int argc, char* argv[] )
 		double (*tmp)[dsize[1]] = cur; cur = next; next = tmp;
 	}
 	// finally share the main field as well as the loop counter after the loop
-	PDI_share("main_field", cur, PDI_OUT);
+	//*** use PDI_multi_expose to replace PDI_share + event + reclaim
+	//...
 	PDI_share("ii",         &ii, PDI_OUT);
-	PDI_event("finalization");
-	PDI_reclaim("ii");
+	PDI_share("main_field", cur, PDI_OUT);
+	PDI_event("finalize");
 	PDI_reclaim("main_field");
+	PDI_reclaim("ii");
 	
 	// finalize PDI
 	PDI_finalize();
@@ -230,3 +232,4 @@ int main( int argc, char* argv[] )
 	fprintf(stderr, "[%d] SUCCESS\n", pcoord_1d);
 	return EXIT_SUCCESS;
 }
+

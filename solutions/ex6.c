@@ -178,15 +178,15 @@ int main( int argc, char* argv[] )
 	int ii=0;
 	
 	// share useful configuration bits with PDI
-	PDI_expose("ii",         &ii,    PDI_OUT);
+	//*** use PDI_expose to replace PDI_share + reclaim
 	PDI_expose("pcoord",     pcoord, PDI_OUT);
 	PDI_expose("dsize",      dsize,  PDI_OUT);
 	PDI_expose("psize",      psize,  PDI_OUT);
-	PDI_expose("main_field", cur,    PDI_OUT);
 	
 	// the main loop
-	for (; ii<3; ++ii) {
+	for (; ii<10; ++ii) {
 		// share the loop counter & main field at each iteration
+		//*** use PDI_expose to replace PDI_share + event + reclaim
 		PDI_multi_expose("loop",
 				"ii",         &ii, PDI_OUT,
 				"main_field", cur, PDI_OUT,
@@ -202,6 +202,7 @@ int main( int argc, char* argv[] )
 		double (*tmp)[dsize[1]] = cur; cur = next; next = tmp;
 	}
 	// finally share the main field as well as the loop counter after the loop
+	//*** use PDI_expose to replace PDI_share + event + reclaim
 	PDI_multi_expose("finalization",
 	        "main_field", cur, PDI_OUT,
 	        "ii",         &ii, PDI_OUT,
