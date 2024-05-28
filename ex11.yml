@@ -1,0 +1,44 @@
+# the alpha parameter
+alpha: 0.125
+# global data-size (excluding spacer for boundary conditions or ghosts)
+global_size: { height: 6, width: 4 }
+# degree of parallelism (number of blocks in each dimension)
+parallelism: { height: 1, width: 1 }
+# PDI configuration
+pdi:
+  metadata: # small values for which PDI keeps a copy
+    ii: int
+    dsize: { type: array, subtype: int, size: 2 }
+    psize: { type: array, subtype: int, size: 2 }
+    pcoord: { type: array, subtype: int, size: 2 }
+  data: # values for which PDI does not keep a copy
+    main_field: { type: array, subtype: double, size: [ '$dsize[0]', '$dsize[1]' ] }
+
+  plugins:
+    mpi:
+    trace:
+    decl_hdf5:
+      file: ex11.h5
+      communicator: $MPI_COMM_WORLD
+      datasets:
+        main_field: { type: array, subtype: double, size: [ 3, '$psize[0]*($dsize[0]-2)', '$psize[1]*($dsize[1]-2)' ] }
+      write:
+        main_field:
+          when: '$ii>0 & $ii<4'
+          memory_selection:
+            size: ['$dsize[0]-2', '$dsize[1]-2']
+            start: [1, 1]
+          dataset_selection:
+            size: [1, '$dsize[0]-2', '$dsize[1]-2']
+            start: ['$ii-1', '$pcoord[0]*($dsize[0]-2)', '$pcoord[1]*($dsize[1]-2)']
+
+    user_code:
+      on_event:
+        initialization:
+          open_file: {}
+        #*** close file on finalization
+        #...
+      on_data:
+        main_field:
+          #*** compute the total mass and write to file
+          #...

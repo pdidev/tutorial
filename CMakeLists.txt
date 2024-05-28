@@ -23,10 +23,9 @@
 cmake_minimum_required(VERSION 3.9)
 project(pdi_examples LANGUAGES C)
 
-#find_package(ispdlog)
 find_package(MPI REQUIRED COMPONENTS C)
 find_package(paraconf 1.0.0 REQUIRED COMPONENTS C)
-find_package(PDI 1.0.0 REQUIRED COMPONENTS C)
+find_package(PDI 1.6.0 REQUIRED COMPONENTS C)
 
 set(CMAKE_C_STANDARD 99)
 
@@ -63,4 +62,8 @@ target_link_libraries(ex9 m MPI::MPI_C paraconf::paraconf PDI::pdi)
 add_executable(ex10 ex10.c)
 target_link_libraries(ex10 m MPI::MPI_C paraconf::paraconf PDI::pdi)
 
-add_subdirectory(ex11/)
+add_executable(ex11 ex11.c)
+target_link_libraries(ex11 m MPI::MPI_C paraconf::paraconf PDI::pdi)
+set_target_properties(ex11 PROPERTIES ENABLE_EXPORTS TRUE)
+
+add_subdirectory(ex_deisa/)
