@@ -43,13 +43,32 @@ int pcoord[2];
 /// the alpha coefficient used in the computation
 double alpha;
 
+double L=1.0;
+double source1[4]={0.4, 0.4, 0.2, 100};
+double source2[4]={0.7, 0.8, 0.1, 200};
+
 /** Initialize the data all to 0 except for the left border (XX==0) initialized to 1 million
  * \param[out] dat the local data to initialize
  */
 void init(double dat[dsize[0]][dsize[1]])
 {
 	for (int yy=0; yy<dsize[0]; ++yy)  for (int xx=0; xx<dsize[1]; ++xx)  dat[yy][xx] = 0;
-	if ( pcoord[1] == 0 ) for (int yy=0; yy<dsize[0]; ++yy)  dat[yy][0] = 1000000;
+	double dy = L / ((dsize[0]-2) *psize[0]) ;
+	double dx = L / ((dsize[1]-2) *psize[1]) ;
+
+	double cpos_x,cpos_y;
+	for(int yy=0; yy<dsize[0];++yy) {
+		cpos_y=(yy+pcoord[0]*(dsize[0]-2))*dy-0.5*dy;
+		for(int xx=0; xx<dsize[1];++xx) {
+			cpos_x=(xx+pcoord[1]*(dsize[1]-2))*dx-0.5*dx;
+			if((cpos_y-source1[0])*(cpos_y-source1[0]) + (cpos_x-source1[1])*(cpos_x-source1[1]) <= source1[2]*source1[2]) {
+				dat[yy][xx] = source1[3];
+			}
+			if((cpos_y-source2[0])*(cpos_y-source2[0]) + (cpos_x-source2[1])*(cpos_x-source2[1]) <= source2[2]*source2[2]) {
+				dat[yy][xx] = source2[3];
+			}
+		}
+	}
 }
 
 /** Compute the values at the next time-step based on the values at the current time-step
@@ -59,21 +78,15 @@ void init(double dat[dsize[0]][dsize[1]])
 void iter(double cur[dsize[0]][dsize[1]], double next[dsize[0]][dsize[1]])
 {
 	int xx, yy;
-	for (xx=0; xx<dsize[1]; ++xx) next[0][xx] = cur[0][xx];
 	for (yy=1; yy<dsize[0]-1; ++yy) {
-		next[yy][0] = cur[yy][0];
 		for (xx=1; xx<dsize[1]-1; ++xx) {
-			next[yy][xx] =
-					  (1.-4.*alpha) * cur[yy][xx]
-					+        alpha  * (   cur[yy][xx-1]
-					                    + cur[yy][xx+1]
-					                    + cur[yy-1][xx]
-					                    + cur[yy+1][xx]
-					                  ); 
+			next[yy][xx] = (1.-4.*alpha) * cur[yy][xx]
+					             +alpha  * ( cur[yy][xx-1]
+					                       + cur[yy][xx+1]
+					                       + cur[yy-1][xx]
+					                       + cur[yy+1][xx]); 
 		}
-		next[yy][dsize[1]-1] = cur[yy][dsize[1]-1];
 	}
-	for (xx=0; xx<dsize[1]; ++xx) next[dsize[0]-1][xx] = cur[dsize[0]-1][xx];
 }
 
 /** Exchanges ghost values with neighbours
@@ -86,7 +99,7 @@ void exchange(MPI_Comm cart_comm, double cur[dsize[0]][dsize[1]])
 	int rank_source, rank_dest;
 	static MPI_Datatype column, row;
 	static int initialized = 0;
-	
+
 	if ( !initialized ) {
 		MPI_Type_vector(dsize[0]-2, 1, dsize[1], MPI_DOUBLE, &column);
 		MPI_Type_commit(&column);
@@ -103,8 +116,8 @@ void exchange(MPI_Comm cart_comm, double cur[dsize[0]][dsize[1]])
 	
 	// send up
 	MPI_Cart_shift(cart_comm, 0, -1, &rank_source, &rank_dest);
-	MPI_Sendrecv(&cur[1][1],          1, row, rank_dest,   100, // send column after ghost
-	             &cur[dsize[0]-1][1], 1, row, rank_source, 100, // receive last column (ghost)
+	MPI_Sendrecv(&cur[1][1],          1, row, rank_dest,   100, // send row after ghost
+	             &cur[dsize[0]-1][1], 1, row, rank_source, 100, // receive last row (ghost)
 	             cart_comm, &status);
 	
 	// send to the right
@@ -161,7 +174,7 @@ int main( int argc, char* argv[] )
 	dsize[1] = global_size[1]/psize[1] + 2;
 	
 	// create a 2D Cartesian MPI communicator & get our coordinate (rank) in it
-	int cart_period[2] = { 0, 0 };
+	int cart_period[2] = { 1, 1 };
 	MPI_Comm cart_comm; MPI_Cart_create(main_comm, 2, psize, cart_period, 1, &cart_comm);
 	MPI_Cart_coords(cart_comm, pcoord_1d, 2, pcoord);
 	
@@ -194,14 +207,14 @@ int main( int argc, char* argv[] )
 		
 		// exchange data with the neighbours
 		exchange(cart_comm, next);
-		
+
 		// swap the current and next values
 		double (*tmp)[dsize[1]] = cur; cur = next; next = tmp;
 	}
 	// finally share the main field as well as the loop counter after the loop
 	PDI_multi_expose("finalization",
-	        "main_field", cur, PDI_OUT,
 	        "ii",         &ii, PDI_OUT,
+	        "main_field", cur, PDI_OUT,
 	        NULL);
 	
 	// finalize PDI
