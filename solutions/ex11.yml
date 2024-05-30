@@ -1,7 +1,7 @@
 # the alpha parameter
 alpha: 0.125
 # global data-size (excluding spacer for boundary conditions or ghosts)
-global_size: { height: 6, width: 4 }
+global_size: { height: 64, width: 32 }
 # degree of parallelism (number of blocks in each dimension)
 parallelism: { height: 1, width: 1 }
 # PDI configuration
