@@ -26,7 +26,7 @@ pdi:
         switch:
           #*** enable the putput when switch > 50, and disable the output when switch < 25
           - set:
-            - should_output: '$switch > 50'
+            - should_output: '$switch > 50 | $should_output=1'
           - set: 
             - should_output: '$should_output=1 & $switch>25'
       on_finalize:
