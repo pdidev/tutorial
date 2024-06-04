@@ -20,14 +20,18 @@ pdi:
     set_value:
       on_init:
         #*** set output to false at initialization
-        #...
+        - share:
+          - should_output: 0
       on_data:
         switch:
           #*** enable the putput when switch > 50, and disable the output when switch < 25
-          #...
+          - set:
+            - should_output: '$switch > 50'
+          - set: 
+            - should_output: '$should_output=1 & $switch>25'
       on_finalize:
         #*** release the variable should_output
-        #...
+        - release: [should_output]
 
     decl_hdf5:
       file: ex12.h5
@@ -39,7 +43,7 @@ pdi:
       write:
         main_field:
           #*** enable the output according to the value of should_output
-          #...
+          when: '${should_output}'
           dataset_selection:
             size: [1,'$dsize[0]-2', '$dsize[1]-2']
             start: ['$ii', '$pcoord[0]*($dsize[0]-2)', '$pcoord[1]*($dsize[1]-2)']

@@ -136,6 +136,9 @@ void exchange(MPI_Comm cart_comm, double cur[dsize[0]][dsize[1]])
 int main( int argc, char* argv[] )
 {
 	MPI_Init(&argc, &argv);
+	srand( time( NULL ) );
+
+	int uncertain_value;
 	
 	// load the configuration tree
 	PC_tree_t conf = PC_parse_path("ex12.yml");
@@ -195,6 +198,9 @@ int main( int argc, char* argv[] )
 	
 	// the main loop
 	for (; ii<10; ++ii) {
+		uncertain_value = rand() % 101;
+		printf("iter = %d, switch = %d\n", ii, uncertain_value);
+		PDI_expose("switch", &uncertain_value, PDI_OUT);
 		// share the loop counter & main field at each iteration
 		PDI_multi_expose("loop",
 				"ii",         &ii, PDI_OUT,
