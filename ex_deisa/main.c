@@ -44,7 +44,7 @@ int pcoord[2];
 double alpha;
 
 double L=1.0;
-double source1[4]={0.4, 0.4, 0.2, 100};
+double source1[4]={0.4, 0.4, 0.2, 100}; // x, y, r, v
 double source2[4]={0.7, 0.8, 0.1, 200};
 
 /** Initialize the data all to 0 except for the left border (XX==0) initialized to 1 million
@@ -195,10 +195,11 @@ int main( int argc, char* argv[] )
 	
 	// share useful configuration bits with PDI
 	PDI_multi_expose("initialization", 
+	                 "ii", &ii, PDI_OUT,
 	                 "pcoord", pcoord, PDI_OUT,
-					 "dsize",  dsize,  PDI_OUT,
-					 "psize",  psize,  PDI_OUT,
-					 NULL);
+			 "dsize",  dsize,  PDI_OUT,
+			 "psize",  psize,  PDI_OUT,
+			 NULL);
 	
 	// the main loop
 	for (; ii<1000; ++ii) {

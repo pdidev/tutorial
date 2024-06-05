@@ -36,7 +36,7 @@
 int dsize[2];
 
 /// 2D size of the process grid as [HEIGHT, WIDTH]
-int psize[2]={1,1};
+int psize[2]={2,2};
 
 /// 2D rank of the local process in the process grid as [YY, XX]
 int pcoord[2];
