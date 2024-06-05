@@ -75,7 +75,7 @@ def save_file(data, block_info=None):
 
 
 
-img_data = gt[0:1001:100, :, :]
+img_data = gt[0:max_ts:100, :, :]
 print("> data=" + str(img_data), flush=True)
 # img_data = img_data.rechunk({0: -1, 1: -1})
 img_data = img_data.transpose()
