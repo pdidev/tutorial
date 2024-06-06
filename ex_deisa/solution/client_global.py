@@ -3,6 +3,7 @@ import os
 import dask
 import numpy as np
 import yaml
+from PIL import Image
 from deisa import Deisa
 
 # Scheduler file name and configuration file
@@ -102,13 +103,28 @@ class GenerateGlobalImage:
         images = np.empty(shape=max_coord_x_y).tolist()
 
         try:
-            for ((x, y), image_path) in sub_images:
-                # print(">> reading image: x=" + str(x) + ", y=" + str(y) + ", image_path=" + image_path, flush=True)
-                images[x][y] = cv2.imread(image_path)
+            # for ((x, y), image_path) in sub_images:
+            #     # print(">> reading image: x=" + str(x) + ", y=" + str(y) + ", image_path=" + image_path, flush=True)
+            #     images[x][y] = cv2.imread(image_path)
 
-            images = images[::-1]  # flip the image on x
-            combined_image = self.concat_tile(images)
-            cv2.imwrite("results/img/global/heat-" + str(ts).zfill(3) + ".png", combined_image)
+            # images = images[::-1]  # flip the image on x
+            # combined_image = self.concat_tile(images)
+            # cv2.imwrite("results/img/global/heat-" + str(ts).zfill(3) + ".png", combined_image)
+            sample_image = Image.open(sub_images[0][1])
+            sample_image.close()
+            image_width = sample_image.size[0]
+            image_height = sample_image.size[1]
+            print(">> width and height = "+str(image_width)+"-"+str(image_height), flush=True)
+            new_im = Image.new("RGB", (image_width*max_coord_x_y[0], image_height*max_coord_x_y[1]),
+                        color = (153, 153, 255))
+            
+            
+            for ((x, y), image_path) in sub_images:
+                images[x][y] = Image.open(image_path)
+                new_im.paste(images[x][y], (y*image_width,x*image_height, (y+1)*image_width,(x+1)*image_height))
+                images[x][y].close()
+            
+            new_im.save("results/img/heat-" + str(ts).zfill(3) + ".jpg")
         except Exception as e:
             print("Error combining images: " + str(e), flush=True)
 
