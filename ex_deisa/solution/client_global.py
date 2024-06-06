@@ -111,9 +111,9 @@ class GenerateGlobalImage:
             # combined_image = self.concat_tile(images)
             # cv2.imwrite("results/img/global/heat-" + str(ts).zfill(3) + ".png", combined_image)
             sample_image = Image.open(sub_images[0][1])
-            sample_image.close()
             image_width = sample_image.size[0]
             image_height = sample_image.size[1]
+            sample_image.close()
             print(">> width and height = "+str(image_width)+"-"+str(image_height), flush=True)
             new_im = Image.new("RGB", (image_width*max_coord_x_y[0], image_height*max_coord_x_y[1]),
                         color = (153, 153, 255))
