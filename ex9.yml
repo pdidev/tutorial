@@ -23,7 +23,7 @@ pdi:
       datasets:
         #*** modify the size of datasets to global
         #...
-        main_field: { type: array, subtype: double, size: [ 3, '$dsize[0]-2', '$dsize[1]-2' ] }
+        main_field: { type: array, subtype: double, size: [ 3, '...', '...' ] }
       write:
         main_field:
           when: '$ii>0 & $ii<4'
