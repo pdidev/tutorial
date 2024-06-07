@@ -29,9 +29,6 @@ find_package(PDI 1.6.0 REQUIRED COMPONENTS C)
 
 set(CMAKE_C_STANDARD 99)
 
-add_executable(ex0 ex0.c)
-target_link_libraries(ex0 m MPI::MPI_C paraconf::paraconf PDI::pdi)
-
 add_executable(ex1 ex1.c)
 target_link_libraries(ex1 m MPI::MPI_C paraconf::paraconf PDI::pdi)
 
