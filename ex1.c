@@ -30,6 +30,7 @@
 
 #include <paraconf.h>
 #include <pdi.h>
+
 /// size of the local data as [HEIGHT, WIDTH] including ghosts & boundary constants
 int dsize[2];
 
@@ -141,22 +142,28 @@ int main( int argc, char* argv[] )
 	
 	// NEVER USE MPI_COMM_WORLD IN THE CODE, use our own communicator main_comm instead
 	MPI_Comm main_comm = MPI_COMM_WORLD;
-
+	
+	// initialize PDI, it can replace our main communicator by its own
 	PDI_init(PC_get(conf, ".pdi"));
 	
 	// load the MPI rank & size
 	int psize_1d;  MPI_Comm_size(main_comm, &psize_1d);
 	int pcoord_1d; MPI_Comm_rank(main_comm, &pcoord_1d);
-		
-	//*** load the alpha parameter
-	//...
+	
+	long longval;
+	
+	// load the alpha parameter
+	PC_double(PC_get(conf, ".alpha"), &alpha);
 	
 	int global_size[2]={12,12};
-	//*** load the global data-size
-	//...
+	// load the global data-size
+	// you can use paraconf to read some parameters from the yml config file
+	PC_int(PC_get(conf, ".global_size.height"), &longval); global_size[0] = longval;
+	PC_int(PC_get(conf, ".global_size.width"), &longval); global_size[1] = longval;
 	
-	//*** load the parallelism configuration
-	//...
+	// load the parallelism configuration
+	PC_int(PC_get(conf, ".parallelism.height"), &longval); psize[0] = longval;
+	PC_int(PC_get(conf, ".parallelism.width" ), &longval); psize[1] = longval;
 	
 	// check the configuration is coherent
 	assert(global_size[0]%psize[0]==0);
@@ -184,6 +191,7 @@ int main( int argc, char* argv[] )
 	
 	// the main loop
 	for (; ii<10; ++ii) {
+		
 		// compute the values for the next iteration
 		iter(cur, next);
 		
@@ -194,8 +202,9 @@ int main( int argc, char* argv[] )
 		double (*tmp)[dsize[1]] = cur; cur = next; next = tmp;
 	}
 	
+	// finalize PDI
 	PDI_finalize();
-
+	
 	// destroy the paraconf configuration tree
 	PC_tree_destroy(&conf);
 	
