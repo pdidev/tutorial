@@ -19,6 +19,6 @@ pdi:
     decl_hdf5:
       - file: ex4-metadata-${pcoord[0]}x${pcoord[1]}.h5  # we can use $ expressions in file names
         write: [ dsize, psize ]
-      #*** write main_field into hdf5, one file per rank and per iteration
+      #*** write main_field and iteration counter into hdf5, one file per rank and per iteration
       - file: ex4-data-${pcoord[0]}x${pcoord[1]}_${ii}.h5  
-        write: [  main_field ]
+        write: [ii,  main_field ]
