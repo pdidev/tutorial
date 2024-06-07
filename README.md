@@ -109,7 +109,7 @@ read this file.
 * Set values in `ex1.yml` to be able to run the code with 4 MPI processes.
 
 ```bash
-srun -n 4 ./ex1
+mpirun -np 4 ./ex1
 ```
 
 
@@ -120,17 +120,12 @@ srun -n 4 ./ex1
 Ex2. is the same code as that of ex1. with %PDI calls added in `main` function.
 In our YAML file (`ex2.yml`), a new sub-tree has been added under the `pdi` key.
 This sub-tree is the %PDI specification tree passed to %PDI at initialization.
-Here, the %PDI \ref trace_plugin "Trace plugin" is used to trace %PDI calls.
+Here, the %PDI \ref trace_plugin "Trace plugin"(`trace`) is used to trace %PDI calls.
 
 * Examine the source code, compile it and run it.
 
-* Add the required `::PDI_share` and `::PDI_reclaim` calls to match the output
-  of `ex2.log` file (only the lines matching `[Trace-plugin]` have been kept).
-  You only need to change the `ex2.c` file. You can easily check if the files
-  are the same by running the command:
-```bash
-  diff ex2.log <(grep Trace-plugin ex2.result.log)
-```
+* Add the required `::PDI_share` and `::PDI_reclaim` calls to have some PDI activities. You can then use the \ref trace_plugin "Trace plugin" (`trace`) plugin to observe these activities on the standard output. 
+
 
 \attention
 Notice that some share/reclaim pairs come one after the other while others are
@@ -149,24 +144,15 @@ should be enough.
 
 * Examine the YAML file, compile the code and run it.
 
-The \ref trace_plugin "Trace plugin" (`trace`) was replaced by the
-\ref Decl_HDF5_plugin "Decl'HDF5 plugin" (`decl_hdf5`) in the specification
+The \ref Decl_HDF5_plugin "Decl'HDF5 plugin" (`decl_hdf5`) is added in the specification
 tree.
 In its configuration, the `dsize` variable is written.
 
-* Write the `psize` and `pcoord` variables in addition to `dsize` to match the
-  content expected as described in the `ex3.h5dump` text file (use the `h5dump`
-  command to see the content of your HDF5 output file in the same format as the
-  `.h5dump` file). You can easily check if the files are the same by running the
-  command:
-```bash
-  diff ex3.h5dump <(h5dump ex3*.h5)
-```
+* Write the `psize` and `pcoord` variables in addition to `dsize` .
 
 To achieve this result, you will need to fill 2 sections in the YAML file.
 
-1. The `data` section to indicate to %PDI the \ref datatype_node type of the
-   fields that are exposed.
+1. The `metadata` (or `data`) section to indicate to %PDI the \ref datatype_node type of the fields that are exposed.
 
 2. The `decl_hdf5` section for the configuration of the
    \ref Decl_HDF5_plugin "Decl'HDF5 plugin".
@@ -176,8 +162,7 @@ If you relaunch the executable, remember to delete your old `ex3.h5` file
 before, otherwise the data will not be changed.
 
 \warning
-Since we write to the same location independently of the MPI rank, this exercise
-will fail if more than one MPI rank is used.
+Since we write to the same location independently of the MPI rank, you have two options: either you run the exercise with one MPI rank, or change the file name to have one output file per rank (this is what we chose in the solution).
 
 
 ### Ex4. Writing some real data
@@ -209,14 +194,7 @@ By moving other fields in the `metadata` section, you can reference them from
 
 Unlike the other fields manipulated until now, `main_field` is exposed multiple
 times along execution.
-In order not to overwrite it every time it is exposed, you need to add a `when`
-condition to restrict its output.
-
-* Only write `main_field` at the second iteration (when `ii=1`) and match the
-  expected content as described in `ex4.h5dump`.
-```bash
-  diff ex4.h5dump <(h5dump ex4*.h5)
-```
+In order not to overwrite it every time it is exposed, you write one file per rank and per iteration. Or, you can write only one iteration data using the `when: &ii=1` clause
 
 ### Ex5. Introducing events
 
@@ -234,12 +212,7 @@ You have to use events for that, you will modify both the C and YAML file.
 * In the C file, trigger a %PDI event named `loop` when both `ii` and
   `main_field` are shared.
   With the \ref trace_plugin "Trace plugin", check that the event is indeed
-  triggered at the expected time as described in `ex5.log` (only the lines
-  matching `[Trace-plugin]` have been kept). You can check if the files are the
-  same by running:
-```bash
-  diff ex5.log <(grep Trace-plugin ex5.result.log)
-```
+  triggered at the expected time.
 
 * Use the `on_event` mechanism to trigger the write of `ii` and `main_field`.
   This mechanism can be combined with a `when` directive, in that case the
@@ -249,10 +222,7 @@ You have to use events for that, you will modify both the C and YAML file.
   dataset whose name differs from the %PDI variable name.
   Use this mechanism to write `main_field` at iterations 1 and 2, in two
   distinct groups `iter1` and `iter2`.
-  Your output should match the content described in `ex5.h5dump`.
-```bash
-  diff ex5.h5dump <(h5dump ex5*.h5)
-```
+  
 
 
 ### Ex6. Simplifying the code
@@ -276,12 +246,7 @@ This case is however handled by `::PDI_multi_expose` call that exposes all data,
 then triggers an event and finally does all the reclaim in reverse order.
 
 * Replace the remaining `::PDI_share`/`::PDI_reclaim` by `::PDI_expose`s and
-  `::PDI_multi_expose`s and ensure that your code keeps the exact same behaviour
-  by comparing its trace to `ex6.log` (only the lines matching `[Trace-plugin]`
-  have been kept). You can easily check if the files are the same by running:
-```bash
-  diff ex6.log <(grep Trace-plugin ex6.result.log)
-```
+  `::PDI_multi_expose`s and ensure that your code keeps the exact same behaviour as in previous exercise.
 
 
 ### Ex7. Writing a selection
@@ -297,11 +262,6 @@ As you can notice, now the dataset is independently described in the file.
 
 * Restrict the selection to the non-ghost part of the array in memory (excluding
   one element on each side).
-  You should be able to match the expected output described in `ex7.h5dump`.
-  You can easily check if the files are the same by running:
-```bash
-  diff ex7.h5dump <(h5dump ex7*.h5)
-```
 
 You can achieve this by using the `memory_selection` directive that specifies
 the selection of data from memory to write.
@@ -314,6 +274,7 @@ the selection of data from memory to write.
 In this exercise, you will once again change the YAML file to handle a selection
 in the dataset in addition to the selection in memory from the previous
 exercise.
+In this exercise, you don't want to have one output file per iteration.
 You will write the 2D array from the previous exercise as a slice of 3D dataset
 including a dimension for time.
 Once again, you only need to modify the YAML file in this exercise, no need to
@@ -326,11 +287,6 @@ time-steps.
 
 * Write the 2D selection from `main_field` at iterations 1 to 3 inclusive into
   slices at coordinate 0 to 2 of first dimension of the 3D dataset.
-  Match the expected output described in `ex8.h5dump`. You can easily check if
-  the files are the same by running:
-```bash
-  diff ex8.h5dump <(h5dump ex8*.h5)
-```
 
 You can achieve this by using the `dataset_selection` directive that specifies
 the selection where to write in the file dataset.
@@ -366,11 +322,6 @@ The `mpi` plugin was loaded to make sharing MPI communicators possible.
   You will need to make a selection in the dataset that depends on the global
   coordinate of the local data block (use `pcoord`).
 
-Match the output from `ex9.h5dump`, that should be independent from the number
-of processes used. You can easily check if the files are the same by running:
-```bash
-  diff ex9.h5dump <(h5dump ex9*.h5)
-```
 
 ![graphical representation of the parallel I/O](PDI_hdf5_parallel.jpg)
 
@@ -405,11 +356,6 @@ chained this way.
 
 * Modify the Decl'HDF5 configuration to write the new data exposed from Python.
 
-* Match the output from `ex10.h5dump`. You can easily check if the files are the
-  same by running:
-```bash
-  diff ex10.h5dump <(h5dump ex10*.h5)
-```
 
 \attention
 In a more realistic setup, one would typically not write much code in the YAML
