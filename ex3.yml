@@ -7,9 +7,14 @@ parallelism: { height: 1, width: 1 }
 # PDI configuration
 pdi:
   #*** describe the metadata dsize, psize, pcoord
-  #...
+  metadata:
+    dsize: {type: array, subtype: int, size: 2}
+    #... psize
+    #... pcoord
 
   plugins:
+    trace:
+    decl_hdf5:
     #*** use the decl_hdf5 plugin, write a file with content the metadata above
     #...
     

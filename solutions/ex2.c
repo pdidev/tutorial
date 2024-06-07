@@ -199,11 +199,10 @@ int main( int argc, char* argv[] )
 	
 	// the main loop
 	for (; ii<10; ++ii) {
-		//*** share the loop counter at each iteration
+		//*** share the loop counter at each iteration as well as the main field
 		PDI_share("ii",         &ii, PDI_OUT);
 		PDI_reclaim("ii");
 
-		//*** as well as the main field
 		PDI_share("main_field", cur, PDI_OUT);
 		PDI_reclaim("main_field");
 		
@@ -216,7 +215,9 @@ int main( int argc, char* argv[] )
 		// swap the current and next values
 		double (*tmp)[dsize[1]] = cur; cur = next; next = tmp;
 	}
-	//*** finally share the main field after the main loop body
+	//*** finally share the last iteration and main field after the loop
+	PDI_share("ii", &ii, PDI_OUT);
+	PDI_reclaim("ii");
 	PDI_share("main_field", cur, PDI_OUT);
 	PDI_reclaim("main_field");
 	
