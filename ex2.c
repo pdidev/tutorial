@@ -197,7 +197,7 @@ int main( int argc, char* argv[] )
 		//*** share the loop counter at each iteration
 		//...
 
-		//*** as well as the main field cur
+		//*** share the main field: cur 
 		//...
 		
 		// compute the values for the next iteration
