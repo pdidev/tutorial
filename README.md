@@ -58,12 +58,6 @@ pdirun mpirun -n 4 ./ex?
 Where `?` is the number of the exercise and 4 represents the number of MPI
 processes to use.
 
-To store the logs for later comparison, you can use the following command (for
-example for ex2.):
-```bash
-pdirun mpirun -n 1 ./ex2 | tee ex2.result.log
-```
-
 Now you're ready to work, **good luck**!
 
 
@@ -118,14 +112,18 @@ mpirun -np 4 ./ex1
 ### Ex2. Now with some PDI
 
 Ex2. is the same code as that of ex1. with %PDI calls added in `main` function.
-In our YAML file (`ex2.yml`), a new sub-tree has been added under the `pdi` key.
-This sub-tree is the %PDI specification tree passed to %PDI at initialization.
-Here, the %PDI \ref trace_plugin "Trace plugin"(`trace`) is used to trace %PDI calls.
 
 * Examine the source code, compile it and run it.
 
-* Add the required `::PDI_share` and `::PDI_reclaim` calls to have some PDI activities. You can then use the \ref trace_plugin "Trace plugin" (`trace`) plugin to observe these activities on the standard output. 
+* In the C file (`ex2.c`), add `::PDI_share` and `::PDI_reclaim` call to share some data with %PDI:
 
+  * domain configuration information: local size, number of block in each direction and rank coordinate in each 
+  * iteration number
+  * current data
+
+  The sharring data is defined in the line that start with "//***" in `ex2.c`. You need to replace the following line "//..." by your lines of code with %PDI instructions (`::PDI_share` and `::PDI_reclaim`).
+
+* To observe %PDI activities on the standard output, add \ref trace_plugin "Trace plugin" (`trace`) plugin of %PDI in our YAML file (`ex2.yml`).
 
 \attention
 Notice that some share/reclaim pairs come one after the other while others are
@@ -138,63 +136,81 @@ If you do not know the answer to this question, just wait until Ex5. :)
 
 ### Ex3. HDF5 through PDI
 
-In this exercise, the code is the same as in ex2.
-No need to touch the C code here, modification of the YAML file (`ex3.yml`)
+In this exercise, the C code is the same as in ex2. No need to touch the C code here, modification of the YAML file (`ex3.yml`)
 should be enough.
 
 * Examine the YAML file, compile the code and run it.
 
-The \ref Decl_HDF5_plugin "Decl'HDF5 plugin" (`decl_hdf5`) is added in the specification
-tree.
-In its configuration, the `dsize` variable is written.
+The \ref Decl_HDF5_plugin "Decl'HDF5 plugin" (`decl_hdf5`) is added in the specification tree.
+In its configuration, the `dsize` variable is defined at a metadata for %PDI.
 
-* Write the `psize` and `pcoord` variables in addition to `dsize` .
+* Write the `psize` and `pcoord` variables in addition to `dsize` in a file `ex3.h5` with one MPI process. 
 
 To achieve this result, you will need to fill 2 sections in the YAML file.
 
 1. The `metadata` (or `data`) section to indicate to %PDI the \ref datatype_node type of the fields that are exposed.
 
-2. The `decl_hdf5` section for the configuration of the
-   \ref Decl_HDF5_plugin "Decl'HDF5 plugin".
+2. The `decl_hdf5` section for the configuration of the \ref Decl_HDF5_plugin "Decl'HDF5 plugin". 
 
 \warning
-If you relaunch the executable, remember to delete your old `ex3.h5` file
-before, otherwise the data will not be changed.
+If you relaunch the executable, remember to delete your old `ex3.h5` file before, otherwise the data will not be changed.
+
+To change this behaviour, you need to use the parameter `collision_policy`. 
+In the \ref Decl_HDF5_plugin "Decl'HDF5 plugin", this parameter allow to define what to do when writing 
+to a file or dataset that already exists. (Jacques ????)
 
 \warning
-Since we write to the same location independently of the MPI rank, you have two options: either you run the exercise with one MPI rank, or change the file name to have one output file per rank (this is what we chose in the solution).
+With more than one MPI rank is used, we write to the same location in the file independently of the MPI rank. 
+For this reason, this exercise will fail.
 
+To run this code in parallel, you have two options:
+  1. select one rank to write the output file.
+  2. change the file name to have one output file per rank. This is what we chose in the solution. 
+  The solution correspond to this exercise:
+
+    * Write the `psize` and `pcoord` variables in addition to `dsize` in a different file `ex3-meta-**.h5` 
+      for each process where `**`give the rank in each direction of the MPI process.
 
 ### Ex4. Writing some real data
 
 In this exercise each MPI process will write its local 2D array block contained
 in the `main_field` variable to a separate HDF5 file.
-Once again, this can be done by modifying the YAML file only, no nee to touch
+Once again, this can be done by modifying the YAML file only, no need to touch
 the C file.
 
 * Examine the YAML file, compile the code and run it.
 
-Look at the number of blocks, you will have to use the correct number of MPI
+\warning Look at the number of blocks, you will have to use the correct number of MPI
 ranks to run the example.
 
-Notice that in the YAML file, a list was used in the `decl_hdf5` section with
+
+Remark:
+
+1. Notice that in the YAML file `ex4.yml`, a list was used in the `decl_hdf5` section with
 multiple write blocks instead of a single one as before in order to write to
 multiple files.
 
-Also notice that this example now runs in parallel with two processes.
+2. Also notice that this example now runs in parallel with 4 processes.
 Therefore it uses "$-expressions" to specify the file names and ensure we
-do not write to the same file from distinct ranks.
+do not write to the same file from distinct ranks (`dsize`, `psize`).
 
-Unlike the other fields manipulated until now, the type of `main_field` is not
-fully known, its size is dynamic.
-By moving other fields in the `metadata` section, you can reference them from
+3. Unlike the other fields manipulated until now, the type of `main_field` is not
+fully known, its size is dynamic. 
+By moving other fields in the `data` section, you can reference them from
 "$-expressions" in the configuration file.
 
-* Use a $-expression to specify the size of `main_field`.
+Ex4.1: 
+* Describe the temperature data on the current iteration by using a $-expression to specify the size of `main_field` in `data` section.
 
 Unlike the other fields manipulated until now, `main_field` is exposed multiple
 times along execution.
-In order not to overwrite it every time it is exposed, you write one file per rank and per iteration. Or, you can write only one iteration data using the `when: &ii=1` clause
+In order not to overwrite it every time it is exposed, you can write one file per rank and per iteration. 
+Or, you can write only one iteration data using the `when: &ii=1` clause
+
+Ex4.2:
+* Add the iteration loop `ii` as a metadata.
+* Write the curent temperature field in one file per process and per iteration.
+* Or write the curent temperature field in one file per process for iteration 1.
 
 ### Ex5. Introducing events
 
@@ -205,24 +221,23 @@ the file open.
 Since `ii` and `main_field` are shared in an interlaced way, they are both
 available to %PDI at the same time and could be written without opening the file
 twice.
-You have to use events for that, you will modify both the C and YAML file.
+You have to use events for that, you will modify both the C and YAML file in this exercise.
 
 * Examine the YAML file and source code.
 
-* In the C file, trigger a %PDI event named `loop` when both `ii` and
+* Ex 5.1: In the C file, Add (Create???) a %PDI event named `loop` when both `ii` and
   `main_field` are shared.
   With the \ref trace_plugin "Trace plugin", check that the event is indeed
   triggered at the expected time.
 
-* Use the `on_event` mechanism to trigger the write of `ii` and `main_field`.
-  This mechanism can be combined with a `when` directive, in that case the
-  write is only executed when both mechanisms agree.
-
-* Also notice the extended syntax that make it possible to write data to a
+* Ex 5.2: Use the `on_event` mechanism to trigger the write of `ii` and `main_field` 
+  for event `loop` only. This mechanism can be combined with a `when` directive, in that case the
+  write is only executed when both mechanisms agree. Add `when` directive to write only at iteraion 1 and 2.  
+ 
+* Ex 5.3: Also notice the extended syntax that make it possible to write data to a
   dataset whose name differs from the %PDI variable name.
-  Use this mechanism to write `main_field` at iterations 1 and 2, in two
+  Use this mechanism to write `main_field` and `ii` at iterations 1 and 2, in two
   distinct groups `iter1` and `iter2`.
-  
 
 
 ### Ex6. Simplifying the code
@@ -248,6 +263,9 @@ then triggers an event and finally does all the reclaim in reverse order.
 * Replace the remaining `::PDI_share`/`::PDI_reclaim` by `::PDI_expose`s and
   `::PDI_multi_expose`s and ensure that your code keeps the exact same behaviour as in previous exercise.
 
+In summary:
+  `::PDI_expose` equivalent to `::PDI_share` + `::PDI_reclaim` 
+  `::PDI_multi_expose` equivalent to `::PDI_share` + `::PDI_event` + `::PDI_reclaim`
 
 ### Ex7. Writing a selection
 
@@ -263,7 +281,7 @@ As you can notice, now the dataset is independently described in the file.
 * Restrict the selection to the non-ghost part of the array in memory (excluding
   one element on each side).
 
-You can achieve this by using the `memory_selection` directive that specifies
+You can achieve this by using the `memory_selection` directive in ex7.yml that specifies
 the selection of data from memory to write.
 
 ![graphical representation](PDI_hdf5_selection.jpg)
@@ -277,13 +295,14 @@ exercise.
 In this exercise, you don't want to have one output file per iteration.
 You will write the 2D array from the previous exercise as a slice of 3D dataset
 including a dimension for time.
+
 Once again, you only need to modify the YAML file in this exercise, no need to
 touch the C file.
 
 * Examine the YAML file and compile the code.
 
 Notice how the dataset is now extended with an additional dimension for three
-time-steps.
+time-steps. (Jacques cela n'est plus valide maintenant).
 
 * Write the 2D selection from `main_field` at iterations 1 to 3 inclusive into
   slices at coordinate 0 to 2 of first dimension of the 3D dataset.
@@ -300,21 +319,18 @@ the selection where to write in the file dataset.
 
 Running the code from the previous exercises in parallel should already work and
 yield one file per process containing the local data block.
-In this exercise you will write one single file with parallel HDF5 whose content
+In this exercise you will write one single file `ex9.h5`(see `ex9.yml`) with parallel HDF5 whose content
 should be independent from the number of processes used.
 Once again, you only need to modify the YAML file in this exercise, no need to
 touch the C file.
 
 * Examine the YAML file and compile the code.
 
-The `mpi` plugin was loaded to make sharing MPI communicators possible.
+* Load the `mpi` plugin was loaded to make sharing MPI communicators possible.
 
-* Uncomment the `communicator` directive of the
-  \ref Decl_HDF5_plugin "Decl'HDF5 plugin" to switch to parallel I/O and change
-  the file name so that all processes access the same file.
+* Define the `communicator` directive of the \ref Decl_HDF5_plugin "Decl'HDF5 plugin" to switch to parallel I/O for HDF5.
 
-* Set the size of the dataset to take the global (parallel) array size into
-  account.
+* Set the size of the dataset to take the global (parallel) array size into account. 
   You will need to multiply the local size by the number of processes in each
   dimension (use `psize`).
 
@@ -339,28 +355,44 @@ data itself.
 
 Notice that the Decl'HDF5 configuration was simplified, no memory selection is
 applied, the when condition disappeared.
-The dataset name is however explicitly specified now because it does not match
-the %PDI variable name anymore, you will instead write a new variable exposed
-from python.
 
-The `pycall` section has been added to load the 
-\ref pycall_plugin "Pycall plugin".
-It executes the provided code when the "loop" event is triggered.
-The `with` section specifies the variables (parameters) to pass to Python as a
-set of "$-expressions".
-The provided code again exposes its result to %PDI and multiple blocks can be
-chained this way.
+* Load the \ref pycall_plugin "Pycall plugin"
+
+* Enable this previous plugin when the "loop" event is triggered.
+
+Some variables of the python script inside `ex10.yml` are not defined. 
+The `with` section allow to specifie some input variables (parameters) to pass to Python as a
+set of "$-expressions". The parameters can be given as multiple blocks.
+
+* Add a `with` block with the missing parameter to let the Python code process
+  the data exposed in `main_field`.  (`main_field` or `transformed_field` ???? Jacques)
 
 * Add the missing parameter to the `with` block to let the Python code process
   the data exposed in `main_field`.
 
-* Modify the Decl'HDF5 configuration to write the new data exposed from Python.
+* Use the keyword `exec`of \ref pycall_plugin "Pycall plugin" and decomment the python script.
 
+* Modify the Decl'HDF5 configuration to write the new data exposed (`transformed_field`) from Python.
+
+\attention
+The dataset name is however explicitly specified now because it does not match
+the %PDI variable name anymore, you will instead write a new variable exposed
+from python.
 
 \attention
 In a more realistic setup, one would typically not write much code in the YAML
 file directly, but would instead call functions specified in a `.py` file on
 the side.
+
+## Pycall
+
+### Ex11. user_code plugin
+
+For this exercice, you need to remake %PDI with the following option:
+
+
+
+
 
 ## What next ?
 

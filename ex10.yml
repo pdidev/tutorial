@@ -31,10 +31,14 @@ pdi:
           dataset_selection:
             size: [1, '$dsize[0]-2', '$dsize[1]-2']
             start: ['$ii-1', '$pcoord[0]*($dsize[0]-2)', '$pcoord[1]*($dsize[1]-2)']
-    #*** load the pycall plugin
+    #*** load the pycall plugin and enable this plugin for event loop.
     #...
-    # import numpy as np
-    # if 0 < iter_id < 4:
-    #   transformed_field = np.sqrt(source_field[1:-1,1:-1])
-    #   pdi.expose('transformed_field', transformed_field, pdi.OUT)
+    #*** Specifies the input parameters (variables) to pass to Python as a set of "$-expressions" (expressions must be defined in .yml script)
+    #...
+    #*** add exec keyword of pycall plugin. Decomment and the following python script 
+    #...
+#            import numpy as np
+#            if 0 < iter_id < 4:
+#              transformed_field = np.sqrt(source_field[1:-1,1:-1])
+#              pdi.expose('transformed_field', transformed_field, pdi.OUT)
 

@@ -21,7 +21,7 @@ pdi:
       #*** add MPI communicator
       #...
       datasets:
-        #*** modify the size of datasets to global
+        #*** modify the size of datasets from local array to global array
         #...
         main_field: { type: array, subtype: double, size: [ 3, '...', '...' ] }
       write:

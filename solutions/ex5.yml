@@ -26,9 +26,9 @@ pdi:
         write:
           ii: # name of the PDI data to write
             #*** give the dataset that you want to write into for ii
-            # $-expressions can be used to difine dataset name in file, , "/" separate groups in path
+            # $-expressions can be used to define dataset name in file, , "/" separate groups in path
             dataset: 'iter${ii}/ii' 
           main_field:
             #*** give the dataset that you want to write into for main_field
-            # $-expressions can be used to difine dataset name in file, , "/" separate groups in path
+            # $-expressions can be used to define dataset name in file, , "/" separate groups in path
             dataset: 'iter${ii}/main_field'

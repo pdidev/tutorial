@@ -18,12 +18,13 @@ pdi:
     decl_hdf5:
       file: ex10.h5
       communicator: $MPI_COMM_WORLD
-      datasets:
+      datasets: # List the name of the dataset in the file ex10.h5
+        # explication why time first ??? c++ order
         main_field: { type: array, subtype: double, size: [ 3, '$psize[0]*($dsize[0]-2)', '$psize[1]*($dsize[1]-2)' ] }
       write:
         #*** write the newly transformed field to file
-        transformed_field:
-          dataset: main_field
+        transformed_field:     # name of the array known by PDI that we want to write.
+          dataset: main_field  # name of the dataset in the h5 file (defined in the directive datasets) that we want to fill
           dataset_selection:
             size: [1, '$dsize[0]-2', '$dsize[1]-2']
             start: ['$ii-1', '$pcoord[0]*($dsize[0]-2)', '$pcoord[1]*($dsize[1]-2)']
