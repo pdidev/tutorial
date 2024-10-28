@@ -1,3 +1,5 @@
+
+
 # Hands-on tutorial {#Hands_on}
 
 In this tutorial, you will build a PDI-enabled application step-by-step from a
@@ -370,7 +372,7 @@ set of "$-expressions". The parameters can be given as multiple blocks.
 * Add the missing parameter to the `with` block to let the Python code process
   the data exposed in `main_field`.
 
-* Use the keyword `exec`of \ref pycall_plugin "Pycall plugin" and decomment the python script.
+* Use the keyword `exec` of \ref pycall_plugin "Pycall plugin" and decomment the python script.
 
 * Modify the Decl'HDF5 configuration to write the new data exposed (`transformed_field`) from Python.
 
@@ -384,20 +386,77 @@ In a more realistic setup, one would typically not write much code in the YAML
 file directly, but would instead call functions specified in a `.py` file on
 the side.
 
-## Pycall
+##  Call a user C function
 
 ### Ex11. user_code plugin
 
-For this exercice, you need to remake %PDI with the following option:
+In this exercice, you will learn how to call a user C function in %PDI with the user_code plugin.
 
+First of all, you need to recompile %PDI in adding in CMakeLists.txt
+```cmake
+set_target_properties(ex11 PROPERTIES ENABLE_EXPORTS TRUE)
+```
+after adding the executable ex11.
 
+The objective is to write the total mass of temperature on a file. This mass is computed in the C
+function `compute_mass` defined in `ex11.c`.
+For this, keywords `on_event` and `on_data` of \ref user_code_plugin "user_code" are introduced.
 
+The keyword `on_event` allows to call a C function inside `::PDI_event`. You can call a user C function inside the `::PDI_share`
+using the keyword `on_data` in the \ref user_code_plugin "user_code".
 
+* Modify the yaml file `ex11.yml` to open the file `mass.dat` at event “initialization”  for recording the total mass in calling `open_file` function.
+
+* Modify the yaml file `ex11.yml` to close the file `mass.dat` at event “finalization”  in calling `close_file` function.
+
+* Modify the yaml file `ex11.yml` compute the total mass and write this to the file `mass.dat`(using `compute_mass` function) when “main_field” is shared to %PDI.
+
+* Check that the call of C function defined by `on_event` and `on_data` is indeed done at the expected order for `::PDI_multi_expose` for the event `finalization` (see the log).
+
+**Remark:** The keyword `on_event` and `on_data` are also to defined in other plugin to execute instructions in `::PDI_event` and `::PDI_share` respectively. 
+
+### Ex12. set_value plugin
+
+The \ref set_value_plugin "set_value" plugin allows setting values to data and metadata descriptors from the yaml file.
+In the  \ref set_value_plugin "set_value", the user can trigger action upon: `on_init`, `on_finalize`, `on_data`, `on_event`.
+Here, it is the main-feature of the plugin we have five different type of action:
+  Share data (`share`) - plugin will share new allocated data with given values
+  Release data  (`release`) -plugin will release shared data
+  Expose data (`expose`)plugin will expose new allocated data with given values
+  Set data (`set`) - plugin will set given values to the already shared data
+  Calling an event (`event`) - plugin will call an event
+
+**Remark:** example with keywords: `share`, `release`, `expose`, set and event are given at given at the end of section "set_value" plugin in the documentation.
+
+In this exercice, we expose a random integer to %PDI at each iteration (`switch`).
+This interger is used to enable or to disable the writting of the output.
+We want to start writting once this integer passes 50 and stop output when it's below 25.
+For this purpose, we introduce a auxililatory logical parameter `should_output` in `ex12.yml`.
+The value of `should_output` is defined by:
+
+```math
+\tag{ex12:1}
+\begin{array}{ll}
+\mathrm{if} \: \mathrm{switch} > 50  \: & \mathrm{should\_output}=true, \\
+\mathrm{if} ( 25 \leq \mathrm{switch} \leq 50  )  \: & \mathrm{no \: update \: of \: should\_output}, \\
+\mathrm{if}  \: \mathrm{switch} < 25 \: & \mathrm{should\_output}=false.
+\end{array}
+```
+
+* At initialization of %PDI, define the `should_output` to false.
+
+* At finalization, release the variable `should_output`.
+
+* When `switch` is share with %PDI, set the value of `should_output` according to it definition (see equation (ex12:1)).
+
+* Enable the writting of main_field according to the value of `should_output`.
+
+### Ex13. deisa plugin (in progress)
 
 ## What next ?
 
 In this tutorial, you used the C API of %PDI and from YAML, you used the 
-\ref trace_plugin "Trace", \ref Decl_HDF5_plugin "Decl'HDF5", and
+\ref trace_plugin "Trace", the \ref user_code_plugin "user_code" \ref Decl_HDF5_plugin "Decl'HDF5", and
 \ref pycall_plugin "Pycall" plugins.
 
 If you want to try PDI from another language (Fortran, python, ...) or if you
