@@ -3,7 +3,7 @@ alpha: 0.125
 # global data-size (excluding spacer for boundary conditions or ghosts)
 global_size: { height: 60, width: 12 }
 # degree of parallelism (number of blocks in each dimension)
-parallelism: { height: 2, width: 2 }
+parallelism: { height: 1, width: 1 }
 # PDI configuration
 pdi:
   #*** describe the metadata dsize, psize, pcoord
@@ -15,6 +15,6 @@ pdi:
   plugins:
     trace:
     decl_hdf5:
-    #*** use the decl_hdf5 plugin, write a file of the metadata above, one file per rank
+    #*** use the decl_hdf5 plugin to write in the file ex3.h5 the data above (dsize, psize, pcoord)
     #...
     

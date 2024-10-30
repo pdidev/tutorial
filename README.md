@@ -1,13 +1,13 @@
-
-
 # Hands-on tutorial {#Hands_on}
 
 In this tutorial, you will build a PDI-enabled application step-by-step from a
 PDI-free base.
 You will end-up building the C version of the
 \ref PDI_example "example provided with PDI" for the the
-\ref trace_plugin "Trace", \ref Decl_HDF5_plugin "Decl'HDF5", and
-\ref pycall_plugin "Pycall" plugins.
+\ref trace_plugin "Trace", \ref Decl_HDF5_plugin "Decl'HDF5",
+\ref pycall_plugin "Pycall" plugins,
+\ref user_code_plugin "user_code" plugin, and
+\ref set_value_plugin "set_value" plugin.
 Additional [examples are available for the other plugins](https://gitlab.maisondelasimulation.fr/pdidev/pdi/-/tree/master/example).
 
 
@@ -60,8 +60,14 @@ pdirun mpirun -n 4 ./ex?
 Where `?` is the number of the exercise and 4 represents the number of MPI
 processes to use.
 
-Now you're ready to work, **good luck**!
+#### Execution with storage of the log
 
+To store the logs for later comparison, you can use the following command (for
+example for ex2.):
+```bash
+pdirun mpirun -n 1 ./ex2 | tee ex2.result.log
+```
+Now you're ready to work, **good luck**!
 
 ## PDI-free code
 
@@ -108,7 +114,6 @@ read this file.
 mpirun -np 4 ./ex1
 ```
 
-
 ## PDI core & trace plugin
 
 ### Ex2. Now with some PDI
@@ -116,6 +121,11 @@ mpirun -np 4 ./ex1
 Ex2. is the same code as that of ex1. with %PDI calls added in `main` function.
 
 * Examine the source code, compile it and run it.
+
+In our YAML file (`ex2.yml`), the `pdi` key is added. The sub-tree, defined after this key, is the %PDI specification tree passed to %PDI at initialization.
+In this tutorial, we will add metada, data and plugins in this sub-tree. In this exercice, we focus only in adding the Trace plugin. The %PDI \ref trace_plugin "Trace plugin" is used to trace %PDI calls on the standard output.
+
+* To observe %PDI calls on the standard output, add \ref trace_plugin "Trace plugin" (`trace`) plugin of %PDI in our YAML file (`ex2.yml`).
 
 * In the C file (`ex2.c`), add `::PDI_share` and `::PDI_reclaim` call to share some data with %PDI:
 
@@ -125,7 +135,20 @@ Ex2. is the same code as that of ex1. with %PDI calls added in `main` function.
 
   The sharring data is defined in the line that start with "//***" in `ex2.c`. You need to replace the following line "//..." by your lines of code with %PDI instructions (`::PDI_share` and `::PDI_reclaim`).
 
-* To observe %PDI activities on the standard output, add \ref trace_plugin "Trace plugin" (`trace`) plugin of %PDI in our YAML file (`ex2.yml`).
+Here, the objective is to match the output of `ex2.log` file. In this file, only the line corresponding to `[Trace-plugin]` have been kept.
+Moreover, the time are given for each %PDI calls. We need to remove this information for the \ref trace_plugin "Trace plugin" for comparison.
+It is done by adding this line in the sub-tree of this plugin.
+
+```yaml
+  logging: { pattern: '[PDI][%n-plugin] *** %l: %v' }
+```
+
+* Add the previous line, in the sub-tree of \ref trace_plugin "Trace plugin" (don't forget to indent this line correctly).
+Using the previous section [Execution with storage of the log](#execution-with-storage-of-the-log), run this exercise in saving the output log in the `ex2.result.log`. After that you can easily check if the files are the same by running the command:
+
+```bash
+  diff ex2.log <(grep Trace-plugin ex2.result.log)
+```
 
 \attention
 Notice that some share/reclaim pairs come one after the other while others are
@@ -133,8 +156,15 @@ interlaced.
 Is one better than the other?
 If you do not know the answer to this question, just wait until Ex5. :)
 
+\attention
+In this exercice, the variable shared and the variable reclaimed are not defined in the YAML file.
 
 ## Decl'HDF5 plugin
+
+In exercice 3 to exercice 9 included, we present the \ref Decl_HDF5_plugin "Decl'HDF5 plugin" (`decl_hdf5`).
+We will introduce some keyword (`when`, `datasets`, ...) in the sub-tree of `decl_hdf5` in configuration YAML file.
+
+All keywords are defined in the last section **full configuration example** of \ref Decl_HDF5_plugin "Decl'HDF5 plugin"(see Plugins chapter).
 
 ### Ex3. HDF5 through PDI
 
@@ -148,30 +178,23 @@ In its configuration, the `dsize` variable is defined at a metadata for %PDI.
 
 * Write the `psize` and `pcoord` variables in addition to `dsize` in a file `ex3.h5` with one MPI process. 
 
+You should be able to match the expected output described in `ex3.h5dump` (use the h5dump command to see the content of your HDF5 output file in the same format as the h5dump file). You can easily check if the files are the same by running:
+```bash
+  diff ex3.h5dump <(h5dump ex3*.h5)
+```
+
 To achieve this result, you will need to fill 2 sections in the YAML file.
 
-1. The `metadata` (or `data`) section to indicate to %PDI the \ref datatype_node type of the fields that are exposed.
+1. The `data` section to indicate to %PDI the \ref datatype_node type of the fields that are exposed.
 
 2. The `decl_hdf5` section for the configuration of the \ref Decl_HDF5_plugin "Decl'HDF5 plugin". 
 
 \warning
 If you relaunch the executable, remember to delete your old `ex3.h5` file before, otherwise the data will not be changed.
 
-To change this behaviour, you need to use the parameter `collision_policy`. 
-In the \ref Decl_HDF5_plugin "Decl'HDF5 plugin", this parameter allow to define what to do when writing 
-to a file or dataset that already exists. (Jacques ????)
-
 \warning
 With more than one MPI rank is used, we write to the same location in the file independently of the MPI rank. 
-For this reason, this exercise will fail.
-
-To run this code in parallel, you have two options:
-  1. select one rank to write the output file.
-  2. change the file name to have one output file per rank. This is what we chose in the solution. 
-  The solution correspond to this exercise:
-
-    * Write the `psize` and `pcoord` variables in addition to `dsize` in a different file `ex3-meta-**.h5` 
-      for each process where `**`give the rank in each direction of the MPI process.
+For this reason, this exercise will fail. In the following exercise, you show how to do this.
 
 ### Ex4. Writing some real data
 
@@ -192,31 +215,49 @@ Remark:
 multiple write blocks instead of a single one as before in order to write to
 multiple files.
 
-2. Also notice that this example now runs in parallel with 4 processes.
-Therefore it uses "$-expressions" to specify the file names and ensure we
-do not write to the same file from distinct ranks (`dsize`, `psize`).
+2. Notice that we have moving fields (`dsize`, m`psize` and ̀`pcoord`) in the `metadata` section.
 
-3. Unlike the other fields manipulated until now, the type of `main_field` is not
-fully known, its size is dynamic. 
-By moving other fields in the `data` section, you can reference them from
-"$-expressions" in the configuration file.
+``yaml
+pdi:
+  metadata: # small values for which PDI keeps a copy
+    #*** add ii as metadata
+    #...
+    dsize: { type: array, subtype: int, size: 2 }
+    psize: { type: array, subtype: int, size: 2 }
+    pcoord: { type: array, subtype: int, size: 2 }
+```
+you can reference them from "$-expressions" in the configuration file.
+
+\attention A definition of `metadata` and `data` can be:
+- `metadata`: small values for which PDI keeps a copy. These value can be referenced by using "$-expressions" in the configuration YAML file.
+- `data`    : values for which PDI does not keep a copy.
+herefore it uses "$-expressions" to specify the file names and ensure we do not write to the same file from distinct ranks (`dsize`, `psize`).
+3. Also notice that this example now runs in parallel with 4 processes.
+Therefore it uses "$-expressions" to specify the file names and ensure we do not write to the same file from distinct ranks (`dsize`, `psize`).
+
+4. Unlike the other fields manipulated until now, the type of `main_field` is not fully known, its size is dynamic.
+Therefore, we need to define the size in YAML file for %PDI using "$-expressions".
+
 
 Ex4.1: 
 * Describe the temperature data on the current iteration by using a $-expression to specify the size of `main_field` in `data` section.
 
-Unlike the other fields manipulated until now, `main_field` is exposed multiple
-times along execution.
+Unlike the other fields manipulated until now, `main_field` is exposed multiple times along execution.
 In order not to overwrite it every time it is exposed, you can write one file per rank and per iteration. 
-Or, you can write only one iteration data using the `when: &ii=1` clause
+Or, you can write at the first iteration (`ii=1`) with the directive `when`.
 
 Ex4.2:
 * Add the iteration loop `ii` as a metadata.
 * Write the curent temperature field in one file per process and per iteration.
-* Or write the curent temperature field in one file per process for iteration 1.
+
+You should be able to match the expected output described in `ex4.h5dump`. You can easily check if the files are the same by running:
+```bash
+  diff ex4.h5dump <(h5dump ex4-data-*.h5)
+```
 
 ### Ex5. Introducing events
 
-In ex4., two variables were written to `ex4-data*.h5`, but the file was opened
+In ex4, two variables were written to `ex4-data*.h5`, but the file was opened
 and closed for each and every write.
 Since Decl'HDF5 only sees the data appear one after the other, it does not keep
 the file open.
@@ -227,14 +268,20 @@ You have to use events for that, you will modify both the C and YAML file in thi
 
 * Examine the YAML file and source code.
 
-* Ex 5.1: In the C file, Add (Create???) a %PDI event named `loop` when both `ii` and
+* Ex 5.1: In the C file, add a %PDI event named `loop` when both `ii` and
   `main_field` are shared.
+
   With the \ref trace_plugin "Trace plugin", check that the event is indeed
-  triggered at the expected time.
+  triggered at the expected time as described in `ex5.log` (only the lines
+  matching `[Trace-plugin]` have been kept). Using the previous section [Execution with storage of the log](#execution-with-storage-of-the-log), run  this exercise in saving the output log in the `ex5.result.log`. After that you can easily check if the files are the same by running:
+```bash
+  diff ex5.log <(grep Trace-plugin ex5.result.log)
+```
 
 * Ex 5.2: Use the `on_event` mechanism to trigger the write of `ii` and `main_field` 
   for event `loop` only. This mechanism can be combined with a `when` directive, in that case the
-  write is only executed when both mechanisms agree. Add `when` directive to write only at iteraion 1 and 2.  
+  write is only executed when both mechanisms agree (In this directive, the symbol `&` is a local `and` logical operation).
+  Add `when` directive to write only at iteration 1 and 2.
  
 * Ex 5.3: Also notice the extended syntax that make it possible to write data to a
   dataset whose name differs from the %PDI variable name.
@@ -263,7 +310,11 @@ This case is however handled by `::PDI_multi_expose` call that exposes all data,
 then triggers an event and finally does all the reclaim in reverse order.
 
 * Replace the remaining `::PDI_share`/`::PDI_reclaim` by `::PDI_expose`s and
-  `::PDI_multi_expose`s and ensure that your code keeps the exact same behaviour as in previous exercise.
+  `::PDI_multi_expose`s and ensure that your code keeps the exact same behaviour as in previous exercise by comparing its trace to `ex6.log` (only the lines matching `[Trace-plugin]`
+  have been kept). Using the previous section [Execution with storage of the log](#execution-with-storage-of-the-log),run  this exercise in saving the output log in the `ex6.result.log`. After that you can easily check if the files are the same by running:
+```bash
+  diff ex6.log <(grep Trace-plugin ex6.result.log)
+```
 
 In summary:
   `::PDI_expose` equivalent to `::PDI_share` + `::PDI_reclaim` 
@@ -286,8 +337,11 @@ As you can notice, now the dataset is independently described in the file.
 You can achieve this by using the `memory_selection` directive in ex7.yml that specifies
 the selection of data from memory to write.
 
+You should be able to match the expected output described in `ex7.h5dump`. You can easily check if the files are the same by running:
+```bash
+  diff ex7.h5dump <(h5dump ex7*.h5)
+```
 ![graphical representation](PDI_hdf5_selection.jpg)
-
 
 ### Ex8. Selecting on the dataset size
 
@@ -312,7 +366,13 @@ time-steps. (Jacques cela n'est plus valide maintenant).
 You can achieve this by using the `dataset_selection` directive that specifies
 the selection where to write in the file dataset.
 
+You should be able to match the expected output described in `ex8.h5dump`. You can easily check if the files are the same by running:
+```bash
+  diff ex8.h5dump <(h5dump ex8*.h5)
+```
+
 ![graphical representation](PDI_hdf5_selection_advanced.jpg)
+
 
 
 ## parallel Decl'HDF5
@@ -323,8 +383,13 @@ Running the code from the previous exercises in parallel should already work and
 yield one file per process containing the local data block.
 In this exercise you will write one single file `ex9.h5`(see `ex9.yml`) with parallel HDF5 whose content
 should be independent from the number of processes used.
+
+**Remark:** You need to do this exercise a parallel verison of HDF5 and the \ref Decl_HDF5_plugin "Decl'HDF5 plugin" compile in parallel.
+
 Once again, you only need to modify the YAML file in this exercise, no need to
 touch the C file.
+
+
 
 * Examine the YAML file and compile the code.
 
@@ -340,6 +405,10 @@ touch the C file.
   You will need to make a selection in the dataset that depends on the global
   coordinate of the local data block (use `pcoord`).
 
+You should be able to match the expected output described in `ex9.h5dump`. You can easily check if the files are the same by running:
+```bash
+  diff ex9.h5dump <(h5dump ex9*.h5)
+```
 
 ![graphical representation of the parallel I/O](PDI_hdf5_parallel.jpg)
 
@@ -381,6 +450,11 @@ The dataset name is however explicitly specified now because it does not match
 the %PDI variable name anymore, you will instead write a new variable exposed
 from python.
 
+You should be able to match the expected output described in `ex10.h5dump`. You can easily check if the files are the same by running:
+```bash
+  diff ex10.h5dump <(h5dump ex10*.h5)
+```
+
 \attention
 In a more realistic setup, one would typically not write much code in the YAML
 file directly, but would instead call functions specified in a `.py` file on
@@ -390,7 +464,7 @@ the side.
 
 ### Ex11. user_code plugin
 
-In this exercice, you will learn how to call a user C function in %PDI with the user_code plugin.
+In this exercice, you will learn how to call a user C function in %PDI with the \ref user_code_plugin user_code plugin.
 
 First of all, you need to recompile %PDI in adding in CMakeLists.txt
 ```cmake
@@ -413,7 +487,7 @@ using the keyword `on_data` in the \ref user_code_plugin "user_code".
 
 * Check that the call of C function defined by `on_event` and `on_data` is indeed done at the expected order for `::PDI_multi_expose` for the event `finalization` (see the log).
 
-**Remark:** The keyword `on_event` and `on_data` are also to defined in other plugin to execute instructions in `::PDI_event` and `::PDI_share` respectively. 
+**Remark:** The keyword `on_event` and `on_data` are also to defined in other plugin to execute instructions in `::PDI_event` and `::PDI_share` respectively.
 
 ### Ex12. set_value plugin
 
@@ -421,12 +495,12 @@ The \ref set_value_plugin "set_value" plugin allows setting values to data and m
 In the  \ref set_value_plugin "set_value", the user can trigger action upon: `on_init`, `on_finalize`, `on_data`, `on_event`.
 Here, it is the main-feature of the plugin we have five different type of action:
   Share data (`share`) - plugin will share new allocated data with given values
-  Release data  (`release`) -plugin will release shared data
-  Expose data (`expose`)plugin will expose new allocated data with given values
+  Release data  (`release`) - plugin will release shared data
+  Expose data (`expose`) - plugin will expose new allocated data with given values
   Set data (`set`) - plugin will set given values to the already shared data
   Calling an event (`event`) - plugin will call an event
 
-**Remark:** example with keywords: `share`, `release`, `expose`, set and event are given at given at the end of section "set_value" plugin in the documentation.
+**Remark:** example with keywords: `share`, `release`, `expose`, `set and` event are given at given at the end of section "set_value" plugin in the documentation.
 
 In this exercice, we expose a random integer to %PDI at each iteration (`switch`).
 This interger is used to enable or to disable the writting of the output.
@@ -451,13 +525,13 @@ The value of `should_output` is defined by:
 
 * Enable the writting of main_field according to the value of `should_output`.
 
-### Ex13. deisa plugin (in progress)
+### Ex14. deisa plugin (in progress)
 
 ## What next ?
 
 In this tutorial, you used the C API of %PDI and from YAML, you used the 
-\ref trace_plugin "Trace", the \ref user_code_plugin "user_code" \ref Decl_HDF5_plugin "Decl'HDF5", and
-\ref pycall_plugin "Pycall" plugins.
+\ref trace_plugin "Trace", the \ref Decl_HDF5_plugin "Decl'HDF5", the \ref user_code_plugin "user_code", the
+\ref pycall_plugin "Pycall" plugins, the \ref user_code_plugin user_code plugin and the \ref set_value_plugin "set_value" plugin.
 
 If you want to try PDI from another language (Fortran, python, ...) or if you
 want to experiment with other \ref Plugins "PDI plugins", have a look at the
