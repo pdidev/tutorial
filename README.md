@@ -133,7 +133,7 @@ In this tutorial, we will add metada, data and plugins in this sub-tree. In this
   * iteration number
   * current data
 
-  The sharring data is defined in the line that start with "//***" in `ex2.c`. You need to replace the following line "//..." by your lines of code with %PDI instructions (`::PDI_share` and `::PDI_reclaim`).
+  The sharing data is defined in the line that start with "//***" in `ex2.c`. You need to replace the following line "//..." by your lines of code with %PDI instructions (`::PDI_share` and `::PDI_reclaim`).
 
 Here, the objective is to match the output of `ex2.log` file. In this file, only the line corresponding to `[Trace-plugin]` have been kept.
 Moreover, the time are given for each %PDI calls. We need to remove this information for the \ref trace_plugin "Trace plugin" for comparison. It is done by adding this line in the sub-tree of this plugin.
