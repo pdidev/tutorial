@@ -1,6 +1,4 @@
 [PDI][Trace-plugin] *** info: Welcome!
-[10:57:04][PDI] *** warning: Data is not defined in specification tree
-[10:57:04][PDI] *** info: Initialization successful
 [PDI][Trace-plugin] *** info: =>>   data becoming available in the store: pcoord
 [PDI][Trace-plugin] *** info: <<= data stop being available in the store: pcoord
 [PDI][Trace-plugin] *** info: =>>   data becoming available in the store: dsize
@@ -51,5 +49,4 @@
 [PDI][Trace-plugin] *** info: <<= data stop being available in the store: ii
 [PDI][Trace-plugin] *** info: =>>   data becoming available in the store: main_field
 [PDI][Trace-plugin] *** info: <<= data stop being available in the store: main_field
-[10:57:04][PDI] *** info: Finalization
 [PDI][Trace-plugin] *** info: Goodbye!
