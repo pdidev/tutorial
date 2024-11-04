@@ -136,12 +136,12 @@ In this tutorial, we will add metada, data and plugins in this sub-tree. In this
   The sharring data is defined in the line that start with "//***" in `ex2.c`. You need to replace the following line "//..." by your lines of code with %PDI instructions (`::PDI_share` and `::PDI_reclaim`).
 
 Here, the objective is to match the output of `ex2.log` file. In this file, only the line corresponding to `[Trace-plugin]` have been kept.
-Moreover, the time are given for each %PDI calls. We need to remove this information for the \ref trace_plugin "Trace plugin" for comparison.
-It is done by adding this line in the sub-tree of this plugin.
+Moreover, the time are given for each %PDI calls. We need to remove this information for the \ref trace_plugin "Trace plugin" for comparison. It is done by adding this line in the sub-tree of this plugin.
 
 ```yaml
   logging: { pattern: '[PDI][%n-plugin] *** %l: %v' }
 ```
+Additionnaly, we run in sequential to facilitate the comparaison between logs (In parallel each rank send a `trace` message and the order of writting can be different).
 
 * Add the previous line, in the sub-tree of \ref trace_plugin "Trace plugin" (don't forget to indent this line correctly).
 Using the previous section [Execution with storage of the log](#execution-with-storage-of-the-log), run this exercise in saving the output log in the `ex2.result.log`. After that you can easily check if the files are the same by running the command:
