@@ -6,8 +6,8 @@ global_size: { height: 60, width: 12 }
 parallelism: { height: 1, width: 1 }
 # PDI configuration
 pdi:
-  #*** describe the metadata dsize, psize, pcoord
-  metadata:
+  #*** describe the data dsize, psize, pcoord
+  data:
     dsize: {type: array, subtype: int, size: 2}
     #... psize
     #... pcoord
