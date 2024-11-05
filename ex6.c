@@ -224,7 +224,7 @@ int main( int argc, char* argv[] )
 	//...
 	PDI_share("ii",         &ii, PDI_OUT);
 	PDI_share("main_field", cur, PDI_OUT);
-	PDI_event("finalize");
+	PDI_event("finalization");
 	PDI_reclaim("main_field");
 	PDI_reclaim("ii");
 	

@@ -3,7 +3,7 @@ alpha: 0.125
 # global data-size (excluding spacer for boundary conditions or ghosts)
 global_size: { height: 60, width: 12 }
 # degree of parallelism (number of blocks in each dimension)
-parallelism: { height: 2, width: 2 }
+parallelism: { height: 1, width: 1 }
 # PDI configuration
 pdi:
   metadata: # small values for which PDI keeps a copy
@@ -15,6 +15,7 @@ pdi:
     main_field: { type: array, subtype: double, size: [ '$dsize[0]', '$dsize[1]' ] }
   plugins:
     trace:
+      logging: { pattern: '[PDI][%n-plugin] *** %l: %v' }
     decl_hdf5:
       - file: ex5-meta${pcoord[0]}x${pcoord[1]}.h5
         write: [ dsize, psize ]

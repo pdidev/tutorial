@@ -231,9 +231,9 @@ you can reference them from "$-expressions" in the configuration file.
 \attention A definition of `metadata` and `data` can be:
 - `metadata`: small values for which PDI keeps a copy. These value can be referenced by using "$-expressions" in the configuration YAML file.
 - `data`    : values for which PDI does not keep a copy.
-herefore it uses "$-expressions" to specify the file names and ensure we do not write to the same file from distinct ranks (`dsize`, `psize`).
+
 3. Also notice that this example now runs in parallel with 4 processes.
-Therefore it uses "$-expressions" to specify the file names and ensure we do not write to the same file from distinct ranks (`dsize`, `psize`).
+To ensure we do not write to the same file, we need  to specify the file name using "$-expressions" for the different process rank. 
 
 4. Unlike the other fields manipulated until now, the type of `main_field` is not fully known, its size is dynamic.
 Therefore, we need to define the size in YAML file for %PDI using "$-expressions".
@@ -243,12 +243,11 @@ Ex4.1:
 * Describe the temperature data on the current iteration by using a $-expression to specify the size of `main_field` in `data` section.
 
 Unlike the other fields manipulated until now, `main_field` is exposed multiple times along execution.
-In order not to overwrite it every time it is exposed, you can write one file per rank and per iteration. 
-Or, you can write at the first iteration (`ii=1`) with the directive `when`.
+In order not to overwrite it every time it is exposed, you propose to write one file per rank only at the first iteration (`ii=1`) with the directive `when`.
 
 Ex4.2:
 * Add the iteration loop `ii` as a metadata.
-* Write the curent temperature field in one file per process and per iteration.
+* Write the curent temperature field in one file per process at first iteration.
 
 You should be able to match the expected output described in `ex4.h5dump`. You can easily check if the files are the same by running:
 ```bash
@@ -259,14 +258,34 @@ You should be able to match the expected output described in `ex4.h5dump`. You c
 
 In ex4, two variables were written to `ex4-data*.h5`, but the file was opened
 and closed for each and every write.
+
 Since Decl'HDF5 only sees the data appear one after the other, it does not keep
-the file open.
-Since `ii` and `main_field` are shared in an interlaced way, they are both
+the file open. Since `ii` and `main_field` are shared in an interlaced way, they are both
 available to %PDI at the same time and could be written without opening the file
 twice.
 You have to use events for that, you will modify both the C and YAML file in this exercise.
 
+In ex4, the name of the datasets of ".h5" file are "ii" and "main_field"(see ex4.h5dump).
+Using the keyword `dataset`, it possible to have a different name from the %PDI variable name.
+
+The definition of the dataset is given after the definition of the data 
+```yml
+       write:
+          ii: # name of the PDI data to write
+            dataset: 'new_name' 
+```
+
+
+Using mechanism, it possible to define the use the group object of hdf5 see https://support.hdfgroup.org/documentation/hdf5/latest/_h5_g__u_g.html.
+If you want to add dataset `my_data` in the sub-group `groupA` of the group `my_group`, the name of the dataset will be:
+'''yaml
+'my_group/groupA/my_data'.
+'''
+where the symbol "/" is used to separate groups in path.
+
 * Examine the YAML file and source code.
+
+Remark: This exercise is done in sequential because we ex5.log.
 
 * Ex 5.1: In the C file, add a %PDI event named `loop` when both `ii` and
   `main_field` are shared.
@@ -282,12 +301,13 @@ You have to use events for that, you will modify both the C and YAML file in thi
   for event `loop` only. This mechanism can be combined with a `when` directive, in that case the
   write is only executed when both mechanisms agree (In this directive, the symbol `&` is a local `and` logical operation).
   Add `when` directive to write only at iteration 1 and 2.
- 
-* Ex 5.3: Also notice the extended syntax that make it possible to write data to a
-  dataset whose name differs from the %PDI variable name.
-  Use this mechanism to write `main_field` and `ii` at iterations 1 and 2, in two
-  distinct groups `iter1` and `iter2`.
 
+* Ex 5.3: using the keyword "dataset" , write `main_field` and `ii` at iterations 1 and 2, in two distinct groups `iter1` and `iter2`.
+
+You should be able to match the expected output described in `ex5.h5dump`. You can easily check if the files are the same by running:
+```bash
+  diff ex5.h5dump <(h5dump ex5-data-*.h5)
+```
 
 ### Ex6. Simplifying the code
 
@@ -298,6 +318,8 @@ For once, there is no need to modify the YAML file here, you only need to modify
 the C file in this exercise.
 
 * Examine the source code, compile it and run it.
+
+Remark: At the end of the iteration loop, a new event `finalization` is added.
 
 There are lots of matched `::PDI_share`/`::PDI_reclaim` in the code.
 
@@ -311,7 +333,7 @@ then triggers an event and finally does all the reclaim in reverse order.
 
 * Replace the remaining `::PDI_share`/`::PDI_reclaim` by `::PDI_expose`s and
   `::PDI_multi_expose`s and ensure that your code keeps the exact same behaviour as in previous exercise by comparing its trace to `ex6.log` (only the lines matching `[Trace-plugin]`
-  have been kept). Using the previous section [Execution with storage of the log](#execution-with-storage-of-the-log),run  this exercise in saving the output log in the `ex6.result.log`. After that you can easily check if the files are the same by running:
+  have been kept). Using the previous section [Execution with storage of the log](#execution-with-storage-of-the-log), run  this exercise in saving the output log in the `ex6.result.log`. After that you can easily check if the files are the same by running:
 ```bash
   diff ex6.log <(grep Trace-plugin ex6.result.log)
 ```
