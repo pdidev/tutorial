@@ -378,18 +378,24 @@ in the dataset in addition to the selection in memory from the previous
 exercise.
 In this exercise, you don't want to have one output file per iteration.
 You will write the 2D array from the previous exercise as a slice of 3D dataset
-including a dimension for time.
+including a dimension for time for iteration 1 to 3 inclusive.
 
 Once again, you only need to modify the YAML file in this exercise, no need to
 touch the C file.
 
 * Examine the YAML file and compile the code.
 
-Notice how the dataset is now extended with an additional dimension for three
-time-steps. (Jacques cela n'est plus valide maintenant).
+Notice how the dataset is extended with an additional dimension 
+'''yaml
+      datasets:
+        #*** add one dimention to main_field datasets to represent the time step
+        main_field: { type: array, subtype: double, size: [..., '$dsize[0]-2', '$dsize[1]-2' ] }
+'''
+
+* replace `...` in previous line by the number of iteration time, we want to save in this exercise.
 
 * Write the 2D selection from `main_field` at iterations 1 to 3 inclusive into
-  slices at coordinate 0 to 2 of first dimension of the 3D dataset.
+  slices at coordinate 0 to 2 of the first dimension of the 3D dataset.
 
 You can achieve this by using the `dataset_selection` directive that specifies
 the selection where to write in the file dataset.

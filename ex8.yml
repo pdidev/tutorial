@@ -21,10 +21,10 @@ pdi:
         main_field: { type: array, subtype: double, size: [..., '$dsize[0]-2', '$dsize[1]-2' ] }
       write:
         main_field:
-          #*** modify the when clause to match the time dimension defined in main_field datasets 
+          #*** modify the when clause to match the time dimension defined in main_field datasets
           #...
           memory_selection:
             size: ['$dsize[0]-2', '$dsize[1]-2']
             start: [1, 1]
-          #*** use dataset_selection to specify the position of data at each time step 
+          #*** use dataset_selection to specify the position of data at each time step
           #...
