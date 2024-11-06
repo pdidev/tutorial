@@ -129,7 +129,7 @@ In this tutorial, we will add metada, data and plugins in this sub-tree. In this
 
 * In the C file (`ex2.c`), add `::PDI_share` and `::PDI_reclaim` call to share some data with %PDI:
 
-  * domain configuration information: local size, number of block in each direction and rank coordinate in each 
+  * domain configuration information: local size, number of block in each direction and rank coordinate in each direction
   * iteration number
   * current data
 
@@ -141,7 +141,7 @@ Moreover, the time are given for each %PDI calls. We need to remove this informa
 ```yaml
   logging: { pattern: '[PDI][%n-plugin] *** %l: %v' }
 ```
-Additionnaly, we run in sequential to facilitate the comparaison between logs (In parallel each rank send a `trace` message and the order of writting can be different).
+Additionnaly, we run in sequential to facilitate the comparison between logs (In parallel each rank send a `trace` message and the order of writting can be different).
 
 * Add the previous line, in the sub-tree of \ref trace_plugin "Trace plugin" (don't forget to indent this line correctly).
 Using the previous section [Execution with storage of the log](#execution-with-storage-of-the-log), run this exercise in saving the output log in the `ex2.result.log`. After that you can easily check if the files are the same by running the command:
@@ -285,7 +285,7 @@ where the symbol "/" is used to separate groups in path.
 
 * Examine the YAML file and source code.
 
-Remark: This exercise is done in sequential because we ex5.log.
+Remark: This exercise is done in sequential to facilitate the comparison between logs.
 
 * Ex 5.1: In the C file, add a %PDI event named `loop` when both `ii` and
   `main_field` are shared.
@@ -296,6 +296,8 @@ Remark: This exercise is done in sequential because we ex5.log.
 ```bash
   diff ex5.log <(grep Trace-plugin ex5.result.log)
 ```
+
+Remark: This exercise is done in sequential because we compare with ex5.log.
 
 * Ex 5.2: Use the `on_event` mechanism to trigger the write of `ii` and `main_field` 
   for event `loop` only. This mechanism can be combined with a `when` directive, in that case the
@@ -319,7 +321,9 @@ the C file in this exercise.
 
 * Examine the source code, compile it and run it.
 
-Remark: At the end of the iteration loop, a new event `finalization` is added.
+**Remark:** At the end of the iteration loop, a new event `finalization` is added.
+
+**Remark:** This exercise will be lunched in sequential to facilitate the comparison between logs.
 
 There are lots of matched `::PDI_share`/`::PDI_reclaim` in the code.
 
@@ -348,6 +352,8 @@ In this exercise, you will only write a selection of the 2D array in memory
 excluding ghosts to the HDF5 file.
 Once again, you only need to modify the YAML file in this exercise, no need to
 touch the C file.
+
+**Remark:** This exercise will run with 4 MPI process.
 
 * Examine the YAML file and compile the code.
 
@@ -406,11 +412,9 @@ yield one file per process containing the local data block.
 In this exercise you will write one single file `ex9.h5`(see `ex9.yml`) with parallel HDF5 whose content
 should be independent from the number of processes used.
 
-**Remark:** You need to do this exercise a parallel verison of HDF5 and the \ref Decl_HDF5_plugin "Decl'HDF5 plugin" compile in parallel.
+**Remark:** You need to do this exercise with a parallel version of HDF5 and the \ref Decl_HDF5_plugin "Decl'HDF5 plugin" compile in parallel.
 
-Once again, you only need to modify the YAML file in this exercise, no need to
-touch the C file.
-
+Once again, you only need to modify the YAML file in this exercise, no need to touch the C file.
 
 
 * Examine the YAML file and compile the code.
@@ -547,7 +551,7 @@ The value of `should_output` is defined by:
 
 * Enable the writting of main_field according to the value of `should_output`.
 
-### Ex14. deisa plugin (in progress)
+### Ex13. deisa plugin (in progress)
 
 ## What next ?
 
