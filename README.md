@@ -422,12 +422,15 @@ should be independent from the number of processes used.
 
 Once again, you only need to modify the YAML file in this exercise, no need to touch the C file.
 
-
 * Examine the YAML file and compile the code.
 
-* Load the `mpi` plugin was loaded to make sharing MPI communicators possible.
+* Load the `mpi` plugin to make sharing MPI communicators possible.
 
 * Define the `communicator` directive of the \ref Decl_HDF5_plugin "Decl'HDF5 plugin" to switch to parallel I/O for HDF5.
+  Set the value of the communicator to MPI_COMM_WORLD.
+
+**Notice:** we have added the directive `collision_policy: write_into` of the \ref Decl_HDF5_plugin "Decl'HDF5 plugin" (see section COLLISION_POLICY). 
+This parmeter is used to define what to do when writing to a file or dataset that already exists.
 
 * Set the size of the dataset to take the global (parallel) array size into account. 
   You will need to multiply the local size by the number of processes in each
@@ -441,6 +444,10 @@ You should be able to match the expected output described in `ex9.h5dump`. You c
 ```bash
   diff ex9.h5dump <(h5dump ex9*.h5)
 ```
+
+\warning
+If you relaunch the executable, remember to delete your old `ex9.h5` file before, otherwise the data will not be changed.
+An other method, it is to change the value of `collision_policy` to `replace`. With this option, the file need to exist before to lunch the executable. 
 
 ![graphical representation of the parallel I/O](PDI_hdf5_parallel.jpg)
 
@@ -486,6 +493,9 @@ You should be able to match the expected output described in `ex10.h5dump`. You 
 ```bash
   diff ex10.h5dump <(h5dump ex10*.h5)
 ```
+
+\warning
+If you relaunch the executable, remember to delete your old `ex10.h5` file before, otherwise the data will not be changed.
 
 \attention
 In a more realistic setup, one would typically not write much code in the YAML
