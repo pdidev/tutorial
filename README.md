@@ -510,19 +510,30 @@ file directly, but would instead call functions specified in a `.py` file on the
 
 ### Ex11. user_code plugin
 
-In this exercice, you will learn how to call a user C function in %PDI with the \ref user_code_plugin user_code plugin.
+In this exercice, you will learn how to call a user C function in %PDI with the \ref user_code_plugin "user_code plugin".
 
-First of all, you need to recompile %PDI in adding in CMakeLists.txt
+* First of all, you need to recompile %PDI in adding in CMakeLists.txt (in repository of the tutorial)
 ```cmake
 set_target_properties(ex11 PROPERTIES ENABLE_EXPORTS TRUE)
 ```
-after adding the executable ex11.
+after the definition of executable `ex11`.
 
 The objective is to write the total mass of temperature on a file. This mass is computed in the C
 function `compute_mass` defined in `ex11.c`.
 
+* Examine the C file, the YAML file and compile the code.
+
+**Remark:** In the `compute_mass`function, the %PDI function `::PDI_access` and `::PDI_release` are called (see \ref annotation "Code annotation").
+For example,
+```c
+  int *iter;
+	PDI_access("ii", (void **)&iter, PDI_IN);
+	PDI_release("ii");
+```
+`::PDI_access` sets our pointer (`iter`) to the data location. We need to pass `PDI_IN` because data flows from PDI to our application. We also want to use `::PDI_release`, because `::PDI_reclaim` would end the sharing status of this descriptor and we reclaim this data later in main function
+
 The keyword `on_event` allows to call a C function inside `::PDI_event`. You can call a user C function inside the `::PDI_share`
-using the keyword `on_data` in the \ref user_code_plugin "user_code".
+using the keyword `on_data` in the \ref user_code_plugin "user_code plugin".
 
 * Modify the yaml file `ex11.yml` to open the file `mass.dat` at event “initialization”  for recording the total mass in calling `open_file` function.
 
@@ -568,7 +579,7 @@ The value of `should_output` is defined by:
 
 * When `switch` is share with %PDI, set the value of `should_output` according to it definition (see equation (ex12:1)).
 
-* Enable the writting of main_field according to the value of `should_output`.
+* Enable the writting of `main_field` according to the value of `should_output`.
 
 ### Ex13. deisa plugin (in progress)
 
