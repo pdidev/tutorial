@@ -123,7 +123,7 @@ Ex2. is the same code as that of ex1. with %PDI calls added in `main` function.
 * Examine the source code, compile it and run it.
 
 In our YAML file (`ex2.yml`), the `pdi` key is added. The sub-tree, defined after this key, is the %PDI specification tree passed to %PDI at initialization.
-In this tutorial, we will add metada, data and plugins in this sub-tree. In this exercice, we focus only in adding the Trace plugin. The %PDI \ref trace_plugin "Trace plugin" is used to trace %PDI calls on the standard output.
+In this tutorial, we will add metadata, data and plugins in this sub-tree. In this exercice, we focus only in adding the Trace plugin. The %PDI \ref trace_plugin "Trace plugin" is used to trace %PDI calls on the standard output.
 
 * To observe %PDI calls on the standard output, add \ref trace_plugin "Trace plugin" (`trace`) plugin of %PDI in our YAML file (`ex2.yml`).
 
@@ -136,7 +136,7 @@ In this tutorial, we will add metada, data and plugins in this sub-tree. In this
   The sharing data is defined in the line that start with "//***" in `ex2.c`. You need to replace the following line "//..." by your lines of code with %PDI instructions (`::PDI_share` and `::PDI_reclaim`).
 
 Here, the objective is to match the output of `ex2.log` file. In this file, only the line corresponding to `[Trace-plugin]` have been kept.
-Moreover, the time are given for each %PDI calls. We need to remove this information for the \ref trace_plugin "Trace plugin" for comparison. It is done by adding this line in the sub-tree of this plugin.
+Moreover, the time are given for each %PDI calls. To compare, we need to remove this information from the log. It is done by adding this line in the sub-tree of the trace plugin.
 
 ```yaml
   logging: { pattern: '[PDI][%n-plugin] *** %l: %v' }
@@ -144,7 +144,7 @@ Moreover, the time are given for each %PDI calls. We need to remove this informa
 Additionnaly, we run in sequential to facilitate the comparison between logs (In parallel each rank send a `trace` message and the order of writting can be different).
 
 * Add the previous line, in the sub-tree of \ref trace_plugin "Trace plugin" (don't forget to indent this line correctly).
-Using the previous section [Execution with storage of the log](#execution-with-storage-of-the-log), run this exercise in saving the output log in the `ex2.result.log`. After that you can easily check if the files are the same by running the command:
+Using the previous section [Execution with storage of the log](#execution-with-storage-of-the-log), run this exercise in saving the output log in the file `ex2.result.log`. After that you can easily check if the files are the same by running the command:
 
 ```bash
   diff ex2.log <(grep Trace-plugin ex2.result.log)
@@ -215,7 +215,7 @@ Remark:
 multiple write blocks instead of a single one as before in order to write to
 multiple files.
 
-2. Notice that we have moving fields (`dsize`, m`psize` and ̀`pcoord`) in the `metadata` section.
+2. Notice that we have moving fields (`dsize`, `psize` and ̀`pcoord`) in the `metadata` section.
 
 ``yaml
 pdi:
@@ -461,28 +461,33 @@ to post-process the data in situ before writing it to HDF5.
 Here, you will write the square root of the raw data to HDF5 instead of the
 data itself.
 
-* Examine the YAML file and compile the code.
+**Remark:** You need to do this exercise with the \ref pycall_plugin "Pycall plugin".
 
-Notice that the Decl'HDF5 configuration was simplified, no memory selection is
-applied, the when condition disappeared.
+* Examine the YAML file and compile the code.
 
 * Load the \ref pycall_plugin "Pycall plugin"
 
 * Enable this previous plugin when the "loop" event is triggered.
 
 Some variables of the python script inside `ex10.yml` are not defined. 
-The `with` section allow to specifie some input variables (parameters) to pass to Python as a
-set of "$-expressions". The parameters can be given as multiple blocks.
+The `with` directive of this plugin allows to specify input variables (parameters) to pass to Python as a set of "$-expressions". 
+These parameters can be given as multiple blocks. 
 
 * Add a `with` block with the missing parameter to let the Python code process
-  the data exposed in `main_field`.  (`main_field` or `transformed_field` ???? Jacques)
-
-* Add the missing parameter to the `with` block to let the Python code process
   the data exposed in `main_field`.
 
 * Use the keyword `exec` of \ref pycall_plugin "Pycall plugin" and decomment the python script.
 
-* Modify the Decl'HDF5 configuration to write the new data exposed (`transformed_field`) from Python.
+Notice that the Decl'HDF5 configuration was simplified, no memory selection is
+applied, the when condition disappeared because it is done in the python script:
+```python
+  if 0 < iter_id < 4: 
+    transformed_field = np.sqrt(source_field[1:-1,1:-1])
+    pdi.expose('transformed_field', transformed_field, pdi.OUT) 
+```
+The last line of the python script allow to expose the transformed field to %PDI. Moreover, this data is known to %PDI in this call.
+
+* Modify the Decl'HDF5 configuration to write the new data `transformed_field` exposed from Python.
 
 \attention
 The dataset name is however explicitly specified now because it does not match
@@ -499,8 +504,7 @@ If you relaunch the executable, remember to delete your old `ex10.h5` file befor
 
 \attention
 In a more realistic setup, one would typically not write much code in the YAML
-file directly, but would instead call functions specified in a `.py` file on
-the side.
+file directly, but would instead call functions specified in a `.py` file on the side.
 
 ##  Call a user C function
 
@@ -516,7 +520,6 @@ after adding the executable ex11.
 
 The objective is to write the total mass of temperature on a file. This mass is computed in the C
 function `compute_mass` defined in `ex11.c`.
-For this, keywords `on_event` and `on_data` of \ref user_code_plugin "user_code" are introduced.
 
 The keyword `on_event` allows to call a C function inside `::PDI_event`. You can call a user C function inside the `::PDI_share`
 using the keyword `on_data` in the \ref user_code_plugin "user_code".
@@ -529,7 +532,7 @@ using the keyword `on_data` in the \ref user_code_plugin "user_code".
 
 * Check that the call of C function defined by `on_event` and `on_data` is indeed done at the expected order for `::PDI_multi_expose` for the event `finalization` (see the log).
 
-**Remark:** The keyword `on_event` and `on_data` are also to defined in other plugin to execute instructions in `::PDI_event` and `::PDI_share` respectively.
+**Remark:** The keyword `on_event` and `on_data` are also used in other plugin to execute instructions in `::PDI_event` and `::PDI_share` respectively.
 
 ### Ex12. set_value plugin
 
