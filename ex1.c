@@ -143,9 +143,6 @@ int main( int argc, char* argv[] )
 	// NEVER USE MPI_COMM_WORLD IN THE CODE, use our own communicator main_comm instead
 	MPI_Comm main_comm = MPI_COMM_WORLD;
 	
-	// initialize PDI, it can replace our main communicator by its own
-	PDI_init(PC_get(conf, ".pdi"));
-	
 	// load the MPI rank & size
 	int psize_1d;  MPI_Comm_size(main_comm, &psize_1d);
 	int pcoord_1d; MPI_Comm_rank(main_comm, &pcoord_1d);
@@ -201,9 +198,6 @@ int main( int argc, char* argv[] )
 		// swap the current and next values
 		double (*tmp)[dsize[1]] = cur; cur = next; next = tmp;
 	}
-	
-	// finalize PDI
-	PDI_finalize();
 	
 	// destroy the paraconf configuration tree
 	PC_tree_destroy(&conf);
