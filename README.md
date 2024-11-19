@@ -17,6 +17,13 @@ Additional [examples are available for the other plugins](https://gitlab.maisond
 To run this hands-on tutorial, you first need to \ref Installation "install PDI"
 and setup your environment.
 
+Alternatively, you can use the script "fullClonePython.sh" to clone both pdi and pdi/tutorial repositories and setup an environment enabling a default setup with added python plugins.
+To clone in your current directory, use this script with :
+```bash
+chmod u+x fullClonePython.sh
+./fullClonePython.sh
+```
+
 ### PDI installation
 
 \ref Installation "PDI installation" is documented in a
