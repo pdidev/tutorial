@@ -14,11 +14,15 @@ pdi:
   data: # values for which PDI does not keep a copy
     main_field: { type: array, subtype: double, size: [ '$dsize[0]', '$dsize[1]' ] }
   plugins:
+    #*** load the mpi plugin
     mpi:
     decl_hdf5:
       file: ex9.h5
+      #*** add MPI communicator
       communicator: $MPI_COMM_WORLD
+      collision_policy: write_into
       datasets:
+        #*** modify the size of datasets from local array to global array
         main_field: { type: array, subtype: double, size: [ 3, '$psize[0]*($dsize[0]-2)', '$psize[1]*($dsize[1]-2)' ] }
       write:
         main_field:
@@ -27,5 +31,7 @@ pdi:
             size: ['$dsize[0]-2', '$dsize[1]-2']
             start: [1, 1]
           dataset_selection:
+            #*** define the size of the dataset selection in (x,y)-direction
             size: [1, '$dsize[0]-2', '$dsize[1]-2']
+            #*** modify the start point to avoid overlapping
             start: ['$ii-1', '$pcoord[0]*($dsize[0]-2)', '$pcoord[1]*($dsize[1]-2)']
