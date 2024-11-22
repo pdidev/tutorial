@@ -21,17 +21,20 @@ pdi:
       datasets:
         main_field: { type: array, subtype: double, size: [ 3, '$psize[0]*($dsize[0]-2)', '$psize[1]*($dsize[1]-2)' ] }
       write:
-        TODO: # the name of the PDI data to write
-          dataset: main_field
-          dataset_selection:
-            size: [1, '$dsize[0]-2', '$dsize[1]-2']
-            start: ['$ii-1', '$pcoord[0]*($dsize[0]-2)', '$pcoord[1]*($dsize[1]-2)']
-    pycall:
-      on_event:
-        loop:
-          with: { iter_id: $ii, ... }
-          exec: |
-            import numpy as np
-            if 0 < iter_id < 4:
-                transformed_field = np.sqrt(source_field[1:-1,1:-1])
-                pdi.expose('transformed_field', transformed_field, pdi.OUT)
+        #*** the name of the PDI variable to write.
+        #...
+        dataset: main_field  # name of the dataset in "ex10.h5"
+        dataset_selection:
+          size: [1, '$dsize[0]-2', '$dsize[1]-2']
+          start: ['$ii-1', '$pcoord[0]*($dsize[0]-2)', '$pcoord[1]*($dsize[1]-2)']
+    #*** load the pycall plugin and enable this plugin for event loop.
+    #...
+    #*** Specifies the input parameters (variables) to pass to Python as a set of "$-expressions" (expressions must be defined in .yml script)
+    #...
+    #*** add exec keyword of pycall plugin. Decomment and the following python script 
+    #...
+#            import numpy as np
+#            if 0 < iter_id < 4: # iter_id: time iteration
+#              transformed_field = np.sqrt(source_field[1:-1,1:-1])
+#              pdi.expose('transformed_field', transformed_field, pdi.OUT)
+## Comment: The last line allows to expose transformed field to PDI. Hence, the data is known by PDI in this call.
