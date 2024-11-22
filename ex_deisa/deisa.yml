@@ -34,16 +34,15 @@ pdi:
 
     deisa:
       scheduler_info: scheduler.json
-      init_on: initialization
-      time_step: # TODO
-      deisa_arrays:
-        global_t:
-          type:         # TODO
-          subtype:      # TODO
-          size:         # TODO
-          subsize:      # TODO
-          start:        # TODO 
-          +timedim: 0
-      map_in:
+      init_on: initialization               # Event called after sharing all metadata
+      time_step: $ii                                                    # Timestep iterator
+      deisa_arrays:                         # Those are Deisa virtual arrays equivalent to Dask arrays
+        global_t:                           # This is the name that sent to Dask for this array
+          type: array
+          subtype: double
+          size: [1001, '$dsize[0]*$psize[0]', '$dsize[1]*$psize[1]']
+          subsize: [1, '$dsize[0]', '$dsize[1]']                        # This is how it is chunked, with the size of each chunk
+          start: [$ii, '$dsize[0]*$pcoord[0]', '$dsize[1]*$pcoord[1]']  # This is where each chunk will start
+          +timedim: 0                                                   # A tag for the time dimension, only this configuration is supported for the moment
+      map_in:                               # Which local data will be mapped to which Deisa array
         main_field: global_t
-
