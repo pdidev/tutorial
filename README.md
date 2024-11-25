@@ -253,17 +253,17 @@ You have to use events for that, you will modify both the C and YAML file.
 ```bash
   diff ex5.h5dump <(h5dump ex5*.h5)
 ```
-
-
 ### Ex6. Simplifying the code
 
 As you can notice, the %PDI code is quite redundant.
 In this exercise, you will use `::PDI_expose` and `::PDI_multi_expose` to
 simplify the code while keeping the exact same behaviour.
 For once, there is no need to modify the YAML file here, you only need to modify
-the C file in this exercise.
+the C file. Moreover, This exercise will be launched in sequential to facilitate the comparison between logs.
 
 * Examine the source code, compile it and run it.
+
+\remark At the end of the iteration loop, a new event `finalization` is added.
 
 There are lots of matched `::PDI_share`/`::PDI_reclaim` in the code.
 
@@ -276,13 +276,17 @@ This case is however handled by `::PDI_multi_expose` call that exposes all data,
 then triggers an event and finally does all the reclaim in reverse order.
 
 * Replace the remaining `::PDI_share`/`::PDI_reclaim` by `::PDI_expose`s and
-  `::PDI_multi_expose`s and ensure that your code keeps the exact same behaviour
-  by comparing its trace to `ex6.log` (only the lines matching `[Trace-plugin]`
-  have been kept). You can easily check if the files are the same by running:
+  `::PDI_multi_expose`s and ensure that your code keeps the exact same behaviour as in previous exercise by comparing its trace to `ex6.log`
+  (only the lines matching `[Trace-plugin]` have been kept). Using the previous section [Execution with storage of the log](#execution-with-storage-of-the-log),
+  run  this exercise in saving the output log in the `ex6.result.log`.
+  After that you can easily check if the files are the same by running:
 ```bash
   diff ex6.log <(grep Trace-plugin ex6.result.log)
 ```
 
+In summary:\n 
+  1. `::PDI_expose` is equivalent to `::PDI_share` + `::PDI_reclaim` \n 
+  2. `::PDI_multi_expose` is equivalent to `::PDI_share` + `::PDI_event` + `::PDI_reclaim`\n 
 
 ### Ex7. Writing a selection
 
