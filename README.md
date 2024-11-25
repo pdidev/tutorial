@@ -141,118 +141,142 @@ If you do not know the answer to this question, just wait until Ex5. :)
 
 ## Decl'HDF5 plugin
 
+In exercise 3 to exercise 9 included, we present the \ref Decl_HDF5_plugin "Decl'HDF5 plugin" (`decl_hdf5`).
+We will introduce some keyword (`when`, `datasets`, ...) in the sub-tree of `decl_hdf5` in configuration YAML file.
+
+All keywords are defined in the last section **full configuration example** of \ref Decl_HDF5_plugin "Decl'HDF5 plugin".
+
 ### Ex3. HDF5 through PDI
 
-In this exercise, the code is the same as in ex2.
-No need to touch the C code here, modification of the YAML file (`ex3.yml`)
+In this exercise, the C code is the same as in ex2. No need to touch the C code here, modification of the YAML file (`ex3.yml`)
 should be enough.
 
 * Examine the YAML file, compile the code and run it.
 
-The \ref trace_plugin "Trace plugin" (`trace`) was replaced by the
-\ref Decl_HDF5_plugin "Decl'HDF5 plugin" (`decl_hdf5`) in the specification
-tree.
-In its configuration, the `dsize` variable is written.
+The \ref Decl_HDF5_plugin "Decl'HDF5 plugin" (`decl_hdf5`) is added in the specification tree.
+In its configuration, the `dsize` variable is defined as a metadata for %PDI.
 
-* Write the `psize` and `pcoord` variables in addition to `dsize` to match the
-  content expected as described in the `ex3.h5dump` text file (use the `h5dump`
-  command to see the content of your HDF5 output file in the same format as the
-  `.h5dump` file). You can easily check if the files are the same by running the
-  command:
+* Write the `psize` and `pcoord` variables in addition to `dsize` in a file `ex3.h5` with one MPI process. 
+To achieve this result, you will need to fill 2 sections in the YAML file:
+
+  1. The `data` section to indicate to %PDI the \ref datatype_node "type" of the fields that are exposed.
+
+  2. The `decl_hdf5` section for the configuration of the \ref Decl_HDF5_plugin "Decl'HDF5 plugin".
+
+* Use the `h5dump` command to see the content of your HDF5 output file in the same format as the h5dump file `ex3.h5dump`. You can easily check if the files are the same by running:
 ```bash
   diff ex3.h5dump <(h5dump ex3*.h5)
 ```
-
-To achieve this result, you will need to fill 2 sections in the YAML file.
-
-1. The `data` section to indicate to %PDI the \ref datatype_node type of the
-   fields that are exposed.
-
-2. The `decl_hdf5` section for the configuration of the
-   \ref Decl_HDF5_plugin "Decl'HDF5 plugin".
+To see your `h5` file in readable file format, you can check the section [Comparison with the `h5dump` command](#h5comparison).
 
 \warning
-If you relaunch the executable, remember to delete your old `ex3.h5` file
-before, otherwise the data will not be changed.
+If you relaunch the executable, remember to delete your old `ex3.h5` file before, otherwise the data will not be changed.
 
 \warning
-Since we write to the same location independently of the MPI rank, this exercise
-will fail if more than one MPI rank is used.
-
+With more than one MPI rank is used, we write to the same location in the file independently of the MPI rank. 
+For this reason, this exercise will fail. The next exercise solves this issue.
 
 ### Ex4. Writing some real data
 
 In this exercise each MPI process will write its local 2D array block contained
 in the `main_field` variable to a separate HDF5 file.
-Once again, this can be done by modifying the YAML file only, no nee to touch
+Once again, this can be done by modifying the YAML file only, no need to touch
 the C file.
 
 * Examine the YAML file, compile the code and run it.
 
-Look at the number of blocks, you will have to use the correct number of MPI
-ranks to run the example.
-
-Notice that in the YAML file, a list was used in the `decl_hdf5` section with
+\note Notice that in the YAML file `ex4.yml`, a list was used in the `decl_hdf5` section with
 multiple write blocks instead of a single one as before in order to write to
 multiple files.
 
-Also notice that this example now runs in parallel with two processes.
-Therefore it uses "$-expressions" to specify the file names and ensure we
-do not write to the same file from distinct ranks.
-
-Unlike the other fields manipulated until now, the type of `main_field` is not
-fully known, its size is dynamic.
-By moving other fields in the `metadata` section, you can reference them from
-"$-expressions" in the configuration file.
-
-* Use a $-expression to specify the size of `main_field`.
-
-Unlike the other fields manipulated until now, `main_field` is exposed multiple
-times along execution.
-In order not to overwrite it every time it is exposed, you need to add a `when`
-condition to restrict its output.
-
-* Only write `main_field` at the second iteration (when `ii=1`) and match the
-  expected content as described in `ex4.h5dump`.
-```bash
-  diff ex4.h5dump <(h5dump ex4*.h5)
+\note Notice that we have moved fields (`dsize`, `psize` and `pcoord`) in the `metadata` section.
+```yaml
+pdi:
+  metadata: # small values for which PDI keeps a copy
+    #*** add ii as metadata
+    #...
+    dsize: { type: array, subtype: int, size: 2 }
 ```
+You can reference them from dynamic "$-expressions" in the configuration file.
 
-### Ex5. Introducing events
+\remark Also notice that this example now runs in parallel with 4 processes.
+To ensure we do not write to the same file, we need  to specify the file name using "$-expressions" for the different process rank. 
 
-In ex4., two variables were written to `ex4-data*.h5`, but the file was opened
+Unlike the other fields manipulated until now, the type of `main_field` is not fully known, its size is dynamic.
+Therefore, we need to define the size in YAML file for %PDI using "$-expressions".
+
+* Describe the temperature data on the current iteration by using a $-expression to specify the size of `main_field` in `data` section.
+
+Unlike the other fields manipulated until now, `main_field` is exposed multiple times along execution.
+In order not to overwrite it every time it is exposed, you propose to write one file per rank only at the first iteration (`ii=1`) with the directive `when`.
+
+* Add the iteration loop `ii` as a metadata.
+* Write the curent temperature field in one file per process at first iteration.
+
+You should be able to match the expected output described in `ex4.h5dump`. You can easily check if the files are the same by running:
+```bash
+  diff ex4.h5dump <(h5dump ex4-data-*.h5)
+```
+To see your `h5` file in readable file format, you can check the section [Comparison with the `h5dump` command](#h5comparison).
+
+\note A definition of `metadata` and `data` can be:\n  
+- `metadata`: small values for which PDI keeps a copy. These value can be referenced by using "$-expressions" in the configuration YAML file.
+- `data`    : values for which PDI does not keep a copy.
+
+### Ex5. Introducing events and group of dataset
+
+This exercise is done in sequential to facilitate the comparison between logs.
+
+#### Ex 5.1 PDI event and on_event
+
+In ex4, two variables were written to `ex4-data*.h5`, but the files were opened
 and closed for each and every write.
+
 Since Decl'HDF5 only sees the data appear one after the other, it does not keep
-the file open.
-Since `ii` and `main_field` are shared in an interlaced way, they are both
+the file open. Since `ii` and `main_field` are shared in an interlaced way, they are both
 available to %PDI at the same time and could be written without opening the file
 twice.
-You have to use events for that, you will modify both the C and YAML file.
+You have to use events for that, you will modify both the C and YAML file in this exercise.
 
 * Examine the YAML file and source code.
-
-* In the C file, trigger a %PDI event named `loop` when both `ii` and
+* In the C file, add a %PDI event named `loop` when both `ii` and
   `main_field` are shared.
+
   With the \ref trace_plugin "Trace plugin", check that the event is indeed
   triggered at the expected time as described in `ex5.log` (only the lines
-  matching `[Trace-plugin]` have been kept). You can check if the files are the
-  same by running:
+  matching `[Trace-plugin]` have been kept). Using the previous section [Execution with storage of the log](#execution-with-storage-of-the-log),
+  run  this exercise in saving the output log in the `ex5.result.log`. After that you can easily check if the files are the same by running:
 ```bash
   diff ex5.log <(grep Trace-plugin ex5.result.log)
 ```
+* In the YAML file, use the `on_event` mechanism to trigger the write of `ii` and `main_field` 
+  for event `loop` only. This mechanism can be combined with a `when` directive, in that case the write is only executed when both mechanisms agree.
+* Add the `when` directive to write only at iteration 1 and 2. Use the symbol `&` which corresponds to the logical operation `and`.
 
-* Use the `on_event` mechanism to trigger the write of `ii` and `main_field`.
-  This mechanism can be combined with a `when` directive, in that case the
-  write is only executed when both mechanisms agree.
+#### Ex 5.2 group of dataset
+In ex4, the name of the datasets of `.h5` file are `ii` and `main_field`(see ex4.h5dump).
+Using the keyword `dataset`, it is possible to have a different name from the %PDI variable name.
 
-* Also notice the extended syntax that make it possible to write data to a
-  dataset whose name differs from the %PDI variable name.
-  Use this mechanism to write `main_field` at iterations 1 and 2, in two
-  distinct groups `iter1` and `iter2`.
-  Your output should match the content described in `ex5.h5dump`.
-```bash
-  diff ex5.h5dump <(h5dump ex5*.h5)
+The name of the dataset is given after the definition of the data 
+```yaml
+       write:
+          ii: # name of the PDI data to write
+            dataset: 'new_name' 
 ```
+Using this mechanism, it is possible to define a group object of hdf5 see https://support.hdfgroup.org/documentation/hdf5/latest/_h5_g__u_g.html.
+If you want to add a dataset `my_data` in the sub-group `groupA` of the group `my_group`, the name of the dataset will be:
+```yaml
+dataset: 'my_group/groupA/my_data'.
+```
+where the symbol "/" is used to separate groups in path.
+
+* Change the YAML file to write `main_field` and `ii` at iterations 1 and 2, in two distinct groups `iter1` and `iter2`.
+
+  To match the expected output described in `ex5.h5dump`. You can easily check if the files are the same by running:
+```bash
+  diff ex5.h5dump <(h5dump ex5-data-*.h5)
+```
+  To see your `h5` file in readable file format, you can check the section [Comparison with the `h5dump` command](#h5comparison).
 
 
 ### Ex6. Simplifying the code

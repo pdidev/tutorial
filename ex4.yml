@@ -3,20 +3,24 @@ alpha: 0.125
 # global data-size (excluding spacer for boundary conditions or ghosts)
 global_size: { height: 60, width: 12 }
 # degree of parallelism (number of blocks in each dimension)
-parallelism: { height: 2 , width: 1 }
+parallelism: { height: 2 , width: 2 }
 # PDI configuration
 pdi:
   metadata: # small values for which PDI keeps a copy
-    ii: int
+    #*** add ii as metadata
+    #...
     dsize: { type: array, subtype: int, size: 2 }
     psize: { type: array, subtype: int, size: 2 }
     pcoord: { type: array, subtype: int, size: 2 }
+
   data: # values for which PDI does not keep a copy
-    main_field: { type: array, subtype: double, size: [ "" , "" ] } # we can use $ expressions in type definitions
+    #*** add main_field to the data section, use $-expression to define its size
+    #...
   plugins:
     decl_hdf5:
-      - file: ex4-meta${pcoord[0]}x${pcoord[1]}.h5  # we can use $ expressions in file names
+      #*** write dsize and psize into hdf5, one file per rank
+      - file: ex4-meta-${...}x${...}.h5  # we can use $ expressions in file names
         write: [ dsize, psize ]
-      - file: ex4-data${pcoord[0]}x${pcoord[1]}.h5
-        when: ""  # we can use $-expressions in conditions
-        write: [ ii, main_field ]
+      #*** write main_field and iteration counter into hdf5, one file per rank at first iteration
+      - file: ex4-data-${...}x${...}_iter_${}.h5
+        #...

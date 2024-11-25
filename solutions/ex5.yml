@@ -3,7 +3,7 @@ alpha: 0.125
 # global data-size (excluding spacer for boundary conditions or ghosts)
 global_size: { height: 60, width: 12 }
 # degree of parallelism (number of blocks in each dimension)
-parallelism: { height: 1, width: 1 }
+parallelism: { height: 1, width: 1}
 # PDI configuration
 pdi:
   metadata: # small values for which PDI keeps a copy
@@ -20,10 +20,16 @@ pdi:
       - file: ex5-meta${pcoord[0]}x${pcoord[1]}.h5
         write: [ dsize, psize ]
       - file: ex5-data${pcoord[0]}x${pcoord[1]}.h5
+        #*** enable the output upon the event
         on_event: loop
-        when: '$ii>0 & $ii<3' # `&' is a logical `and' operation
+        #*** enable the output when ii>0 and(&) ii<3
+        when: '$ii>0 & $ii<3' 
         write:
           ii: # name of the PDI data to write
-            dataset: 'iter${ii}/ii' # dataset name in file, $-expressions can be used here, "/" separate groups in path
+            #*** give the dataset that you want to write into for ii
+            # $-expressions can be used to define dataset name in file, , "/" separate groups in path
+            dataset: 'iter${ii}/ii' 
           main_field:
+            #*** give the dataset that you want to write into for main_field
+            # $-expressions can be used to define dataset name in file, , "/" separate groups in path
             dataset: 'iter${ii}/main_field'
