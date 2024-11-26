@@ -3,7 +3,7 @@ alpha: 0.125
 # global data-size (excluding spacer for boundary conditions or ghosts)
 global_size: { height: 60, width: 12 }
 # degree of parallelism (number of blocks in each dimension)
-parallelism: { height: 1, width: 1 }
+parallelism: { height: 2, width: 2 }
 # PDI configuration
 pdi:
   metadata: # small values for which PDI keeps a copy
@@ -15,13 +15,15 @@ pdi:
     main_field: { type: array, subtype: double, size: [ '$dsize[0]', '$dsize[1]' ] }
   plugins:
     decl_hdf5:
-      file: ex7-data${pcoord[0]}x${pcoord[1]}.h5
+      file: ex7-data${pcoord[0]}x${pcoord[1]}_iter_${ii}.h5
       datasets: # a list of datasets inside the file created on first access
+        #*** define the datasets for main_field
         main_field: { type: array, subtype: double, size: [ '$dsize[0]-2', '$dsize[1]-2' ] }
       write:
         main_field:
           when: '$ii=1' # we can use a field specific condition
           #dataset: 'main_field' # no need to specify the dataset name if it is equal to the PDI data name
+          #*** use memory_selection to eliminate the ghost layer
           memory_selection:
             size: [ '$dsize[0]-2', '$dsize[1]-2' ] # number of elements to transfer in each dimension
             start: [1, 1] # coordinate of the start point in memory relative to the shared data

@@ -283,7 +283,6 @@ then triggers an event and finally does all the reclaim in reverse order.
   diff ex6.log <(grep Trace-plugin ex6.result.log)
 ```
 
-
 ### Ex7. Writing a selection
 
 In this exercise, you will only write a selection of the 2D array in memory
@@ -291,52 +290,62 @@ excluding ghosts to the HDF5 file.
 Once again, you only need to modify the YAML file in this exercise, no need to
 touch the C file.
 
+\remark This exercise will run with 4 MPI process.
+
 * Examine the YAML file and compile the code.
 
 As you can notice, now the dataset is independently described in the file.
 
 * Restrict the selection to the non-ghost part of the array in memory (excluding
   one element on each side).
-  You should be able to match the expected output described in `ex7.h5dump`.
-  You can easily check if the files are the same by running:
+
+You can achieve this by using the `memory_selection` directive in ex7.yml that specifies
+the selection of data from memory to write.
+
+You should be able to match the expected output described in `ex7.h5dump`. You can easily check if the files are the same by running:
 ```bash
   diff ex7.h5dump <(h5dump ex7*.h5)
 ```
-
-You can achieve this by using the `memory_selection` directive that specifies
-the selection of data from memory to write.
+To see your `h5` file in readable file format, you can check the section [Comparison with the `h5dump` command](#h5comparison).
 
 ![graphical representation](PDI_hdf5_selection.jpg)
-
 
 ### Ex8. Selecting on the dataset size
 
 In this exercise, you will once again change the YAML file to handle a selection
 in the dataset in addition to the selection in memory from the previous
 exercise.
+In this exercise, you don't want to have one output file per iteration.
 You will write the 2D array from the previous exercise as a slice of 3D dataset
-including a dimension for time.
+including a dimension for time for iteration 1 to 3 inclusive.
+
 Once again, you only need to modify the YAML file in this exercise, no need to
 touch the C file.
 
 * Examine the YAML file and compile the code.
 
-Notice how the dataset is now extended with an additional dimension for three
-time-steps.
+Notice how the dataset is extended with an additional dimension 
+```yaml
+      datasets:
+        #*** add one dimention to main_field datasets to represent the time step
+        main_field: { type: array, subtype: double, size: [..., '$dsize[0]-2', '$dsize[1]-2' ] }
+```
+
+* replace `...` in previous line by the number of iteration time, we want to save in this exercise.
 
 * Write the 2D selection from `main_field` at iterations 1 to 3 inclusive into
-  slices at coordinate 0 to 2 of first dimension of the 3D dataset.
-  Match the expected output described in `ex8.h5dump`. You can easily check if
-  the files are the same by running:
-```bash
-  diff ex8.h5dump <(h5dump ex8*.h5)
-```
+  slices at coordinate 0 to 2 of the first dimension of the 3D dataset.
 
 You can achieve this by using the `dataset_selection` directive that specifies
 the selection where to write in the file dataset.
 
-![graphical representation](PDI_hdf5_selection_advanced.jpg)
+You should be able to match the expected output described in `ex8.h5dump`. You can easily check if the files are the same by running:
+```bash
+  diff ex8.h5dump <(h5dump ex8*.h5)
+```
+To see your `h5` file in readable file format, you can check the section [Comparison with the `h5dump` command](#h5comparison).
 
+![graphical representation](PDI_hdf5_selection_advanced.jpg)
 
 ## parallel Decl'HDF5
 
