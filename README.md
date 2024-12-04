@@ -141,7 +141,7 @@ If you do not know the answer to this question, just wait until Ex5. :)
 
 ## Decl'HDF5 plugin
 
-In exercise 3 to exercise 9 included, we present the \ref Decl_HDF5_plugin "Decl'HDF5 plugin" (`decl_hdf5`).
+From exercise 3 to exercise 9 included, we present the \ref Decl_HDF5_plugin "Decl'HDF5 plugin" (`decl_hdf5`).
 We will introduce some keyword (`when`, `datasets`, ...) in the sub-tree of `decl_hdf5` in configuration YAML file.
 
 All keywords are defined in the last section **full configuration example** of \ref Decl_HDF5_plugin "Decl'HDF5 plugin".
