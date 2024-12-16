@@ -119,7 +119,7 @@ mpirun -np 4 ./ex1
 
 ### Ex2. Now with some PDI
 
-Ex2. is a similar code as that of ex1. with %PDI calls added in `main` function. This exercise will be run in sequential.
+Ex2. C code is similar to ex1. C code with %PDI calls added in `main` function. This exercise will be run sequentially.
 
 * Examine the source code, compile it and run it.
 

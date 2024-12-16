@@ -29,6 +29,7 @@
 #include <time.h>
 
 #include <paraconf.h>
+// load the PDI header
 #include <pdi.h>
 
 /// size of the local data as [HEIGHT, WIDTH] including ghosts & boundary constants
@@ -192,20 +193,19 @@ int main( int argc, char* argv[] )
 	//*** pcoord, psize, dsize
 	PDI_share("pcoord",     pcoord, PDI_OUT);
 	PDI_reclaim("pcoord");
-	PDI_share("dsize",      dsize,  PDI_OUT);
-	PDI_reclaim("dsize");
 	PDI_share("psize",      psize,  PDI_OUT);
 	PDI_reclaim("psize");
+	PDI_share("dsize",      dsize,  PDI_OUT);
+	PDI_reclaim("dsize");
 	
 	// the main loop
 	for (; ii<10; ++ii) {
-		//*** share the loop counter and main field at each iteration
+		// share the loop counter & main field at each iteration
 		PDI_share("ii",         &ii, PDI_OUT);
-		PDI_reclaim("ii");
-
 		PDI_share("main_field", cur, PDI_OUT);
 		PDI_reclaim("main_field");
-		
+		PDI_reclaim("ii");
+
 		// compute the values for the next iteration
 		iter(cur, next);
 		
@@ -215,7 +215,7 @@ int main( int argc, char* argv[] )
 		// swap the current and next values
 		double (*tmp)[dsize[1]] = cur; cur = next; next = tmp;
 	}
-	//*** finally share the last iteration and main field after the loop
+	//*** finally share the loop counter and main field after the main loop body
 	PDI_share("ii", &ii, PDI_OUT);
 	PDI_reclaim("ii");
 	PDI_share("main_field", cur, PDI_OUT);
