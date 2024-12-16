@@ -152,7 +152,7 @@ Is one better than the other?
 If you do not know the answer to this question, just wait until Ex5. :)
 
 \attention
-In this exercise, the shared variable and the reclaimed variable are not defined in the YAML file.
+In this exercise, the shared variable and the reclaimed variable are not defined in the YAML file (see ex.3 and further for this).
 
 ## Decl'HDF5 plugin
 
