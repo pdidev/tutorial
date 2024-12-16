@@ -138,8 +138,8 @@ Moreover, the time are given for each %PDI calls. To compare, we need to remove 
 ```
 Additionally, we run in sequential to facilitate the comparison between logs (in parallel each rank send a `trace` message and the order of writing can be different).
 
-* Add the previous line, in the sub-tree of \ref trace_plugin "Trace plugin" (don't forget to indent this line correctly).
-Using the previous section [Execution with storage of the log](#execution-with-storage-of-the-log), run this exercise in saving the output log in the file `ex2.result.log`. After that you can easily check if the files are the same by running the command:
+* Add the previous line in the sub-tree of \ref trace_plugin "Trace plugin" (don't forget to indent this line correctly).
+Using the previous section [Execution with storage of the log](#execution-with-storage-of-the-log), run this exercise and save the output log in the file `ex2.result.log`. After that you can easily check if the files are the same by running the command:
 
 ```bash
   diff ex2.log <(grep Trace-plugin ex2.result.log)
