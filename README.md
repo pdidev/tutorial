@@ -173,7 +173,7 @@ To see your `h5` file in readable file format, you can check the section [Compar
 If you relaunch the executable, remember to delete your old `ex3.h5` file before, otherwise the data will not be changed.
 
 \warning
-With more than one MPI rank is used, we write to the same location in the file independently of the MPI rank. 
+When more than one MPI rank is used, we write to the same location in the file independently of the MPI rank. 
 For this reason, this exercise will fail. The next exercise solves this issue.
 
 ### Ex4. Writing some real data
@@ -225,7 +225,7 @@ To see your `h5` file in readable file format, you can check the section [Compar
 
 ### Ex5. Introducing events and group of dataset
 
-This exercise is done in sequential to facilitate the comparison between logs.
+This exercise is done sequentially to facilitate the comparison between logs.
 
 #### Ex 5.1 PDI event and on_event
 

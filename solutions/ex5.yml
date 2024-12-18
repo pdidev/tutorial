@@ -22,7 +22,7 @@ pdi:
       - file: ex5-data${pcoord[0]}x${pcoord[1]}.h5
         #*** enable the output upon the event
         on_event: loop
-        #*** enable the output when ii>0 and(&) ii<3
+        #*** enable the output when ii>0 and ii<3 (`&` is a logical `and` operation )
         when: '$ii>0 & $ii<3' 
         write:
           ii: # name of the PDI data to write

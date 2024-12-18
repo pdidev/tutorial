@@ -217,9 +217,8 @@ int main( int argc, char* argv[] )
 		// swap the current and next values
 		double (*tmp)[dsize[1]] = cur; cur = next; next = tmp;
 	}
-	// finally share the main field after the main loop body
+	// // finally share the loop counter and main field after the main loop body
 	PDI_share("main_field", cur, PDI_OUT);
-	// as well as the loop counter
 	PDI_share("ii",         &ii, PDI_OUT);
 	PDI_reclaim("ii");
 	PDI_reclaim("main_field");
