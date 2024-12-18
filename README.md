@@ -148,7 +148,7 @@ All keywords are defined in the last section **full configuration example** of \
 
 ### Ex3. HDF5 through PDI
 
-In this exercise, the C code is the same as in ex2. No need to touch the C code here, modification of the YAML file (`ex3.yml`)
+In this exercise, the C code is the same as in ex2. You only need to modify the YAML file (`ex3.yml`).
 should be enough.
 
 * Examine the YAML file, compile the code and run it.
