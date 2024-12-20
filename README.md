@@ -290,7 +290,7 @@ excluding ghosts to the HDF5 file.
 Once again, you only need to modify the YAML file in this exercise, no need to
 touch the C file.
 
-\remark This exercise will run with 4 MPI process.
+\remark This exercise will run with 4 MPI processes.
 
 * Examine the YAML file and compile the code.
 
