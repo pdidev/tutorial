@@ -259,7 +259,7 @@ As you can notice, the %PDI code is quite redundant.
 In this exercise, you will use `::PDI_expose` and `::PDI_multi_expose` to
 simplify the code while keeping the exact same behaviour.
 For once, there is no need to modify the YAML file here, you only need to modify
-the C file. Moreover, This exercise will be launched in sequential to facilitate the comparison between logs.
+the C file. Moreover, this exercise will be launched sequentially to facilitate the comparison between logs.
 
 * Examine the source code, compile it and run it.
 
