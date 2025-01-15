@@ -149,7 +149,7 @@ Using the previous section [Execution with storage of the log](#execution-with-s
 Notice that some share/reclaim pairs come one after the other while others are
 interlaced.
 Is one better than the other?
-If you do not know the answer to this question, just wait until Ex5. :)
+If you do not know the answer to this question, just wait until ex5. :)
 
 \attention
 In this exercise, the shared variable and the reclaimed variable are not defined in the YAML file (see ex3. and further for this).
