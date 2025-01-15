@@ -194,7 +194,7 @@ int main( int argc, char* argv[] )
 	//...
 
 	// the main loop
-	for (; ii<10; ++ii) {
+	for (; ii<4; ++ii) {
 		//*** share the loop counter & main field at each iteration
 		//...
 
