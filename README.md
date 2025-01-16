@@ -315,8 +315,8 @@ To see your `h5` file in readable file format, you can check the section [Compar
 In this exercise, you will once again change the YAML file to handle a selection
 in the dataset in addition to the selection in memory from the previous
 exercise.
-In this exercise, you don't want to have one output file per iteration.
-You will write the 2D array from the previous exercise as a slice of 3D dataset
+In this exercise, you don't want to get one output file per iteration.
+You will write the 2D array from the previous exercise as a slice of a 3D dataset
 including a dimension for time for iteration 1 to 3 inclusive.
 
 Once again, you only need to modify the YAML file in this exercise, no need to
