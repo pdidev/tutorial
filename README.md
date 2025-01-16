@@ -317,7 +317,7 @@ in the dataset in addition to the selection in memory from the previous
 exercise.
 In this exercise, you don't want to get one output file per iteration.
 You will write the 2D array from the previous exercise as a slice of a 3D dataset
-including a dimension for time for iteration 1 to 3 inclusive.
+including a time dimension for iterations 1 to 3 (inclusive).
 
 Once again, you only need to modify the YAML file in this exercise, no need to
 touch the C file.
