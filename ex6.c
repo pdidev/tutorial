@@ -29,6 +29,7 @@
 #include <time.h>
 
 #include <paraconf.h>
+// load the PDI header
 #include <pdi.h>
 
 /// size of the local data as [HEIGHT, WIDTH] including ghosts & boundary constants
@@ -200,7 +201,7 @@ int main( int argc, char* argv[] )
 	PDI_reclaim("psize");
 	
 	// the main loop
-	for (; ii<10; ++ii) {
+	for (; ii<4; ++ii) {
 		// share the loop counter & main field at each iteration
 		//*** use PDI_multi_expose to replace PDI_share + event + reclaim
 		//...
