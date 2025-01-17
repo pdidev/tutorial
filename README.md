@@ -360,7 +360,10 @@ Once again, you only need to modify the YAML file in this exercise, no need to t
 * Define the `communicator` directive of the \ref Decl_HDF5_plugin "Decl'HDF5 plugin" to switch to parallel I/O for HDF5.
   Set the value of the communicator to MPI_COMM_WORLD.
 
-\note we have added the directive `collision_policy: write_into` of the \ref Decl_HDF5_plugin "Decl'HDF5 plugin" (see section COLLISION_POLICY). This parameter is used to define what to do when writing to a file or dataset that already exists.
+\note We have added the directive `collision_policy: write_into` of the 
+\ref Decl_HDF5_plugin "Decl'HDF5 plugin" (see section COLLISION_POLICY). 
+This parameter is used to define what to do when writing to a file or dataset
+ that already exists.
 
 * Set the size of the dataset to take the global (parallel) array size into account. 
   You will need to multiply the local size by the number of processes in each
