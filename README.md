@@ -348,7 +348,8 @@ In this exercise you will write one single file `ex9.h5`(see `ex9.yml`) with
 parallel HDF5 whose content should be independent from the number of 
 processes used.
 
-\attention You need to do this exercise with a parallel version of HDF5 and the \ref Decl_HDF5_plugin "Decl'HDF5 plugin" compiled in parallel.
+\attention You need to do this exercise with a parallel version of HDF5 and the 
+\ref Decl_HDF5_plugin "Decl'HDF5 plugin" compiled in parallel.
 
 Once again, you only need to modify the YAML file in this exercise, no need to touch the C file.
 
