@@ -344,8 +344,9 @@ the selection where to write in the file dataset.
 
 Running the code from the previous exercises in parallel should already work and
 yield one file per process containing the local data block.
-In this exercise you will write one single file `ex9.h5`(see `ex9.yml`) with parallel HDF5 whose content
-should be independent from the number of processes used.
+In this exercise you will write one single file `ex9.h5`(see `ex9.yml`) with 
+parallel HDF5 whose content should be independent from the number of 
+processes used.
 
 \attention You need to do this exercise with a parallel version of HDF5 and the \ref Decl_HDF5_plugin "Decl'HDF5 plugin" compiled in parallel.
 
