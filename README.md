@@ -307,7 +307,8 @@ You can easily check if the files are the same by running:
 ```bash
   diff ex7.h5dump <(h5dump ex7*.h5)
 ```
-To see your `h5` file in readable file format, you can check the section [Comparison with the `h5dump` command](#h5comparison).
+To see your `h5` file in readable file format, 
+you can check the section [Comparison with the `h5dump` command](#h5comparison).
 
 ![graphical representation](PDI_hdf5_selection.jpg)
 
