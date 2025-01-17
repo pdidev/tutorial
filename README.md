@@ -299,10 +299,11 @@ As you can notice, now the dataset is independently described in the file.
 * Restrict the selection to the non-ghost part of the array in memory (excluding
   one element on each side).
 
-You can achieve this by using the `memory_selection` directive in ex7.yml that specifies
-the selection of data from memory to write.
+You can achieve this by using the `memory_selection` directive in ex7.yml that 
+specifies the selection of data from memory to write.
 
-You should be able to match the expected output described in `ex7.h5dump`. You can easily check if the files are the same by running:
+You should be able to match the expected output described in `ex7.h5dump`. 
+You can easily check if the files are the same by running:
 ```bash
   diff ex7.h5dump <(h5dump ex7*.h5)
 ```
