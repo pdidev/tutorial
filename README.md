@@ -368,7 +368,8 @@ Once again, you only need to modify the YAML file in this exercise, no need to t
   You will need to make a selection in the dataset that depends on the global
   coordinate of the local data block (use `pcoord`).
 
-You should be able to match the expected output described in `ex9.h5dump`. You can easily check if the files are the same by running:
+You should be able to match the expected output described in `ex9.h5dump`. 
+You can easily check if the files are the same by running:
 ```bash
   diff ex9.h5dump <(h5dump ex9*.h5)
 ```
