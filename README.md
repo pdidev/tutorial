@@ -333,7 +333,10 @@ Notice how the dataset is extended with an additional dimension
         main_field: { type: array, subtype: double, size: [..., '$dsize[0]-2', '$dsize[1]-2' ] }
 ```
 
-* replace `...` in previous line by the number of iteration time, we want to save in this exercise.
+* replace `...` in previous line by the number of iteration time, we want to save
+  in this exercise.
+
+* Change the `when` directive to write the `main_field` at iterations 1 to 3 inclusive.
 
 * Write the 2D selection from `main_field` at iterations 1 to 3 inclusive into
   slices at coordinate 0 to 2 of the first dimension of the 3D dataset.
@@ -341,11 +344,13 @@ Notice how the dataset is extended with an additional dimension
 You can achieve this by using the `dataset_selection` directive that specifies
 the selection where to write in the file dataset.
 
-You should be able to match the expected output described in `ex8.h5dump`. You can easily check if the files are the same by running:
+You should be able to match the expected output described in `ex8.h5dump`.
+You can easily check if the files are the same by running:
 ```bash
   diff ex8.h5dump <(h5dump ex8*.h5)
 ```
-To see your `h5` file in readable file format, you can check the section [Comparison with the `h5dump` command](#h5comparison).
+To see your `h5` file in readable file format, you can check the section
+[Comparison with the `h5dump` command](#h5comparison).
 
 ![graphical representation](PDI_hdf5_selection_advanced.jpg)
 

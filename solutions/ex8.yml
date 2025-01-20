@@ -15,7 +15,7 @@ pdi:
     main_field: { type: array, subtype: double, size: [ '$dsize[0]', '$dsize[1]' ] }
   plugins:
     decl_hdf5:
-      file: ex8-data${pcoord[0]}x${pcoord[1]}.h5
+      file: ex8-data-${pcoord[0]}x${pcoord[1]}.h5
       datasets:
         #*** add one dimention to main_field datasets to represent the time step
         main_field: { type: array, subtype: double, size: [ 3, '$dsize[0]-2', '$dsize[1]-2' ] }
@@ -28,5 +28,5 @@ pdi:
             start: [1, 1]
           #*** use dataset_selection to specify the position of data at each time step 
           dataset_selection:
-            size: [1, '$dsize[0]-2', '$dsize[1]-2']
-            start: ['$ii-1', 0, 0]
+            size: [1, '$dsize[0]-2', '$dsize[1]-2'] # the size of our selection in the dataset
+            start: ['$ii-1', 0, 0]  # the start coordinate of our selection in the dataset

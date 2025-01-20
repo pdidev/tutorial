@@ -1,4 +1,4 @@
-HDF5 "ex7-data0x0_iter_1.h5" {
+HDF5 "ex7-data-0x0_iter_1.h5" {
 GROUP "/" {
    DATASET "main_field" {
       DATATYPE  H5T_IEEE_F64LE
@@ -38,7 +38,7 @@ GROUP "/" {
    }
 }
 }
-HDF5 "ex7-data0x1_iter_1.h5" {
+HDF5 "ex7-data-0x1_iter_1.h5" {
 GROUP "/" {
    DATASET "main_field" {
       DATATYPE  H5T_IEEE_F64LE
@@ -78,7 +78,7 @@ GROUP "/" {
    }
 }
 }
-HDF5 "ex7-data1x0_iter_1.h5" {
+HDF5 "ex7-data-1x0_iter_1.h5" {
 GROUP "/" {
    DATASET "main_field" {
       DATATYPE  H5T_IEEE_F64LE
@@ -118,7 +118,7 @@ GROUP "/" {
    }
 }
 }
-HDF5 "ex7-data1x1_iter_1.h5" {
+HDF5 "ex7-data-1x1_iter_1.h5" {
 GROUP "/" {
    DATASET "main_field" {
       DATATYPE  H5T_IEEE_F64LE
