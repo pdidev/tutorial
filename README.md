@@ -351,14 +351,15 @@ processes used.
 \attention You need to do this exercise with a parallel version of HDF5 and the 
 \ref Decl_HDF5_plugin "Decl'HDF5 plugin" compiled in parallel.
 
-Once again, you only need to modify the YAML file in this exercise, no need to touch the C file.
+Once again, you only need to modify the YAML file in this exercise,
+no need to touch the C file.
 
 * Examine the YAML file and compile the code.
 
 * Load the `mpi` plugin to make sharing MPI communicators possible.
 
-* Define the `communicator` directive of the \ref Decl_HDF5_plugin "Decl'HDF5 plugin" to switch to parallel I/O for HDF5.
-  Set the value of the communicator to MPI_COMM_WORLD.
+* Define the `communicator` directive of the \ref Decl_HDF5_plugin "Decl'HDF5 plugin"
+  to switch to parallel I/O for HDF5. Set the value of the communicator to MPI_COMM_WORLD.
 
 \note We have added the directive `collision_policy: write_into` of the 
 \ref Decl_HDF5_plugin "Decl'HDF5 plugin" (see section COLLISION_POLICY). 
@@ -378,10 +379,12 @@ You can easily check if the files are the same by running:
 ```bash
   diff ex9.h5dump <(h5dump ex9*.h5)
 ```
-To see your `h5` file in readable file format, you can check the section [Comparison with the `h5dump` command](#h5comparison).
+To see your `h5` file in readable file format,
+you can check the section [Comparison with the `h5dump` command](#h5comparison).
 
 \warning
-If you relaunch the executable, remember to delete your old `ex9.h5` file before, otherwise the data will not be changed correctly.
+If you relaunch the executable, remember to delete your old `ex9.h5` file before,
+otherwise the data will not be changed correctly.
 
 ![graphical representation of the parallel I/O](PDI_hdf5_parallel.jpg)
 
