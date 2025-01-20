@@ -251,7 +251,7 @@ This exercise is done sequentially to facilitate the comparison between logs.
 
 #### Ex 5.1 PDI event and on_event
 
-In ex4, two variables were written to `ex4-data*.h5`, but the files were opened
+In ex4, two variables were written to `ex4-data-*.h5`, but the files were opened
 and closed for each and every write.
 
 Since Decl'HDF5 only sees the data appear one after the other, it does not keep

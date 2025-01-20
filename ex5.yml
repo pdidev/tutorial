@@ -17,9 +17,9 @@ pdi:
     trace:
       logging: { pattern: '[PDI][%n-plugin] *** %l: %v' }
     decl_hdf5:
-      - file: ex5-meta${pcoord[0]}x${pcoord[1]}.h5
+      - file: ex5-meta-${pcoord[0]}x${pcoord[1]}.h5
         write: [ dsize, psize ]
-      - file: ex5-data${pcoord[0]}x${pcoord[1]}.h5
+      - file: ex5-data-${pcoord[0]}x${pcoord[1]}.h5
         #*** enable the output upon the event
         #...
         #*** enable the output when ii>0 and ii<3 (`&` is a logical `and` operation )
