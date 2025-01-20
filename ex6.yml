@@ -17,9 +17,9 @@ pdi:
     trace:
       logging: { pattern: '[PDI][%n-plugin] *** %l: %v' }
     decl_hdf5:
-      - file: ex5-meta${pcoord[0]}x${pcoord[1]}.h5
+      - file: ex6-meta-${pcoord[0]}x${pcoord[1]}.h5
         write: [ dsize, psize ]
-      - file: ex5-data${pcoord[0]}x${pcoord[1]}.h5
+      - file: ex6-data-${pcoord[0]}x${pcoord[1]}.h5
         on_event: loop
         when: '$ii>0 & $ii<3' 
         write:
