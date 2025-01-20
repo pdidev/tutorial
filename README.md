@@ -119,27 +119,39 @@ mpirun -np 4 ./ex1
 
 ### Ex2. Now with some PDI
 
-Ex2. C code is similar to ex1. C code with %PDI calls added in `main` function. This exercise will be run sequentially.
+Ex2. C code is similar to ex1. C code with %PDI calls added in `main` function.
+This exercise will be run sequentially.
 
 * Examine the source code, compile it and run it.
 
-In our YAML file (`ex2.yml`), the `pdi` key is added. The sub-tree, defined after this key, is the %PDI specification tree passed to %PDI at initialization.
+In our YAML file (`ex2.yml`), the `pdi` key is added. The sub-tree, defined
+after this key, is the %PDI specification tree passed to %PDI at initialization.
 
-* To observe %PDI calls on the standard output, add \ref trace_plugin "Trace plugin" (`trace`) plugin of %PDI in our YAML file (`ex2.yml`).
+* To observe %PDI calls on the standard output, add \ref trace_plugin
+ "Trace plugin" (`trace`) plugin of %PDI in our YAML file (`ex2.yml`).
 
-* In the C file (`ex2.c`), add `::PDI_share` and `::PDI_reclaim` call to share some data with %PDI.
+* In the C file (`ex2.c`), add `::PDI_share` and `::PDI_reclaim` call to share
+  some data with %PDI.
   The shared data are defined in the line that starts with "//***" in `ex2.c`.
 
-Here, the objective is to match the output of `ex2.log` file. In this file, only the line corresponding to `[Trace-plugin]` have been kept.
-Moreover, the time are given for each %PDI calls. To compare, we need to remove this information from the log. It is done by adding this line in the sub-tree of the trace plugin.
+Here, the objective is to match the output of `ex2.log` file.
+In this file, only the line corresponding to `[Trace-plugin]` have been kept.
+Moreover, the time are given for each %PDI calls.
+To compare, we need to remove this information from the log.
+It is done by adding this line in the sub-tree of the trace plugin.
 
 ```yaml
   logging: { pattern: '[PDI][%n-plugin] *** %l: %v' }
 ```
-Additionally, we run sequentially to facilitate the comparison between logs (in parallel each rank send a `trace` message and the order of writing can be different).
+Additionally, we run sequentially to facilitate the comparison between logs
+(in parallel each rank send a `trace` message and the order of writing can be
+different).
 
-* Add the previous line in the sub-tree of \ref trace_plugin "Trace plugin" (don't forget to indent this line correctly).
-Using the previous section [Execution with storage of the log](#execution-with-storage-of-the-log), run this exercise and save the output log in the file `ex2.result.log`. After that you can easily check if the files are the same by running the command:
+* Add the previous line in the sub-tree of \ref trace_plugin "Trace plugin"
+(don't forget to indent this line correctly).
+Using the previous section [Execution with storage of the log](#execution-with-storage-of-the-log),
+run this exercise and save the output log in the file `ex2.result.log`.
+After that you can easily check if the files are the same by running the command:
 
 ```bash
   diff ex2.log <(grep Trace-plugin ex2.result.log)
@@ -152,7 +164,8 @@ Is one better than the other?
 If you do not know the answer to this question, just wait until ex5. :)
 
 \attention
-In this exercise, the shared variable and the reclaimed variable are not defined in the YAML file (see ex3. and further for this).
+In this exercise, the shared variable and the reclaimed variable are not defined
+in the YAML file (see ex3. and further for this).
 
 ## Decl'HDF5 plugin
 
