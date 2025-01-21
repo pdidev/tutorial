@@ -60,8 +60,8 @@ target_link_libraries(ex9 m MPI::MPI_C paraconf::paraconf PDI::pdi)
 add_executable(ex10 ex10.c)
 target_link_libraries(ex10 m MPI::MPI_C paraconf::paraconf PDI::pdi)
 
-add_executable(ex11_tmp ex11.c)
-set_target_properties(ex11_tmp PROPERTIES ENABLE_EXPORTS TRUE)
-target_link_libraries(ex11_tmp m MPI::MPI_C paraconf::paraconf PDI::pdi)
+add_executable(ex11 ex11.c)
+set_target_properties(ex11 PROPERTIES ENABLE_EXPORTS TRUE)
+target_link_libraries(ex11 m MPI::MPI_C paraconf::paraconf PDI::pdi)
 
-add_subdirectory(ex11/)
+add_subdirectory(ex_deisa/)
