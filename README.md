@@ -379,7 +379,7 @@ of processes used. You can easily check if the files are the same by running:
 
 ### Ex10. Post-processing the data in python
 
-\attention 
+\attention
 You need to have a version %PDI with the \ref pycall_plugin "Pycall plugin"
 to do this exercise.
 
@@ -393,10 +393,10 @@ data itself.
 * Load the \ref pycall_plugin "Pycall plugin" and enable this plugin
   when the `loop` event is triggered.
 
-Some variables of the python script inside `ex10.yml` are not defined. 
+Some variables of the python script inside `ex10.yml` are not defined.
 The `with` directive of this plugin allows to specify input variables (parameters)
-to pass to Python as a set of "$-expressions". 
-These parameters can be given as multiple blocks. 
+to pass to Python as a set of "$-expressions".
+These parameters can be given as multiple blocks.
 
 * Add a `with` block with the missing parameter to let the Python code process
   the data exposed in `main_field` for event `loop`.
@@ -407,9 +407,9 @@ These parameters can be given as multiple blocks.
 Notice that the Decl'HDF5 configuration was simplified, no memory selection is
 applied, the `when` condition disappeared because it is done in the python script:
 ```python
-  if 0 < iter_id < 4: 
+  if 0 < iter_id < 4:
     transformed_field = np.sqrt(source_field[1:-1,1:-1])
-    pdi.expose('transformed_field', transformed_field, pdi.OUT) 
+    pdi.expose('transformed_field', transformed_field, pdi.OUT)
 ```
 The last line of the python script allows to expose the transformed field to %PDI.
 Moreover, this data is known to %PDI in this call.
