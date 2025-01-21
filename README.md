@@ -380,7 +380,8 @@ of processes used. You can easily check if the files are the same by running:
 ### Ex10. Post-processing the data in python
 
 \attention 
-You need to have a version %PDI with the \ref pycall_plugin "Pycall plugin" to do this exercise.
+You need to have a version %PDI with the \ref pycall_plugin "Pycall plugin"
+to do this exercise.
 
 In this exercise, you will once again modify the YAML file only and use python
 to post-process the data in situ before writing it to HDF5.
@@ -389,16 +390,19 @@ data itself.
 
 * Examine the YAML file and compile the code.
 
-* Load the \ref pycall_plugin "Pycall plugin" and enable this plugin when the `loop` event is triggered.
+* Load the \ref pycall_plugin "Pycall plugin" and enable this plugin
+  when the `loop` event is triggered.
 
 Some variables of the python script inside `ex10.yml` are not defined. 
-The `with` directive of this plugin allows to specify input variables (parameters) to pass to Python as a set of "$-expressions". 
+The `with` directive of this plugin allows to specify input variables (parameters)
+to pass to Python as a set of "$-expressions". 
 These parameters can be given as multiple blocks. 
 
 * Add a `with` block with the missing parameter to let the Python code process
   the data exposed in `main_field` for event `loop`.
 
-* Use the keyword `exec` of \ref pycall_plugin "Pycall plugin" and decomment the python script.
+* Use the keyword `exec` of \ref pycall_plugin "Pycall plugin" and decomment
+  the python script.
 
 Notice that the Decl'HDF5 configuration was simplified, no memory selection is
 applied, the `when` condition disappeared because it is done in the python script:
@@ -407,23 +411,28 @@ applied, the `when` condition disappeared because it is done in the python scrip
     transformed_field = np.sqrt(source_field[1:-1,1:-1])
     pdi.expose('transformed_field', transformed_field, pdi.OUT) 
 ```
-The last line of the python script allows to expose the transformed field to %PDI. Moreover, this data is known to %PDI in this call.
+The last line of the python script allows to expose the transformed field to %PDI.
+Moreover, this data is known to %PDI in this call.
 
-* Modify the Decl'HDF5 configuration to write the new data `transformed_field` exposed from Python.
+* Modify the Decl'HDF5 configuration to write the new data `transformed_field`
+exposed from Python.
 
 \attention
 The dataset name is however explicitly specified now because it does not match
 the %PDI variable name anymore, you will instead write a new variable exposed
 from python.
 
-You should be able to match the expected output described in `ex10.h5dump`. You can easily check if the files are the same by running:
+You should be able to match the expected output described in `ex10.h5dump`.
+You can easily check if the files are the same by running:
 ```bash
   diff ex10.h5dump <(h5dump ex10*.h5)
 ```
-To see your `h5` file in readable file format, you can check the section [Comparison with the `h5dump` command](#h5comparison).
+To see your `h5` file in readable file format,
+you can check the section [Comparison with the `h5dump` command](#h5comparison).
 
 \warning
-If you relaunch the executable, remember to delete your old `ex10.h5` file before, otherwise the data will not be changed.
+If you relaunch the executable, remember to delete your old `ex10.h5` file before,
+otherwise the data will not be changed.
 
 \attention
 In a more realistic setup, one would typically not write much code in the YAML
