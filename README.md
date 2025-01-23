@@ -401,8 +401,9 @@ These parameters can be given as multiple blocks.
 * Add a `with` block with the missing parameter to let the Python code process
   the data exposed in `main_field` for event `loop`.
 
-* Use the keyword `exec` of \ref pycall_plugin "Pycall plugin" and decomment
-  the python script.
+* Use the keyword `exec` of \ref pycall_plugin "Pycall plugin".
+  After the colon (":"), add a space and a vertical bar (" |").
+  Uncomment the python script.
 
 Notice that the Decl'HDF5 configuration was simplified, no memory selection is
 applied, the `when` condition disappeared because it is done in the python script:
