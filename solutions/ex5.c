@@ -117,8 +117,8 @@ void exchange(MPI_Comm cart_comm, double cur[dsize[0]][dsize[1]])
 	
 	// send up
 	MPI_Cart_shift(cart_comm, 0, -1, &rank_source, &rank_dest);
-	MPI_Sendrecv(&cur[1][1],          1, row, rank_dest,   100, // send column after ghost
-	             &cur[dsize[0]-1][1], 1, row, rank_source, 100, // receive last column (ghost)
+	MPI_Sendrecv(&cur[1][1],          1, row, rank_dest,   100, // send row after ghost
+	             &cur[dsize[0]-1][1], 1, row, rank_source, 100, // receive last row (ghost)
 	             cart_comm, &status);
 	
 	// send to the right
@@ -129,7 +129,7 @@ void exchange(MPI_Comm cart_comm, double cur[dsize[0]][dsize[1]])
 	
 	// send to the left
 	MPI_Cart_shift(cart_comm, 1, -1, &rank_source, &rank_dest);
-	MPI_Sendrecv(&cur[1][1], 1, column, rank_dest,   100, // send column after ghost
+	MPI_Sendrecv(&cur[1][1],          1, column, rank_dest,   100, // send column after ghost
 	             &cur[1][dsize[1]-1], 1, column, rank_source, 100, // receive last column (ghost)
 	             cart_comm, &status);
 }

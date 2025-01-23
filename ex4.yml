@@ -12,7 +12,6 @@ pdi:
     dsize: { type: array, subtype: int, size: 2 }
     psize: { type: array, subtype: int, size: 2 }
     pcoord: { type: array, subtype: int, size: 2 }
-
   data: # values for which PDI does not keep a copy
     #*** add main_field to the data section, use $-expression to define its size
     #...
