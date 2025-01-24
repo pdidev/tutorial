@@ -429,7 +429,7 @@ we run in sequential and we reduce the number of iterations.
 To use \ref user_code_plugin "user_code plugin", you need to read the section
 \ref important_notes_node "Important notes" before.
 To compile the program `ex11` with Wl,`--export-dynamic` or `-rdynamic`,
-we have adding the following line:
+we have added the following line:
 ```cmake
 set_target_properties(ex11 PROPERTIES ENABLE_EXPORTS TRUE)
 ```
