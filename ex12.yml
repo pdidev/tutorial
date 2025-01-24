@@ -23,7 +23,7 @@ pdi:
         #...
       on_data:
         switch:
-          #*** enable the writing of main_field when switch > 50, and disable the writing of of main_field when switch < 25
+          #*** enable the writing of main_field when switch > 50, and disable the writing of main_field when switch < 25
           #...
       on_finalize:
         #*** release the variable should_output
