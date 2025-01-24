@@ -454,7 +454,7 @@ We also want to use `::PDI_release`, because `::PDI_reclaim` would end the
 sharing status of this descriptor and we reclaim this data later in main function.
 
 The keyword `on_event` allows to call a C function inside `::PDI_event`.
-You can call a user C function inside the `::PDI_share`
+You can call a user C function inside `::PDI_share`
 using the keyword `on_data` in the \ref user_code_plugin "user_code plugin".
 
 In this exercise, we only modify `ex11.yml`.
