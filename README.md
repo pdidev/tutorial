@@ -475,7 +475,7 @@ You can easily check if the files are the same by running:
 ```
 
 * Check that the call of C functions defined by `on_event` and `on_data` are
-indeed done at the expected order in the log.
+indeed done in the expected order in the log.
 
 \remark The keywords `on_event` and `on_data` are also used in other plugins
 to execute instructions in `::PDI_event` and `::PDI_share` respectively.
