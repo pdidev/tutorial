@@ -36,10 +36,10 @@ pdi:
       on_event:
         #*** open file on initialization
         initialization:
-          open_file: {}  # no input parameters in this functions. Therefore we have a curly empty bracket.
+          open_file: {}  # no input parameters in this function, therefore we have a curly empty bracket
         #*** close file on finalization
         finalization:
-          close_file: {} # no input parameters in this functions. Therefore we have a curly empty bracket.
+          close_file: {} # no input parameters in this function, therefore we have a curly empty bracket
       on_data:
         main_field:
           #*** compute the total mass and write to file
