@@ -422,7 +422,7 @@ the side.
 
 In this exercise, you will learn how to call a user C function in %PDI with the
 \ref user_code_plugin "user_code plugin".
-Moreover, to reduce the standart output log,
+Moreover, to reduce the standard output log,
 we run in sequential and we reduce the number of iterations.
 
 \attention
