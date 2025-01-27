@@ -45,8 +45,13 @@ int pcoord[2];
 double alpha;
 
 double L=1.0;
+/// definition of the source
+/// the source corresponds to a disk of an uniform value
+/// source1: center=(0.4,0.4), radius=0.2 and value=100
 double source1[4]={0.4, 0.4, 0.2, 100};
+/// source2: center=(0.8,0.7), radius=0.1 and value=200
 double source2[4]={0.7, 0.8, 0.1, 200};
+/// the order of the coordinates of the center (XX,YY) is inverted in the vector
 
 FILE *pFile2=NULL;
 
@@ -57,7 +62,7 @@ void open_file(void)
 	
 	if(rank>0) return;
 	printf("\n Call open_file.\n");
-	pFile2 = fopen("mass.dat", "w");
+	pFile2 = fopen("integral.dat", "w");
 }
 
 void close_file(void)
@@ -69,13 +74,13 @@ void close_file(void)
 	printf("\n Call close_file.\n");
 
 	if(pFile2 == NULL){
-		fprintf(stderr,"\n error: The file mass.dat is not open. Call open_file before\n \n");
+		fprintf(stderr,"\n error: The file integral.dat is not open. You must call open_file before.\n \n");
 		exit(1);
 	}
 	fclose(pFile2);
 }
 
-void compute_mass(void)
+void compute_integral(void)
 {
 	int rank;
 	MPI_Comm_rank(MPI_COMM_WORLD, &rank);
@@ -90,31 +95,39 @@ void compute_mass(void)
 	PDI_access("dsize", (void **)&local_size, PDI_IN);
 	PDI_release("dsize");
 
+	int *para_size;
+	PDI_access("psize", (void **)&para_size, PDI_IN);
+	PDI_release("psize");
+
+	double dy = L / ((local_size[0]-2) *para_size[0]);
+	double dx = L / ((local_size[1]-2) *para_size[1]);
+
 	double *field;
-	double total_mass=0.0;
+	double integral_of_main_field=0.0;
 	PDI_access("input", (void **)&field, PDI_IN);
-	for(int i=1; i<local_size[0]-1; i++)
-	{
-		for(int j=1; j<local_size[1]-1; j++)
-		{
-			total_mass += field[i*local_size[1]+j];
+	for (int i=1; i<local_size[0]-1; i++) {
+		for (int j=1; j<local_size[1]-1; j++) {
+			integral_of_main_field += field[i*local_size[1]+j];
 		}
 	}
-	MPI_Allreduce(MPI_IN_PLACE, &total_mass, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
-    printf("At iteration %d, total_mass = %f\n", *iter, total_mass);
+	MPI_Allreduce(MPI_IN_PLACE, &integral_of_main_field, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
+	// multiply by the area of a cell (cells are uniform here)
+	integral_of_main_field*=dx*dy;
+    printf("At iteration %d, integral of main field = %.6f\n", *iter, integral_of_main_field);
 	PDI_release("input");
 	
 	if(rank>0) return;
 
 	if(pFile2 == NULL){
-		fprintf(stderr,"\n error: The file mass.dat is not open. Call open_file before\n \n");
+		fprintf(stderr,"\n error: The file integral.dat is not open. You must call open_file before.\n \n");
 		exit(1);
 	}
-	fprintf(pFile2, "%d\t%f\n", *iter, total_mass);
+	fprintf(pFile2, "%d\t%.6f\n", *iter, integral_of_main_field);
 }
 
 
-/** Initialize the data all to 0 except for the left border (XX==0) initialized to 1 million
+/** Initialize the data all to 0 except for cell centers (cpos_x,cpos_y) inside disks defined
+ ** by sources1 or sources2
  * \param[out] dat the local data to initialize
  */
 void init(double dat[dsize[0]][dsize[1]])
@@ -124,14 +137,19 @@ void init(double dat[dsize[0]][dsize[1]])
 	double dx = L / ((dsize[1]-2) *psize[1]) ;
 
 	double cpos_x,cpos_y;
+	double square_dist1, square_dist2;
 	for(int yy=0; yy<dsize[0];++yy) {
 		cpos_y=(yy+pcoord[0]*(dsize[0]-2))*dy-0.5*dy;
 		for(int xx=0; xx<dsize[1];++xx) {
 			cpos_x=(xx+pcoord[1]*(dsize[1]-2))*dx-0.5*dx;
-			if((cpos_y-source1[0])*(cpos_y-source1[0]) + (cpos_x-source1[1])*(cpos_x-source1[1]) <= source1[2]*source1[2]) {
+			square_dist1=(cpos_y-source1[0])*(cpos_y-source1[0])
+						+ (cpos_x-source1[1])*(cpos_x-source1[1]);
+			if (square_dist1 <= source1[2]*source1[2]) {
 				dat[yy][xx] = source1[3];
 			}
-			if((cpos_y-source2[0])*(cpos_y-source2[0]) + (cpos_x-source2[1])*(cpos_x-source2[1]) <= source2[2]*source2[2]) {
+			square_dist2=(cpos_y-source2[0])*(cpos_y-source2[0])
+						+ (cpos_x-source2[1])*(cpos_x-source2[1]);
+			if (square_dist2 <= source2[2]*source2[2]) {
 				dat[yy][xx] = source2[3];
 			}
 		}
@@ -195,7 +213,7 @@ void exchange(MPI_Comm cart_comm, double cur[dsize[0]][dsize[1]])
 	
 	// send to the left
 	MPI_Cart_shift(cart_comm, 1, -1, &rank_source, &rank_dest);
-	MPI_Sendrecv(&cur[1][1], 1, column, rank_dest,   100, // send column after ghost
+	MPI_Sendrecv(&cur[1][1],          1, column, rank_dest,   100, // send column after ghost
 	             &cur[1][dsize[1]-1], 1, column, rank_source, 100, // receive last column (ghost)
 	             cart_comm, &status);
 }
