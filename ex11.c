@@ -126,8 +126,9 @@ void compute_integral(void)
 }
 
 
-/** Initialize the data all to 0 except for cell centers (cpos_x,cpos_y) inside disks defined
- ** by sources1 or sources2
+/** Initialize all the data to 0, with the exception of 
+ ** the cells whose center (cpos_x,cpos_y) are inside of the disks
+ ** defined by source1 or source2
  * \param[out] dat the local data to initialize
  */
 void init(double dat[dsize[0]][dsize[1]])
