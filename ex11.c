@@ -175,7 +175,7 @@ void iter(double cur[dsize[0]][dsize[1]], double next[dsize[0]][dsize[1]])
 	}
 }
 
-/** Exchanges ghost values with neighbours
+/** Exchange ghost values with neighbours
  * \param[in] cart_comm the MPI communicator with all processes organized in a 2D Cartesian grid
  * \param[in] cur the local data at the current time-step whose ghosts need exchanging
  */
