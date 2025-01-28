@@ -32,26 +32,26 @@
 // load the PDI header
 #include <pdi.h>
 
-/// size of the local data as [HEIGHT, WIDTH] including ghosts & boundary constants
+// size of the local data as [HEIGHT, WIDTH] including ghosts & boundary constants
 int dsize[2];
 
-/// 2D size of the process grid as [HEIGHT, WIDTH]
+// 2D size of the process grid as [HEIGHT, WIDTH]
 int psize[2];
 
-/// 2D rank of the local process in the process grid as [YY, XX]
+// 2D rank of the local process in the process grid as [YY, XX]
 int pcoord[2];
 
-/// the alpha coefficient used in the computation
+// the alpha coefficient used in the computation
 double alpha;
 
 double L=1.0;
-/// definition of the source
-/// the source corresponds to a disk of an uniform value
-/// source1: center=(0.4,0.4), radius=0.2 and value=100
+// definition of the source
+// the source corresponds to a disk of an uniform value
+// source1: center=(0.4,0.4), radius=0.2 and value=100
 double source1[4]={0.4, 0.4, 0.2, 100};
-/// source2: center=(0.8,0.7), radius=0.1 and value=200
+// source2: center=(0.8,0.7), radius=0.1 and value=200
 double source2[4]={0.7, 0.8, 0.1, 200};
-/// the order of the coordinates of the center (XX,YY) is inverted in the vector
+// the order of the coordinates of the center (XX,YY) is inverted in the vector
 
 FILE *pFile2=NULL;
 
