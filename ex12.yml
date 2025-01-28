@@ -1,0 +1,50 @@
+# the alpha parameter
+alpha: 0.125
+# global data-size (excluding spacer for boundary conditions or ghosts)
+global_size: { height: 60, width: 12 }
+# degree of parallelism (number of blocks in each dimension)
+parallelism: { height: 2, width: 2 }
+# PDI configuration
+pdi:
+  metadata: # small values for which PDI keeps a copy
+    ii: int
+    dsize: { type: array, subtype: int, size: 2 }
+    psize: { type: array, subtype: int, size: 2 }
+    pcoord: { type: array, subtype: int, size: 2 }
+    should_output: logical
+    switch: int
+  data: # values for which PDI does not keep a copy
+    main_field: { type: array, subtype: double, size: [ '$dsize[0]', '$dsize[1]' ] }
+  plugins:
+    mpi:
+    set_value:
+      on_init:
+        #*** initialize should_output to false at initialization
+        #...
+      on_data:
+        switch:
+          #*** enable the writing of main_field when switch > 50, and disable the writing of main_field when switch < 25
+          #...
+      on_finalize:
+        #*** release the variable should_output
+        #...
+
+    decl_hdf5:
+      file: ex12.h5
+      communicator: $MPI_COMM_WORLD
+      datasets: # a list of datasets inside the file created on first access
+        main_field: { type: array, subtype: double, size: [ 11, '$psize[0]*($dsize[0]-2)', '$psize[1]*($dsize[1]-2)' ] }
+      on_event: loop
+      collision_policy: write_into
+      write:
+        main_field:
+          #*** enable the writing of main_field according to the value of should_output
+          #...
+          dataset_selection:
+            size: [1,'$dsize[0]-2', '$dsize[1]-2']
+            start: ['$ii', '$pcoord[0]*($dsize[0]-2)', '$pcoord[1]*($dsize[1]-2)']
+          memory_selection:
+            size: [ '$dsize[0]-2', '$dsize[1]-2' ] # number of elements to transfer in each dimension
+            start: [1, 1] # coordinate of the start point in memory relative to the shared data
+    
+        
