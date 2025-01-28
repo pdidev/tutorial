@@ -401,21 +401,29 @@ the selection where to write in the file dataset.
 
 Running the code from the previous exercises in parallel should already work and
 yield one file per process containing the local data block.
-In this exercise you will write one single file with parallel HDF5 whose content
-should be independent from the number of processes used.
-Once again, you only need to modify the YAML file in this exercise, no need to
-touch the C file.
+In this exercise you will write one single file `ex9.h5`(see `ex9.yml`) with 
+parallel HDF5 whose content should be independent from the number of 
+processes used.
+
+\attention You need to do this exercise with a parallel version of HDF5 and the 
+\ref Decl_HDF5_plugin "Decl'HDF5 plugin" compiled in parallel.
+
+Once again, you only need to modify the YAML file in this exercise,
+no need to touch the C file.
 
 * Examine the YAML file and compile the code.
 
-The `mpi` plugin was loaded to make sharing MPI communicators possible.
+* Load the `mpi` plugin to make sharing MPI communicators possible.
 
-* Uncomment the `communicator` directive of the
-  \ref Decl_HDF5_plugin "Decl'HDF5 plugin" to switch to parallel I/O and change
-  the file name so that all processes access the same file.
+* Define the `communicator` directive of the \ref Decl_HDF5_plugin "Decl'HDF5 plugin"
+  to switch to parallel I/O for HDF5. Set the value of the communicator to MPI_COMM_WORLD.
 
-* Set the size of the dataset to take the global (parallel) array size into
-  account.
+\note We have added the directive `collision_policy: write_into` of the 
+\ref Decl_HDF5_plugin "Decl'HDF5 plugin" (see section COLLISION_POLICY). 
+This parameter is used to define what to do when writing to a file or dataset
+ that already exists.
+
+* Set the size of the dataset to take the global (parallel) array size into account. 
   You will need to multiply the local size by the number of processes in each
   dimension (use `psize`).
 
@@ -423,11 +431,17 @@ The `mpi` plugin was loaded to make sharing MPI communicators possible.
   You will need to make a selection in the dataset that depends on the global
   coordinate of the local data block (use `pcoord`).
 
-Match the output from `ex9.h5dump`, that should be independent from the number
-of processes used. You can easily check if the files are the same by running:
+You should be able to match the expected output described in `ex9.h5dump`. 
+You can easily check if the files are the same by running:
 ```bash
   diff ex9.h5dump <(h5dump ex9*.h5)
 ```
+To see your `h5` file in readable file format,
+you can check the section [Comparison with the `h5dump` command](#h5comparison).
+
+\warning
+If you relaunch the executable, remember to delete your old `ex9.h5` file before,
+otherwise the data will not be changed correctly.
 
 ![graphical representation of the parallel I/O](PDI_hdf5_parallel.jpg)
 
