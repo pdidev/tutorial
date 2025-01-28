@@ -143,14 +143,14 @@ void init(double dat[dsize[0]][dsize[1]])
 		cpos_y=(yy+pcoord[0]*(dsize[0]-2))*dy-0.5*dy;
 		for(int xx=0; xx<dsize[1];++xx) {
 			cpos_x=(xx+pcoord[1]*(dsize[1]-2))*dx-0.5*dx;
-			square_dist1=(cpos_y-source1[0])*(cpos_y-source1[0])
-						+ (cpos_x-source1[1])*(cpos_x-source1[1]);
-			if (square_dist1 <= source1[2]*source1[2]) {
+			square_dist1 = ( cpos_y-source1[0] ) * ( cpos_y-source1[0] )
+				     + ( cpos_x-source1[1] ) * ( cpos_x-source1[1] );
+			if (square_dist1 <= source1[2] * source1[2]) {
 				dat[yy][xx] = source1[3];
 			}
-			square_dist2=(cpos_y-source2[0])*(cpos_y-source2[0])
-						+ (cpos_x-source2[1])*(cpos_x-source2[1]);
-			if (square_dist2 <= source2[2]*source2[2]) {
+			square_dist2 = ( cpos_y-source2[0] ) * ( cpos_y-source2[0] )
+				     + ( cpos_x-source2[1] ) * ( cpos_x-source2[1] );
+			if (square_dist2 <= source2[2] * source2[2]) {
 				dat[yy][xx] = source2[3];
 			}
 		}
