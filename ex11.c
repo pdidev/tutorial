@@ -32,7 +32,8 @@
 // load the PDI header
 #include <pdi.h>
 
-// size of the local data as [HEIGHT, WIDTH] including ghosts & boundary constants
+// size of the local data as [HEIGHT, WIDTH] including the number of ghost layers
+// for communications or boundary conditions
 int dsize[2];
 
 // 2D size of the process grid as [HEIGHT, WIDTH]
@@ -85,7 +86,7 @@ void compute_integral(void)
 	int rank;
 	MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
-	if(rank==0) printf("\n Call compute_mass.\n");
+	if(rank==0) printf("\n Call compute_integral.\n");
 
 	int *iter;
 	PDI_access("ii", (void **)&iter, PDI_IN);
@@ -126,8 +127,8 @@ void compute_integral(void)
 }
 
 
-/** Initialize all the data to 0, with the exception of 
- ** the cells whose center (cpos_x,cpos_y) are inside of the disks
+/** Initialize all the data to 0, with the exception of a given cell
+ ** whose center (cpos_x,cpos_y) is inside of the disks
  ** defined by source1 or source2
  * \param[out] dat the local data to initialize
  */
@@ -255,7 +256,7 @@ int main( int argc, char* argv[] )
 	assert(global_size[1]%psize[1]==0);
 	assert(psize[1]*psize[0] == psize_1d);
 	
-	// compute the local data-size with space for ghosts and boundary constants
+	// compute the local data-size (the number of ghost layers is 2 in each coordinate)
 	dsize[0] = global_size[0]/psize[0] + 2;
 	dsize[1] = global_size[1]/psize[1] + 2;
 	
@@ -281,7 +282,7 @@ int main( int argc, char* argv[] )
 	PDI_expose("psize",      psize,  PDI_OUT);
 	
 	// the main loop
-	for (; ii<3; ++ii) {
+	for (; ii<4; ++ii) {
 		// share the loop counter & main field at each iteration
 		PDI_multi_expose("loop",
 				"ii",         &ii, PDI_OUT,
