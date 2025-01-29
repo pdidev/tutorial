@@ -256,7 +256,7 @@ int main( int argc, char* argv[] )
 	assert(global_size[1]%psize[1]==0);
 	assert(psize[1]*psize[0] == psize_1d);
 	
-	// compute the local data-size (the number of ghost layers is 2 in each coordinate)
+	// compute the local data-size (the number of ghost layers is 2 for each coordinate)
 	dsize[0] = global_size[0]/psize[0] + 2;
 	dsize[1] = global_size[1]/psize[1] + 2;
 	
