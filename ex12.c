@@ -27,6 +27,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <stdbool.h>
 
 #include <paraconf.h>
 // load the PDI header
@@ -47,6 +48,34 @@ double alpha;
 double L=1.0;
 double source1[4]={0.4, 0.4, 0.2, 100};
 double source2[4]={0.7, 0.8, 0.1, 200};
+
+FILE *pFile2=NULL;
+
+void open_file(void)
+{
+	int rank;
+	MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+	
+	if(rank>0) return;
+	printf("Call open_file.\n");
+	pFile2 = fopen("should_output.dat", "w");
+	fprintf(pFile2, "iter  switch  should_output\n");
+}
+
+void close_file(void)
+{
+	int rank;
+	MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+	
+	if(rank>0) return;
+	printf("Call close_file.\n");
+
+	if(pFile2 == NULL){
+		fprintf(stderr,"\n error: The file should_output is not open. Call open_file before\n \n");
+		exit(1);
+	}
+	fclose(pFile2);
+}
 
 /** Initialize the data all to 0 except for the left border (XX==0) initialized to 1 million
  * \param[out] dat the local data to initialize
@@ -117,8 +146,8 @@ void exchange(MPI_Comm cart_comm, double cur[dsize[0]][dsize[1]])
 	
 	// send up
 	MPI_Cart_shift(cart_comm, 0, -1, &rank_source, &rank_dest);
-	MPI_Sendrecv(&cur[1][1],          1, row, rank_dest,   100, // send row after ghost
-	             &cur[dsize[0]-1][1], 1, row, rank_source, 100, // receive last row (ghost)
+	MPI_Sendrecv(&cur[1][1],          1, row, rank_dest,   100, // send column after ghost
+	             &cur[dsize[0]-1][1], 1, row, rank_source, 100, // receive last column (ghost)
 	             cart_comm, &status);
 	
 	// send to the right
@@ -129,7 +158,7 @@ void exchange(MPI_Comm cart_comm, double cur[dsize[0]][dsize[1]])
 	
 	// send to the left
 	MPI_Cart_shift(cart_comm, 1, -1, &rank_source, &rank_dest);
-	MPI_Sendrecv(&cur[1][1],          1, column, rank_dest,   100, // send column after ghost
+	MPI_Sendrecv(&cur[1][1], 1, column, rank_dest,   100, // send column after ghost
 	             &cur[1][dsize[1]-1], 1, column, rank_source, 100, // receive last column (ghost)
 	             cart_comm, &status);
 }
@@ -137,9 +166,12 @@ void exchange(MPI_Comm cart_comm, double cur[dsize[0]][dsize[1]])
 int main( int argc, char* argv[] )
 {
 	MPI_Init(&argc, &argv);
+	srand( time( NULL ) );
+
+	int switch_iter_value[10] = {20, 35, 50, 55, 60, 35, 25, 20, 15, 60 };
 	
 	// load the configuration tree
-	PC_tree_t conf = PC_parse_path("ex4.yml");
+	PC_tree_t conf = PC_parse_path("ex12.yml");
 	
 	// NEVER USE MPI_COMM_WORLD IN THE CODE, use our own communicator main_comm instead
 	MPI_Comm main_comm = MPI_COMM_WORLD;
@@ -183,27 +215,51 @@ int main( int argc, char* argv[] )
 	double(*cur)[dsize[1]]  = malloc(sizeof(double)*dsize[1]*dsize[0]);
 	double(*next)[dsize[1]] = malloc(sizeof(double)*dsize[1]*dsize[0]);
 	
+	// initialize the value of switch for each iterations
+	int switch_iter_values[10] = {20, 35, 50, 55, 60, 35, 25, 20, 15, 60 };
+
+	// open the file should_output.dat
+	open_file();
+
 	// initialize the data content
+	PDI_event("initialization");
 	init(cur);
 	
 	// our loop counter so as to be able to use it outside the loop
 	int ii=0;
-	
 	// share useful configuration bits with PDI
-	PDI_share("pcoord",     pcoord, PDI_OUT);
-	PDI_reclaim("pcoord");
-	PDI_share("dsize",      dsize,  PDI_OUT);
-	PDI_reclaim("dsize");
-	PDI_share("psize",      psize,  PDI_OUT);
-	PDI_reclaim("psize");
+	PDI_expose("pcoord",     pcoord, PDI_OUT);
+	PDI_expose("dsize",      dsize,  PDI_OUT);
+	PDI_expose("psize",      psize,  PDI_OUT);
+	
+	// value of switch inside the iteration loop
+	int tmp_switch;
+	// pointer to the value of should_output
+	bool *should_output;
+
+	// get the initial value of should_output
+	PDI_access("should_output",  (void **)&should_output,  PDI_IN);
+	PDI_release("should_output");
+	if(pcoord_1d == 0) printf("initial value: should_output = %d \n", *should_output);
 	
 	// the main loop
 	for (; ii<10; ++ii) {
+		// set value of switch inside the iteration loop
+		tmp_switch = switch_iter_value[ii];
+		if(pcoord_1d == 0) printf("iter = %d, switch = %d\n", ii, tmp_switch);
+		PDI_expose("switch", &tmp_switch, PDI_OUT);
+
+		// get should_output value and write to the file should_output.dat
+		PDI_access("should_output",  (void **)&should_output,  PDI_IN);
+		PDI_release("should_output");
+		if(pcoord_1d == 0) printf("iter = %d, should_output = %d \n", ii, *should_output);
+		if(pcoord_1d == 0) fprintf(pFile2, "%d\t%d\t%d\n", ii, tmp_switch, *should_output);
+
 		// share the loop counter & main field at each iteration
-		PDI_share("ii",         &ii, PDI_OUT);
-		PDI_share("main_field", cur, PDI_OUT);
-		PDI_reclaim("main_field");
-		PDI_reclaim("ii");
+		PDI_multi_expose("loop",
+				"ii",         &ii, PDI_OUT,
+				"main_field", cur, PDI_OUT,
+				NULL);
 		
 		// compute the values for the next iteration
 		iter(cur, next);
@@ -214,12 +270,15 @@ int main( int argc, char* argv[] )
 		// swap the current and next values
 		double (*tmp)[dsize[1]] = cur; cur = next; next = tmp;
 	}
-	// finally share the loop counter and main field after the main loop body
-	PDI_share("main_field", cur, PDI_OUT);
-	PDI_share("ii",         &ii, PDI_OUT);
-	PDI_reclaim("ii");
-	PDI_reclaim("main_field");
+	// finally share the main field as well as the loop counter after the loop
+	PDI_multi_expose("finalization",
+	        "ii",         &ii, PDI_OUT,
+	        "main_field", cur, PDI_OUT,
+	        NULL);
 	
+	// close the file should_output.dat
+	close_file();
+
 	// finalize PDI
 	PDI_finalize();
 	

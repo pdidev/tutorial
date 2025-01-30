@@ -6,12 +6,15 @@ global_size: { height: 60, width: 12 }
 parallelism: { height: 1, width: 1 }
 # PDI configuration
 pdi:
+  #*** describe the data dsize, psize, pcoord
   data:
-    ii: int
     dsize: { type: array, subtype: int, size: 2 }
     psize: { type: array, subtype: int, size: 2 }
     pcoord: { type: array, subtype: int, size: 2 }
+  
   plugins:
+    trace:
     decl_hdf5:
+    #*** use the decl_hdf5 plugin to write in the file ex3.h5 the data above (dsize, psize, pcoord)
       file: ex3.h5
       write: [ dsize, psize, pcoord ]
