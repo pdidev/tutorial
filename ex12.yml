@@ -11,20 +11,40 @@ pdi:
     dsize: { type: array, subtype: int, size: 2 }
     psize: { type: array, subtype: int, size: 2 }
     pcoord: { type: array, subtype: int, size: 2 }
+    should_output: logical
+    switch: int
   data: # values for which PDI does not keep a copy
     main_field: { type: array, subtype: double, size: [ '$dsize[0]', '$dsize[1]' ] }
   plugins:
+    mpi:
+    set_value:
+      on_init:
+        #*** initialize should_output to false at initialization
+        #...
+      on_data:
+        switch:
+          #*** enable the writing of main_field when switch > 50, and disable the writing of main_field when switch < 25
+          #...
+      on_finalize:
+        #*** release the variable should_output
+        #...
+
     decl_hdf5:
-      file: ex7-data-${pcoord[0]}x${pcoord[1]}_iter_${ii}.h5
+      file: ex12.h5
+      communicator: $MPI_COMM_WORLD
       datasets: # a list of datasets inside the file created on first access
-        #*** define the datasets for main_field
-        main_field: { type: array, subtype: double, size: [ '$dsize[0]-2', '$dsize[1]-2' ] }
+        main_field: { type: array, subtype: double, size: [ 11, '$psize[0]*($dsize[0]-2)', '$psize[1]*($dsize[1]-2)' ] }
+      on_event: loop
+      collision_policy: write_into
       write:
         main_field:
-          when: '$ii=1' # we can use a field specific condition
-          #dataset: 'main_field' # no need to specify the dataset name if it is equal to the PDI data name
-          #(ex10 presents an example with a different variable name)
-          #*** use memory_selection to eliminate the ghost layer
+          #*** enable the writing of main_field according to the value of should_output
+          #...
+          dataset_selection:
+            size: [1,'$dsize[0]-2', '$dsize[1]-2']
+            start: ['$ii', '$pcoord[0]*($dsize[0]-2)', '$pcoord[1]*($dsize[1]-2)']
           memory_selection:
             size: [ '$dsize[0]-2', '$dsize[1]-2' ] # number of elements to transfer in each dimension
             start: [1, 1] # coordinate of the start point in memory relative to the shared data
+    
+        
