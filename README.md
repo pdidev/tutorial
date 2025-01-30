@@ -58,6 +58,8 @@ pdirun mpirun -n 4 ./ex?
 Where `?` is the number of the exercise and 4 represents the number of MPI
 processes to use.
 
+#### Execution with storage of the log
+
 To store the logs for later comparison, you can use the following command (for
 example for ex2.):
 ```bash
@@ -109,7 +111,7 @@ read this file.
 * Set values in `ex1.yml` to be able to run the code with 4 MPI processes.
 
 ```bash
-srun -n 4 ./ex1
+mpirun -np 4 ./ex1
 ```
 
 
@@ -117,17 +119,40 @@ srun -n 4 ./ex1
 
 ### Ex2. Now with some PDI
 
-Ex2. is the same code as that of ex1. with %PDI calls added in `main` function.
-In our YAML file (`ex2.yml`), a new sub-tree has been added under the `pdi` key.
-This sub-tree is the %PDI specification tree passed to %PDI at initialization.
-Here, the %PDI \ref trace_plugin "Trace plugin" is used to trace %PDI calls.
+Ex2. C code is similar to ex1. C code with %PDI calls added in `main` function.
+This exercise will be run sequentially.
 
 * Examine the source code, compile it and run it.
 
-* Add the required `::PDI_share` and `::PDI_reclaim` calls to match the output
-  of `ex2.log` file (only the lines matching `[Trace-plugin]` have been kept).
-  You only need to change the `ex2.c` file. You can easily check if the files
-  are the same by running the command:
+In our YAML file (`ex2.yml`), the `pdi` key is added. The sub-tree, defined
+after this key, is the %PDI specification tree passed to %PDI at initialization.
+
+* To observe %PDI calls on the standard output, add \ref trace_plugin
+ "Trace plugin" (`trace`) plugin of %PDI in our YAML file (`ex2.yml`).
+
+* In the C file (`ex2.c`), add `::PDI_share` and `::PDI_reclaim` call to share
+  some data with %PDI.
+  The shared data are defined in the line that starts with "//***" in `ex2.c`.
+
+Here, the objective is to match the output of `ex2.log` file.
+In this file, only the line corresponding to `[Trace-plugin]` have been kept.
+Moreover, the time are given for each %PDI calls.
+To compare, we need to remove this information from the log.
+It is done by adding this line in the sub-tree of the trace plugin.
+
+```yaml
+  logging: { pattern: '[PDI][%n-plugin] *** %l: %v' }
+```
+Additionally, we run sequentially to facilitate the comparison between logs
+(in parallel each rank send a `trace` message and the order of writing can be
+different).
+
+* Add the previous line in the sub-tree of \ref trace_plugin "Trace plugin"
+(don't forget to indent this line correctly).
+Using the previous section [Execution with storage of the log](#execution-with-storage-of-the-log),
+run this exercise and save the output log in the file `ex2.result.log`.
+After that you can easily check if the files are the same by running the command:
+
 ```bash
   diff ex2.log <(grep Trace-plugin ex2.result.log)
 ```
@@ -138,6 +163,9 @@ interlaced.
 Is one better than the other?
 If you do not know the answer to this question, just wait until ex5. :)
 
+\attention
+In this exercise, the shared variable and the reclaimed variable are not defined
+in the YAML file (see ex3. and further for this).
 
 ## Decl'HDF5 plugin
 

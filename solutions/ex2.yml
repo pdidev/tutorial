@@ -5,6 +5,8 @@ global_size: { height: 60, width: 12 }
 # degree of parallelism (number of blocks in each dimension)
 parallelism: { height: 1, width: 1 }
 
+#*** PDI configuration
 pdi:
-#*** PDI configuration: use the trace plugin to print all the PDI activities
-#...
+  plugins:
+    trace:
+      logging: { pattern: '[PDI][%n-plugin] *** %l: %v' }
