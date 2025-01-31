@@ -33,21 +33,27 @@
 // load the PDI header
 #include <pdi.h>
 
-/// size of the local data as [HEIGHT, WIDTH] including ghosts & boundary constants
+// size of the local data as [HEIGHT, WIDTH] including the number of ghost layers
+// for communications or boundary conditions
 int dsize[2];
 
-/// 2D size of the process grid as [HEIGHT, WIDTH]
+// 2D size of the process grid as [HEIGHT, WIDTH]
 int psize[2];
 
-/// 2D rank of the local process in the process grid as [YY, XX]
+// 2D rank of the local process in the process grid as [YY, XX]
 int pcoord[2];
 
-/// the alpha coefficient used in the computation
+// the alpha coefficient used in the computation
 double alpha;
 
 double L=1.0;
+// definition of the source
+// the source corresponds to a disk of an uniform value
+// source1: center=(0.4,0.4), radius=0.2 and value=100
 double source1[4]={0.4, 0.4, 0.2, 100};
+// source2: center=(0.8,0.7), radius=0.1 and value=200
 double source2[4]={0.7, 0.8, 0.1, 200};
+// the order of the coordinates of the center (XX,YY) is inverted in the vector
 
 FILE *pFile2=NULL;
 
@@ -77,7 +83,9 @@ void close_file(void)
 	fclose(pFile2);
 }
 
-/** Initialize the data all to 0 except for the left border (XX==0) initialized to 1 million
+/** Initialize all the data to 0, with the exception of a given cell
+ *  whose center (cpos_x,cpos_y) is inside of the disks
+ *  defined by source1 or source2
  * \param[out] dat the local data to initialize
  */
 void init(double dat[dsize[0]][dsize[1]])
@@ -87,14 +95,19 @@ void init(double dat[dsize[0]][dsize[1]])
 	double dx = L / ((dsize[1]-2) *psize[1]) ;
 
 	double cpos_x,cpos_y;
+	double square_dist1, square_dist2;
 	for(int yy=0; yy<dsize[0];++yy) {
 		cpos_y=(yy+pcoord[0]*(dsize[0]-2))*dy-0.5*dy;
 		for(int xx=0; xx<dsize[1];++xx) {
 			cpos_x=(xx+pcoord[1]*(dsize[1]-2))*dx-0.5*dx;
-			if((cpos_y-source1[0])*(cpos_y-source1[0]) + (cpos_x-source1[1])*(cpos_x-source1[1]) <= source1[2]*source1[2]) {
+			square_dist1 = ( cpos_y-source1[0] ) * ( cpos_y-source1[0] )
+				     + ( cpos_x-source1[1] ) * ( cpos_x-source1[1] );
+			if (square_dist1 <= source1[2] * source1[2]) {
 				dat[yy][xx] = source1[3];
 			}
-			if((cpos_y-source2[0])*(cpos_y-source2[0]) + (cpos_x-source2[1])*(cpos_x-source2[1]) <= source2[2]*source2[2]) {
+			square_dist2 = ( cpos_y-source2[0] ) * ( cpos_y-source2[0] )
+				     + ( cpos_x-source2[1] ) * ( cpos_x-source2[1] );
+			if (square_dist2 <= source2[2] * source2[2]) {
 				dat[yy][xx] = source2[3];
 			}
 		}
@@ -119,7 +132,7 @@ void iter(double cur[dsize[0]][dsize[1]], double next[dsize[0]][dsize[1]])
 	}
 }
 
-/** Exchanges ghost values with neighbours
+/** Exchange ghost values with neighbours
  * \param[in] cart_comm the MPI communicator with all processes organized in a 2D Cartesian grid
  * \param[in] cur the local data at the current time-step whose ghosts need exchanging
  */
@@ -146,8 +159,8 @@ void exchange(MPI_Comm cart_comm, double cur[dsize[0]][dsize[1]])
 	
 	// send up
 	MPI_Cart_shift(cart_comm, 0, -1, &rank_source, &rank_dest);
-	MPI_Sendrecv(&cur[1][1],          1, row, rank_dest,   100, // send column after ghost
-	             &cur[dsize[0]-1][1], 1, row, rank_source, 100, // receive last column (ghost)
+	MPI_Sendrecv(&cur[1][1],          1, row, rank_dest,   100, // send row after ghost
+	             &cur[dsize[0]-1][1], 1, row, rank_source, 100, // receive last row (ghost)
 	             cart_comm, &status);
 	
 	// send to the right
@@ -158,7 +171,7 @@ void exchange(MPI_Comm cart_comm, double cur[dsize[0]][dsize[1]])
 	
 	// send to the left
 	MPI_Cart_shift(cart_comm, 1, -1, &rank_source, &rank_dest);
-	MPI_Sendrecv(&cur[1][1], 1, column, rank_dest,   100, // send column after ghost
+	MPI_Sendrecv(&cur[1][1],          1, column, rank_dest,   100, // send column after ghost
 	             &cur[1][dsize[1]-1], 1, column, rank_source, 100, // receive last column (ghost)
 	             cart_comm, &status);
 }
@@ -166,9 +179,6 @@ void exchange(MPI_Comm cart_comm, double cur[dsize[0]][dsize[1]])
 int main( int argc, char* argv[] )
 {
 	MPI_Init(&argc, &argv);
-	srand( time( NULL ) );
-
-	int switch_iter_value[10] = {20, 35, 50, 55, 60, 35, 25, 20, 15, 60 };
 	
 	// load the configuration tree
 	PC_tree_t conf = PC_parse_path("ex12.yml");
@@ -202,7 +212,7 @@ int main( int argc, char* argv[] )
 	assert(global_size[1]%psize[1]==0);
 	assert(psize[1]*psize[0] == psize_1d);
 	
-	// compute the local data-size with space for ghosts and boundary constants
+	// compute the local data-size (the number of ghost layers is 2 for each coordinate)
 	dsize[0] = global_size[0]/psize[0] + 2;
 	dsize[1] = global_size[1]/psize[1] + 2;
 	

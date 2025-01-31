@@ -42,7 +42,7 @@ int psize[2];
 // 2D rank of the local process in the process grid as [YY, XX]
 int pcoord[2];
 
-/// the alpha coefficient used in the computation
+// the alpha coefficient used in the computation
 double alpha;
 
 double L=1.0;
