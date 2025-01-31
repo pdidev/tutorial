@@ -626,6 +626,74 @@ To see your `h5` file in readable file format,
 you can check the section [Comparison with the `h5dump` command](#h5comparison).
 
 
+##  Call a user C function
+
+### Ex11. user_code plugin
+
+In this exercise, you will learn how to call a user C function in %PDI with the
+\ref user_code_plugin "user_code plugin".
+Moreover, to reduce the standard output log,
+we run sequentially and we reduce the number of iterations.
+
+\attention
+You need to read the section \ref important_notes_node "Important notes"
+before using \ref user_code_plugin "user_code plugin".
+To compile the program `ex11` with Wl,`--export-dynamic` or `-rdynamic`,
+we have added the following line:
+```cmake
+set_target_properties(ex11 PROPERTIES ENABLE_EXPORTS TRUE)
+```
+in the CMakeList.txt provided.
+
+The objective is to write the integral of `main_field` on the file
+`integral.dat`.
+This integral is computed in the C function `compute_integral`
+defined in `ex11.c`.
+
+* Examine the C file, the YAML file and compile the code.
+
+\remark In the `compute_integral` function, the %PDI function `::PDI_access`
+and `::PDI_release` are called (see \ref annotation "Code annotation").
+For example,
+```c
+int *iter;
+PDI_access("ii", (void **)&iter, PDI_IN);
+PDI_release("ii");
+```
+`::PDI_access` sets our pointer (`iter`) to the data location of `ii`.
+We need to pass `PDI_IN` because data flows from PDI to our application.
+We also want to use `::PDI_release`, because `::PDI_reclaim` would end
+the sharing status of this descriptor and we reclaim this data later in
+the main function.
+
+The keyword `on_event` allows to call a C function inside `::PDI_event`.
+You can call a user C function inside `::PDI_share`
+using the keyword `on_data` in the \ref user_code_plugin "user_code plugin".
+
+In this exercise, we only modify `ex11.yml`.
+
+* Open the file `integral.dat` at event “initialization” for recording
+the integral of the `main_field` in calling `open_file` function.
+
+* Close the file `integral.dat` at event “finalization” in calling `close_file`
+function.
+
+* Compute the integral of `main_field` and write this to the file `integral.dat`
+(using `compute_integral` function) when `main_field` is shared to %PDI.
+
+You should be able to match the expected output described
+in `integral_solution.dat`.
+You can easily check if the files are the same by running:
+```bash
+  diff integral_solution.dat integral.dat
+```
+
+* Check that the call of C functions defined by `on_event` and `on_data` are
+indeed done in the expected order in the log.
+
+\remark The keywords `on_event` and `on_data` are also used in other plugins
+to execute instructions in `::PDI_event` and `::PDI_share` respectively.
+
 ## What next ?
 
 In this tutorial, you used the C API of %PDI and from YAML, you used the 
