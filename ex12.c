@@ -77,7 +77,7 @@ void close_file(void)
 	printf("Call close_file.\n");
 
 	if(pFile2 == NULL){
-		fprintf(stderr,"\n error: The file should_output is not open. Call open_file before\n \n");
+		fprintf(stderr,"\n error: The file should_output is not open. You must call open_file before.\n \n");
 		exit(1);
 	}
 	fclose(pFile2);
