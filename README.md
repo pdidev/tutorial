@@ -66,6 +66,24 @@ example for ex2.):
 pdirun mpirun -n 1 ./ex2 | tee ex2.result.log
 ```
 
+### How to compare a `h5` file with a `h5dump` file {#h5compareh5dump}
+
+Using h5dump, you can create a `h5` file with a readable format using.
+```bash
+  h5dump ex3.h5 > ex3.result.h5dump
+```
+To compare with the h5dump file of the tutorial (for example ex3).
+```bash
+  diff ex3.h5dump ex3.result.h5dump
+```
+Moreover, you can see with your editor the two `h5dump` files.
+
+
+The comparison can be done in one line without creating the `h5dump` file.
+```bash
+  diff ex3.h5dump <(h5dump ex3*.h5)
+```
+
 Now you're ready to work, **good luck**!
 
 
