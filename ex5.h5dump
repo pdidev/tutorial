@@ -1,4 +1,4 @@
-HDF5 "ex5-data0x0.h5" {
+HDF5 "ex5-data-0x0.h5" {
 GROUP "/" {
    GROUP "iter1" {
       DATASET "ii" {

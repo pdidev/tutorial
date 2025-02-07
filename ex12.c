@@ -226,7 +226,7 @@ int main( int argc, char* argv[] )
 	double(*next)[dsize[1]] = malloc(sizeof(double)*dsize[1]*dsize[0]);
 	
 	// initialize the value of switch for each iterations
-	int switch_iter_values[10] = {20, 35, 50, 55, 60, 35, 25, 20, 15, 60 };
+	int switch_iter_value[10] = {20, 35, 50, 55, 60, 35, 25, 20, 15, 60 };
 
 	// open the file should_output.dat
 	open_file();
@@ -246,6 +246,7 @@ int main( int argc, char* argv[] )
 	int tmp_switch;
 	// pointer to the value of should_output
 	bool *should_output;
+
 
 	// get the initial value of should_output
 	PDI_access("should_output",  (void **)&should_output,  PDI_IN);
