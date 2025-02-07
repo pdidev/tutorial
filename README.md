@@ -614,64 +614,6 @@ otherwise the data will not be changed.
 In a more realistic setup, one would typically not write much code in the YAML
 file directly, but would instead call functions specified in a `.py` file on the side.
 
-## set value of data and metadata
-
-### Ex12. set_value plugin
-
-The \ref set_value_plugin "set_value" plugin allows setting values to data and
-metadata descriptors from the YAML file.
-In the  \ref set_value_plugin "set_value", the user can trigger action upon:
-`on_init`, `on_finalize`, `on_data`, `on_event`.
-In this plugin, we have five different types of action:
-- Share data (`share`) - plugin will share new allocated data with given values.
-- Release data  (`release`) - plugin will release shared data.
-- Expose data (`expose`) - plugin will expose new allocated data
-with given values.
-- Set data (`set`) - plugin will set given values to the already shared data.
-- Calling an event (`event`) - plugin will call an event.
-
-\note examples with keywords `share`, `release`, `expose`, `set` and `event`
-are given at the end of section "set_value" plugin in the website.
-
-In this exercise, we expose the integer `switch` to %PDI at each iteration.
-This interger is used to enable or to disable the writing of `main_field`.
-We want to start writing once this integer passes 50 and stop when it's below 25.
-For this purpose, we introduce a new logical variable `should_output`
-in `ex12.yml`.
-The value of `should_output` is defined by:
-```c
-  if(switch > 50) should_output = true
-  if(switch < 25) should_output = false
-  //otherwise the value of should_output doesn't change.
-```
-
-* At initialization of %PDI, define the `should_output` to 0 (false).
-* At finalization, release the variable `should_output`.
-* When `switch` is shared with %PDI, set the value of `should_output`
-according to its definition.
-\attention
-%PDI doesn't known directive `if` in YAML file. Therefore, you need to redefine
-the value of `should_output` according to the previous value of `should_output`
-and the value of `switch`.
-
-You should be able to match the expected output described in
-`should_output_solution.dat`.
-You can easily check if the files are the same by running:
-```bash
-  diff should_output_solution.dat should_output.dat
-```
-
-* Enable the writing of `main_field` according to the value of `should_output`.
-
-You should be able to match the expected output described in `ex12.h5dump`.
-You can easily check if the files are the same by running:
-```bash
-  diff ex12.h5dump <(h5dump ex12*.h5)
-```
-To see your `h5` file in readable file format,
-you can check the section [Comparison with the `h5dump` command](#h5comparison).
-
-
 ##  Call a user C function
 
 ### Ex11. user_code plugin
@@ -740,11 +682,70 @@ indeed done in the expected order in the log.
 \remark The keywords `on_event` and `on_data` are also used in other plugins
 to execute instructions in `::PDI_event` and `::PDI_share` respectively.
 
+
+## set value of data and metadata
+
+### Ex12. set_value plugin
+
+The \ref set_value_plugin "set_value" plugin allows setting values to data and
+metadata descriptors from the YAML file.
+In the  \ref set_value_plugin "set_value", the user can trigger action upon:
+`on_init`, `on_finalize`, `on_data`, `on_event`.
+In this plugin, we have five different types of action:
+- Share data (`share`) - plugin will share new allocated data with given values.
+- Release data  (`release`) - plugin will release shared data.
+- Expose data (`expose`) - plugin will expose new allocated data
+with given values.
+- Set data (`set`) - plugin will set given values to the already shared data.
+- Calling an event (`event`) - plugin will call an event.
+
+\note examples with keywords `share`, `release`, `expose`, `set` and `event`
+are given at the end of section "set_value" plugin in the website.
+
+In this exercise, we expose the integer `switch` to %PDI at each iteration.
+This interger is used to enable or to disable the writing of `main_field`.
+We want to start writing once this integer passes 50 and stop when it's below 25.
+For this purpose, we introduce a new logical variable `should_output`
+in `ex12.yml`.
+The value of `should_output` is defined by:
+```c
+  if(switch > 50) should_output = true
+  if(switch < 25) should_output = false
+  //otherwise the value of should_output doesn't change.
+```
+
+* At initialization of %PDI, define the `should_output` to 0 (false).
+* At finalization, release the variable `should_output`.
+* When `switch` is shared with %PDI, set the value of `should_output`
+according to its definition.
+\attention
+%PDI doesn't known directive `if` in YAML file. Therefore, you need to redefine
+the value of `should_output` according to the previous value of `should_output`
+and the value of `switch`.
+
+You should be able to match the expected output described in
+`should_output_solution.dat`.
+You can easily check if the files are the same by running:
+```bash
+  diff should_output_solution.dat should_output.dat
+```
+
+* Enable the writing of `main_field` according to the value of `should_output`.
+
+You should be able to match the expected output described in `ex12.h5dump`.
+You can easily check if the files are the same by running:
+```bash
+  diff ex12.h5dump <(h5dump ex12*.h5)
+```
+To see your `h5` file in readable file format,
+you can check the section [Comparison with the `h5dump` command](#h5comparison).
+
 ## What next ?
 
 In this tutorial, you used the C API of %PDI and from YAML, you used the 
-\ref trace_plugin "Trace", \ref Decl_HDF5_plugin "Decl'HDF5", and
-\ref pycall_plugin "Pycall" plugins.
+\ref trace_plugin "Trace", \ref Decl_HDF5_plugin "Decl'HDF5",
+\ref pycall_plugin "Pycall", \ref user_code_plugin "user_code" and
+\ref set_value_plugin "set_value" plugins.
 
 If you want to try PDI from another language (Fortran, python, ...) or if you
 want to experiment with other \ref Plugins "PDI plugins", have a look at the
