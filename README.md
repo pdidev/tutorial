@@ -60,7 +60,7 @@ pdirun mpirun -n 4 ./ex?
 Where `?` is the number of the exercise and 4 represents the number of MPI
 processes to use.
 
-#### Execution with storage of the log
+#### Execution with storage of the log {#execution-with-storage-of-the-log}
 
 To store the logs for later comparison, you can use the following command (for
 example for ex2.):
@@ -68,7 +68,7 @@ example for ex2.):
 pdirun mpirun -n 1 ./ex2 | tee ex2.result.log
 ```
 
-### How to compare a `h5` file with a `h5dump` file {#h5compareh5dump}
+### How to compare a h5 file with a h5dump file {#h5compareh5dump}
 
 Using h5dump, you can create a `h5` file with a readable format using.
 ```bash
@@ -211,11 +211,11 @@ In its configuration, the `dsize` variable is defined as a metadata for %PDI.
 with one MPI process.
 To achieve this result, you will need to fill 2 sections in the YAML file:
 
-  1. The `data` section to indicate to %PDI the \ref datatype_node "type" of the 
-  fields that are exposed.
+  1. The `data` section to indicate to %PDI the
+  \ref datatype_node "data_type" of the fields that are exposed.
 
-  2. The `decl_hdf5` section for the configuration of the \ref Decl_HDF5_plugin
-  "Decl'HDF5 plugin".
+  2. The `decl_hdf5` section for the configuration of the
+  \ref Decl_HDF5_plugin "Decl'HDF5 plugin".
 
 * Use the `h5dump` command to see the content of your HDF5 output file in the 
 same format as the h5dump file `ex3.h5dump`. You can easily check if the files 
@@ -224,7 +224,7 @@ are the same by running:
   diff ex3.h5dump <(h5dump ex3*.h5)
 ```
 To see your `h5` file in readable file format, you can check the section
-[Comparison with the `h5dump` command](#h5comparison).
+[Comparison with the `h5dump` command](#h5compareh5dump).
 
 \warning
 If you relaunch the executable, remember to delete your old `ex3.h5` file before,
@@ -286,7 +286,7 @@ You can easily check if the files are the same by running:
   diff ex4.h5dump <(h5dump ex4-data-*.h5)
 ```
 To see your `h5` file in readable file format, you can check the section
-[Comparison with the `h5dump` command](#h5comparison).
+[Comparison with the `h5dump` command](#h5compareh5dump).
 
 \note A definition of `metadata` and `data` can be:
 
@@ -376,7 +376,7 @@ in two distinct groups `iter1` and `iter2`.
 ```
 
   To see your `h5` file in readable file format, you can check the section
-  [Comparison with the `h5dump` command](#h5comparison).
+  [Comparison with the `h5dump` command](#h5compareh5dump).
 
 
 ### Ex6. Simplifying the code
@@ -453,7 +453,7 @@ You can easily check if the files are the same by running:
   diff ex7.h5dump <(h5dump ex7*.h5)
 ```
 To see your `h5` file in readable file format, 
-you can check the section [Comparison with the `h5dump` command](#h5comparison).
+you can check the section [Comparison with the `h5dump` command](#h5compareh5dump).
 
 ![graphical representation](PDI_hdf5_selection.jpg)
 
@@ -495,7 +495,7 @@ You can easily check if the files are the same by running:
   diff ex8.h5dump <(h5dump ex8*.h5)
 ```
 To see your `h5` file in readable file format, you can check the section
-[Comparison with the `h5dump` command](#h5comparison).
+[Comparison with the `h5dump` command](#h5compareh5dump).
 
 ![graphical representation](PDI_hdf5_selection_advanced.jpg)
 
@@ -541,7 +541,7 @@ You can easily check if the files are the same by running:
   diff ex9.h5dump <(h5dump ex9*.h5)
 ```
 To see your `h5` file in readable file format,
-you can check the section [Comparison with the `h5dump` command](#h5comparison).
+you can check the section [Comparison with the `h5dump` command](#h5compareh5dump).
 
 \warning
 If you relaunch the executable, remember to delete your old `ex9.h5` file before,
@@ -604,7 +604,7 @@ You can easily check if the files are the same by running:
   diff ex10.h5dump <(h5dump ex10*.h5)
 ```
 To see your `h5` file in readable file format,
-you can check the section [Comparison with the `h5dump` command](#h5comparison).
+you can check the section [Comparison with the `h5dump` command](#h5compareh5dump).
 
 \warning
 If you relaunch the executable, remember to delete your old `ex10.h5` file before,
@@ -738,7 +738,7 @@ You can easily check if the files are the same by running:
   diff ex12.h5dump <(h5dump ex12*.h5)
 ```
 To see your `h5` file in readable file format,
-you can check the section [Comparison with the `h5dump` command](#h5comparison).
+you can check the section [Comparison with the `h5dump` command](#h5compareh5dump).
 
 ## What next ?
 
