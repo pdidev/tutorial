@@ -29,6 +29,7 @@
 #include <time.h>
 
 #include <paraconf.h>
+// load the PDI header
 #include <pdi.h>
 
 // size of the local data as [HEIGHT, WIDTH] including the number of ghost layers
@@ -53,7 +54,7 @@ double source1[4]={0.4, 0.4, 0.2, 100};
 double source2[4]={0.7, 0.8, 0.1, 200};
 // the order of the coordinates of the center (XX,YY) is inverted in the vector
 
-/** Initialize all the data to 0, with the exception of a given cell
+/** Initialize all the data to 0, with the exception of each cells
  *  whose center (cpos_x,cpos_y) is inside of the disks
  *  defined by source1 or source2
  * \param[out] dat the local data to initialize

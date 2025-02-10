@@ -42,7 +42,7 @@ int psize[2];
 // 2D rank of the local process in the process grid as [YY, XX]
 int pcoord[2];
 
-/// the alpha coefficient used in the computation
+// the alpha coefficient used in the computation
 double alpha;
 
 double L=1.0;
@@ -55,7 +55,7 @@ double source2[4]={0.7, 0.8, 0.1, 200};
 // the order of the coordinates of the center (XX,YY) is inverted in the vector
 
 
-/** Initialize all the data to 0, with the exception of a given cell
+/** Initialize all the data to 0, with the exception of each cells
  *  whose center (cpos_x,cpos_y) is inside of the disks
  *  defined by source1 or source2
  * \param[out] dat the local data to initialize
