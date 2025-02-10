@@ -27,7 +27,7 @@ pdi:
           #*** enable the writing of main_field when switch > 50, and disable the writing of main_field when switch < 25
           - set:
             - should_output: '$switch > 50 | $should_output=1'
-          - set: 
+          - set:
             - should_output: '$should_output=1 & $switch>24'
       on_finalize:
         #*** release the variable should_output
@@ -50,5 +50,3 @@ pdi:
           memory_selection:
             size: [ '$dsize[0]-2', '$dsize[1]-2' ] # number of elements to transfer in each dimension
             start: [1, 1] # coordinate of the start point in memory relative to the shared data
-    
-        
