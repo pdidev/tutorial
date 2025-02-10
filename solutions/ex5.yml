@@ -23,12 +23,12 @@ pdi:
         #*** enable the output upon the event
         on_event: loop
         #*** enable the output when ii>0 and ii<3 (`&` is a logical `and` operation )
-        when: '$ii>0 & $ii<3' 
+        when: '$ii>0 & $ii<3'
         write:
           ii: # name of the PDI data to write
             #*** give the dataset that you want to write into for ii
             # $-expressions can be used to define dataset name in file, , "/" separate groups in path
-            dataset: 'iter${ii}/ii' 
+            dataset: 'iter${ii}/ii'
           main_field:
             #*** give the dataset that you want to write into for main_field
             # $-expressions can be used to define dataset name in file, , "/" separate groups in path

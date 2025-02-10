@@ -46,5 +46,3 @@ pdi:
           memory_selection:
             size: [ '$dsize[0]-2', '$dsize[1]-2' ] # number of elements to transfer in each dimension
             start: [1, 1] # coordinate of the start point in memory relative to the shared data
-    
-        
