@@ -320,7 +320,7 @@ Therefore at that moment, they could be written without opening the file twice.
 You have to use events for that.
 
 \attention
-The answer ot section [Note on the order of share/reclaim calls](#ShareReclaimCallsOrder)
+The answer to section [Note on the order of share/reclaim calls](#ShareReclaimCallsOrder)
 is given here.
 The interlaced share/reclaim pairs is better when we want to give access to
 multiple data to %PDI or %PDI plugins at the same time.
