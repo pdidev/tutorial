@@ -322,7 +322,7 @@ You have to use events for that.
 \attention
 The answer to section [Note on the order of share/reclaim calls](#ShareReclaimCallsOrder)
 is given here.
-The interlaced share/reclaim pairs is better when we want to give access to
+Interlacing share/reclaim pairs is better when we want to give access to
 multiple data to %PDI or %PDI plugins at the same time.
 
 In this section of ex5, you will modify both the C and YAML file.
