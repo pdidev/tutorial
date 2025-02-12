@@ -3,7 +3,7 @@
 In this tutorial, you will build a PDI-enabled application step-by-step from a
 PDI-free base.
 You will end-up building the C version of the
-\ref PDI_example "example provided with PDI" for the the
+\ref PDI_example "example provided with PDI" for the
 \ref trace_plugin "Trace", \ref Decl_HDF5_plugin "Decl'HDF5",
 \ref pycall_plugin "Pycall",
 \ref user_code_plugin "user_code" and
