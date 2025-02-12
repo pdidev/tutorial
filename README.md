@@ -257,7 +257,7 @@ pdi:
     #...
     dsize: { type: array, subtype: int, size: 2 }
 ```
-By definition, a metadata is a variable that can be used to define other datas
+By definition, a metadata is a variable that can be used to describe other data
 (for example, the size of a vector).
 You can reference them from dynamic "$-expressions" in the configuration file.
 
