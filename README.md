@@ -3,9 +3,11 @@
 In this tutorial, you will build a PDI-enabled application step-by-step from a
 PDI-free base.
 You will end-up building the C version of the
-\ref PDI_example "example provided with PDI" for the the
-\ref trace_plugin "Trace", \ref Decl_HDF5_plugin "Decl'HDF5", and
-\ref pycall_plugin "Pycall" plugins.
+\ref PDI_example "example provided with PDI" for the
+\ref trace_plugin "Trace", \ref Decl_HDF5_plugin "Decl'HDF5",
+\ref pycall_plugin "Pycall",
+\ref user_code_plugin "user_code" and
+\ref set_value_plugin "set_value" plugins.
 Additional [examples are available for the other plugins](https://gitlab.maisondelasimulation.fr/pdidev/pdi/-/tree/master/example).
 
 
@@ -58,12 +60,30 @@ pdirun mpirun -n 4 ./ex?
 Where `?` is the number of the exercise and 4 represents the number of MPI
 processes to use.
 
-#### Execution with storage of the log
+#### Execution with storage of the log {#execution-with-storage-of-the-log}
 
 To store the logs for later comparison, you can use the following command (for
 example for ex2.):
 ```bash
 pdirun mpirun -n 1 ./ex2 | tee ex2.result.log
+```
+
+### How to compare a h5 file with a h5dump file {#compare_h5_h5dump}
+
+Using h5dump, you can create a `h5` file with a readable format using.
+```bash
+  h5dump ex3.h5 > ex3.result.h5dump
+```
+To compare with the h5dump file of the tutorial (for example ex3).
+```bash
+  diff ex3.h5dump ex3.result.h5dump
+```
+Moreover, you can see with your editor the two `h5dump` files.
+
+
+The comparison can be done in one line without creating the `h5dump` file.
+```bash
+  diff ex3.h5dump <(h5dump ex3*.h5)
 ```
 
 Now you're ready to work, **good luck**!
@@ -114,7 +134,6 @@ read this file.
 mpirun -np 4 ./ex1
 ```
 
-
 ## PDI core & trace plugin
 
 ### Ex2. Now with some PDI
@@ -158,14 +177,15 @@ After that you can easily check if the files are the same by running the command
 ```
 
 \attention
+In this exercise, the shared variable and the reclaimed variable are not defined
+in the YAML file (see ex3. and further for this).
+
+#### Note on the order of share/reclaim calls {#ShareReclaimCallsOrder}
+
 Notice that some share/reclaim pairs come one after the other while others are
 interlaced.
 Is one better than the other?
 If you do not know the answer to this question, just wait until ex5. :)
-
-\attention
-In this exercise, the shared variable and the reclaimed variable are not defined
-in the YAML file (see ex3. and further for this).
 
 ## Decl'HDF5 plugin
 
@@ -191,11 +211,11 @@ In its configuration, the `dsize` variable is defined as a metadata for %PDI.
 with one MPI process.
 To achieve this result, you will need to fill 2 sections in the YAML file:
 
-  1. The `data` section to indicate to %PDI the \ref datatype_node "type" of the 
-  fields that are exposed.
+  1. The `data` section to indicate to %PDI the
+  \ref datatype_node "data_type" of the fields that are exposed.
 
-  2. The `decl_hdf5` section for the configuration of the \ref Decl_HDF5_plugin
-  "Decl'HDF5 plugin".
+  2. The `decl_hdf5` section for the configuration of the
+  \ref Decl_HDF5_plugin "Decl'HDF5 plugin".
 
 * Use the `h5dump` command to see the content of your HDF5 output file in the 
 same format as the h5dump file `ex3.h5dump`. You can easily check if the files 
@@ -204,7 +224,7 @@ are the same by running:
   diff ex3.h5dump <(h5dump ex3*.h5)
 ```
 To see your `h5` file in readable file format, you can check the section
-[Comparison with the `h5dump` command](#h5comparison).
+[Comparison with the `h5dump` command](#compare_h5_h5dump).
 
 \warning
 If you relaunch the executable, remember to delete your old `ex3.h5` file before,
@@ -237,6 +257,8 @@ pdi:
     #...
     dsize: { type: array, subtype: int, size: 2 }
 ```
+By definition, a metadata is a variable that can be used to describe other data
+(for example, the size of a vector).
 You can reference them from dynamic "$-expressions" in the configuration file.
 
 \remark Also notice that this example now runs in parallel with 4 processes.
@@ -264,12 +286,12 @@ You can easily check if the files are the same by running:
   diff ex4.h5dump <(h5dump ex4-data-*.h5)
 ```
 To see your `h5` file in readable file format, you can check the section
-[Comparison with the `h5dump` command](#h5comparison).
+[Comparison with the `h5dump` command](#compare_h5_h5dump).
 
 \note A definition of `metadata` and `data` can be:
 
-- `metadata`: small values for which PDI keeps a copy. These value can be referenced
-by using "$-expressions" in the configuration YAML file.
+- `metadata`: small values for which PDI keeps a copy. These value can be
+referenced by using "$-expressions" in the configuration YAML file.
 
 - `data`    : values for which PDI does not keep a copy.
 
@@ -279,22 +301,38 @@ This exercise is done sequentially to facilitate the comparison between logs.
 
 #### Ex 5.1 PDI event and on_event
 
-In ex4, two variables were written to `ex4-data-*.h5`, but the files were opened
-and closed for each and every write.
+In ex4, two variables (`ii` and `main_field`) were written to `ex4-data-*.h5`,
+but the files were opened and closed for each and every write.
 
-Since Decl'HDF5 only sees the data appear one after the other, it does not keep
-the file open. Since `ii` and `main_field` are shared in an interlaced way, they
-are both available to %PDI at the same time and could be written without opening 
-the file twice.
-You have to use events for that, you will modify both the C and YAML file in this
-exercise.
+Since \ref Decl_HDF5_plugin "Decl'HDF5 plugin" only sees the data appear
+one after the other, it does not keep the file open.
+Since `ii` and `main_field` are shared in an interlaced way,
+they are both available to %PDI at the same time after the second
+`::PDI_share`.
+```C
+  // share the loop counter & main field at each iteration
+  PDI_share("ii",         &ii, PDI_OUT);
+  PDI_share("main_field", cur, PDI_OUT);
+  PDI_reclaim("main_field");
+  PDI_reclaim("ii");
+```
+Therefore at that moment, they could be written without opening the file twice.
+You have to use events for that.
+
+\attention
+The answer to section [Note on the order of share/reclaim calls](#ShareReclaimCallsOrder)
+is given here.
+Interlacing share/reclaim pairs is better when we want to give access to
+multiple data to %PDI or %PDI plugins at the same time.
+
+In this section of ex5, you will modify both the C and YAML file.
 
 * Examine the YAML file and source code.
 * In the C file, add a %PDI event named `loop` when both `ii` and
   `main_field` are shared.
 
   With the \ref trace_plugin "Trace plugin", check that the event is indeed 
-  triggered at the expected time as described in `ex5.log` (only the lines 
+  triggered at the expected time as described in `ex5.log` (only the lines
   matching `[Trace-plugin]` have been kept).
   Using the previous section [Execution with storage of the log](#execution-with-storage-of-the-log),
   run  this exercise in saving the output log in the `ex5.result.log`.
@@ -338,7 +376,7 @@ in two distinct groups `iter1` and `iter2`.
 ```
 
   To see your `h5` file in readable file format, you can check the section
-  [Comparison with the `h5dump` command](#h5comparison).
+  [Comparison with the `h5dump` command](#compare_h5_h5dump).
 
 
 ### Ex6. Simplifying the code
@@ -366,8 +404,9 @@ then triggers an event and finally does all the reclaim in reverse order.
 
 * Replace the remaining `::PDI_share`/`::PDI_reclaim` by `::PDI_expose`s and
   `::PDI_multi_expose`s and ensure that your code keeps the exact same behaviour
-  as in previous exercise by comparing its trace to `ex6.log` (only the lines matching
-  `[Trace-plugin]` have been kept). Using the previous section
+  as in previous exercise by comparing its trace to `ex6.log`
+  (only the lines matching `[Trace-plugin]` have been kept).
+  Using the previous section
   [Execution with storage of the log](#execution-with-storage-of-the-log),
   run  this exercise in saving the output log in the `ex6.result.log`.
   After that you can easily check if the files are the same by running:
@@ -379,8 +418,15 @@ In summary:
 
 1. `::PDI_expose` is equivalent to `::PDI_share` + `::PDI_reclaim`.
 
-2. `::PDI_multi_expose` is equivalent to `::PDI_share` + `::PDI_event` + `::PDI_reclaim`.
+2. `::PDI_multi_expose` for one data is equivalent to
+`::PDI_share` + `::PDI_event` + `::PDI_reclaim`.
 
+3. `::PDI_multi_expose` for data `A` and data `B` is equivalent to
+`::PDI_share` `A` + `::PDI_share` `B`+ `::PDI_event` + `::PDI_reclaim` `B`
+ + `::PDI_reclaim` `A`.
+
+\attention
+The `::PDI_multi_expose` is implemented with interlaced share/reclaim pairs.
 
 ### Ex7. Writing a selection
 
@@ -407,7 +453,7 @@ You can easily check if the files are the same by running:
   diff ex7.h5dump <(h5dump ex7*.h5)
 ```
 To see your `h5` file in readable file format, 
-you can check the section [Comparison with the `h5dump` command](#h5comparison).
+you can check the section [Comparison with the `h5dump` command](#compare_h5_h5dump).
 
 ![graphical representation](PDI_hdf5_selection.jpg)
 
@@ -449,7 +495,7 @@ You can easily check if the files are the same by running:
   diff ex8.h5dump <(h5dump ex8*.h5)
 ```
 To see your `h5` file in readable file format, you can check the section
-[Comparison with the `h5dump` command](#h5comparison).
+[Comparison with the `h5dump` command](#compare_h5_h5dump).
 
 ![graphical representation](PDI_hdf5_selection_advanced.jpg)
 
@@ -495,7 +541,7 @@ You can easily check if the files are the same by running:
   diff ex9.h5dump <(h5dump ex9*.h5)
 ```
 To see your `h5` file in readable file format,
-you can check the section [Comparison with the `h5dump` command](#h5comparison).
+you can check the section [Comparison with the `h5dump` command](#compare_h5_h5dump).
 
 \warning
 If you relaunch the executable, remember to delete your old `ex9.h5` file before,
@@ -558,7 +604,7 @@ You can easily check if the files are the same by running:
   diff ex10.h5dump <(h5dump ex10*.h5)
 ```
 To see your `h5` file in readable file format,
-you can check the section [Comparison with the `h5dump` command](#h5comparison).
+you can check the section [Comparison with the `h5dump` command](#compare_h5_h5dump).
 
 \warning
 If you relaunch the executable, remember to delete your old `ex10.h5` file before,
@@ -567,64 +613,6 @@ otherwise the data will not be changed.
 \attention
 In a more realistic setup, one would typically not write much code in the YAML
 file directly, but would instead call functions specified in a `.py` file on the side.
-
-## set value of data and metadata
-
-### Ex12. set_value plugin
-
-The \ref set_value_plugin "set_value" plugin allows setting values to data and
-metadata descriptors from the YAML file.
-In the  \ref set_value_plugin "set_value", the user can trigger action upon:
-`on_init`, `on_finalize`, `on_data`, `on_event`.
-In this plugin, we have five different types of action:
-- Share data (`share`) - plugin will share new allocated data with given values.
-- Release data  (`release`) - plugin will release shared data.
-- Expose data (`expose`) - plugin will expose new allocated data
-with given values.
-- Set data (`set`) - plugin will set given values to the already shared data.
-- Calling an event (`event`) - plugin will call an event.
-
-\note examples with keywords `share`, `release`, `expose`, `set` and `event`
-are given at the end of section "set_value" plugin in the website.
-
-In this exercise, we expose the integer `switch` to %PDI at each iteration.
-This interger is used to enable or to disable the writing of `main_field`.
-We want to start writing once this integer passes 50 and stop when it's below 25.
-For this purpose, we introduce a new logical variable `should_output`
-in `ex12.yml`.
-The value of `should_output` is defined by:
-```c
-  if(switch > 50) should_output = true
-  if(switch < 25) should_output = false
-  //otherwise the value of should_output doesn't change.
-```
-
-* At initialization of %PDI, define the `should_output` to 0 (false).
-* At finalization, release the variable `should_output`.
-* When `switch` is shared with %PDI, set the value of `should_output`
-according to its definition.
-\attention
-%PDI doesn't known directive `if` in YAML file. Therefore, you need to redefine
-the value of `should_output` according to the previous value of `should_output`
-and the value of `switch`.
-
-You should be able to match the expected output described in
-`should_output_solution.dat`.
-You can easily check if the files are the same by running:
-```bash
-  diff should_output_solution.dat should_output.dat
-```
-
-* Enable the writing of `main_field` according to the value of `should_output`.
-
-You should be able to match the expected output described in `ex12.h5dump`.
-You can easily check if the files are the same by running:
-```bash
-  diff ex12.h5dump <(h5dump ex12*.h5)
-```
-To see your `h5` file in readable file format,
-you can check the section [Comparison with the `h5dump` command](#h5comparison).
-
 
 ##  Call a user C function
 
@@ -694,11 +682,70 @@ indeed done in the expected order in the log.
 \remark The keywords `on_event` and `on_data` are also used in other plugins
 to execute instructions in `::PDI_event` and `::PDI_share` respectively.
 
+
+## set value of data and metadata
+
+### Ex12. set_value plugin
+
+The \ref set_value_plugin "set_value" plugin allows setting values to data and
+metadata descriptors from the YAML file.
+In the  \ref set_value_plugin "set_value", the user can trigger action upon:
+`on_init`, `on_finalize`, `on_data`, `on_event`.
+In this plugin, we have five different types of action:
+- Share data (`share`) - plugin will share new allocated data with given values.
+- Release data  (`release`) - plugin will release shared data.
+- Expose data (`expose`) - plugin will expose new allocated data
+with given values.
+- Set data (`set`) - plugin will set given values to the already shared data.
+- Calling an event (`event`) - plugin will call an event.
+
+\note examples with keywords `share`, `release`, `expose`, `set` and `event`
+are given at the end of section "set_value" plugin in the website.
+
+In this exercise, we expose the integer `switch` to %PDI at each iteration.
+This interger is used to enable or to disable the writing of `main_field`.
+We want to start writing once this integer passes 50 and stop when it's below 25.
+For this purpose, we introduce a new logical variable `should_output`
+in `ex12.yml`.
+The value of `should_output` is defined by:
+```c
+  if(switch > 50) should_output = true
+  if(switch < 25) should_output = false
+  //otherwise the value of should_output doesn't change.
+```
+
+* At initialization of %PDI, define the `should_output` to 0 (false).
+* At finalization, release the variable `should_output`.
+* When `switch` is shared with %PDI, set the value of `should_output`
+according to its definition.
+\attention
+%PDI doesn't known directive `if` in YAML file. Therefore, you need to redefine
+the value of `should_output` according to the previous value of `should_output`
+and the value of `switch`.
+
+You should be able to match the expected output described in
+`should_output_solution.dat`.
+You can easily check if the files are the same by running:
+```bash
+  diff should_output_solution.dat should_output.dat
+```
+
+* Enable the writing of `main_field` according to the value of `should_output`.
+
+You should be able to match the expected output described in `ex12.h5dump`.
+You can easily check if the files are the same by running:
+```bash
+  diff ex12.h5dump <(h5dump ex12*.h5)
+```
+To see your `h5` file in readable file format,
+you can check the section [Comparison with the `h5dump` command](#compare_h5_h5dump).
+
 ## What next ?
 
 In this tutorial, you used the C API of %PDI and from YAML, you used the 
-\ref trace_plugin "Trace", \ref Decl_HDF5_plugin "Decl'HDF5", and
-\ref pycall_plugin "Pycall" plugins.
+\ref trace_plugin "Trace", \ref Decl_HDF5_plugin "Decl'HDF5",
+\ref pycall_plugin "Pycall", \ref user_code_plugin "user_code" and
+\ref set_value_plugin "set_value" plugins.
 
 If you want to try PDI from another language (Fortran, python, ...) or if you
 want to experiment with other \ref Plugins "PDI plugins", have a look at the
