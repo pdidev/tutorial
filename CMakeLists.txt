@@ -64,4 +64,7 @@ add_executable(ex11 ex11.c)
 set_target_properties(ex11 PROPERTIES ENABLE_EXPORTS TRUE)
 target_link_libraries(ex11 m MPI::MPI_C paraconf::paraconf PDI::pdi)
 
+add_executable(ex12 ex12.c)
+target_link_libraries(ex12 m MPI::MPI_C paraconf::paraconf PDI::pdi)
+
 add_subdirectory(ex_deisa/)
