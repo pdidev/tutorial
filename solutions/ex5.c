@@ -232,9 +232,9 @@ int main( int argc, char* argv[] )
 		double (*tmp)[dsize[1]] = cur; cur = next; next = tmp;
 	}
 	// finally share the loop counter and main field after the main loop body
-	PDI_share("main_field", cur, PDI_OUT);
-	PDI_share("ii",         &ii, PDI_OUT);
+	PDI_share("ii", &ii, PDI_OUT);
 	PDI_reclaim("ii");
+	PDI_share("main_field", cur, PDI_OUT);
 	PDI_reclaim("main_field");
 	
 	// finalize PDI

@@ -213,10 +213,10 @@ int main( int argc, char* argv[] )
 	// the main loop
 	for (; ii<10; ++ii) {
 		// share the loop counter & main field at each iteration
-		PDI_share("ii", &ii, PDI_OUT);
-		PDI_reclaim("ii");
+		PDI_share("ii",         &ii, PDI_OUT);
 		PDI_share("main_field", cur, PDI_OUT);
 		PDI_reclaim("main_field");
+		PDI_reclaim("ii");
 		
 		// compute the values for the next iteration
 		iter(cur, next);

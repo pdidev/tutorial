@@ -187,15 +187,6 @@ interlaced.
 Is one better than the other?
 If you do not know the answer to this question, just wait until ex5. :)
 
-#### Note on the order of shares after the iteration loop {#ShareOrderAfterIterationLoop}
-
-To gain a better understanding of the information provided by the trace plugin,
-the order of calls of differents "share" is adjusted in the ex2 to ex6 
-after the iteration loops.
-
-This order introduces a bad behavior of the code not expected by new users of pdi.
-An explication will be given after ex6. 
-
 ## Decl'HDF5 plugin
 
 From exercise 3 to exercise 9 included, we present the \ref Decl_HDF5_plugin 
@@ -387,7 +378,6 @@ in two distinct groups `iter1` and `iter2`.
   To see your `h5` file in readable file format, you can check the section
   [Comparison with the `h5dump` command](#compare_h5_h5dump).
 
-
 ### Ex6. Simplifying the code
 
 As you can notice, the %PDI code is quite redundant.
@@ -439,12 +429,12 @@ The `::PDI_multi_expose` is implemented with interlaced share/reclaim pairs.
 
 \attention
 When we used  `::PDI_multi_expose` with multiple data, the order of appearance
-in the arguments of the function corresponds to the order of the `PDI_share`.
+in the arguments of the function corresponds to the order of the `::PDI_share`.
 
 \attention
-An explication of section
-[Note on the order of shares after the iteration loop](#ShareOrderAfterIterationLoop)
-is given here.
+To gain a better understanding of the information provided by the trace plugin,
+the order of calls of differents "share" is changed in the ex6
+after the iteration loops.
 
 The order of share are importants when we used a metadata. We explain that
 without `::PDI_multi_expose` to be more clear.
@@ -457,7 +447,8 @@ decl_hdf5:
       when: '$ii=4'
 ```
 
-In the exercise 6, after the iteration loop, the data `main_field` is shared before the variable `ii`:
+In the exercise 6, after the iteration loop, the data `main_field` is shared
+before the variable `ii`:
 ```C
 PDI_share("main_field", cur, PDI_OUT);
 PDI_share("ii",         &ii, PDI_OUT); // update the metadata ii in PDI
@@ -465,8 +456,9 @@ PDI_event("finalization");
 PDI_reclaim("ii");
 PDI_reclaim("main_field");
 ```
-In the first line, `cur` correspond to the valuee of `main_field` at iteration `ii=4`.
-As `ii` is a metadata, the value is stored by pdi. Hence, in this first line the value of `ii` is equal to 3.
+In the first line, `cur` correspond to the value of `main_field` at iteration
+`ii=4`. As `ii` is a metadata, the value is stored by pdi.
+Hence, in this first line the value of `ii` is equal to 3.
 
 Therefore, the file `ex6-final-iteration.h5` is not writing on the disk.
 To solve this issue, we need to change the order of the `::PDI_share`:
@@ -485,6 +477,18 @@ or with `::PDI_multi_expose`:
 PDI_multi_expose("finalization",
           "ii",         &ii, PDI_OUT,
 	        "main_field", cur, PDI_OUT,
+	        NULL);
+```
+
+\attention
+In a `::PDI_multi_expose` if you have a data1 that depend on the data2.
+You need to pass the data2 before the data1
+
+For example, a vector `V` that depend on it size `N`.
+```C
+PDI_multi_expose("save_vector_V",
+          "size_of_vector", &N, PDI_OUT,
+	        "vector_V", V, PDI_OUT,
 	        NULL);
 ```
 

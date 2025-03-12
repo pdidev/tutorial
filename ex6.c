@@ -236,11 +236,11 @@ int main( int argc, char* argv[] )
 	// finally share the main field as well as the loop counter after the loop
 	//*** use PDI_multi_expose to replace PDI_share + event + reclaim
 	//...
-	PDI_share("ii",         &ii, PDI_OUT);
 	PDI_share("main_field", cur, PDI_OUT);
+	PDI_share("ii",         &ii, PDI_OUT);
 	PDI_event("finalization");
-	PDI_reclaim("main_field");
 	PDI_reclaim("ii");
+	PDI_reclaim("main_field");
 	
 	// finalize PDI
 	PDI_finalize();
