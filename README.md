@@ -456,7 +456,7 @@ PDI_event("finalization");
 PDI_reclaim("ii");
 PDI_reclaim("main_field");
 ```
-In the first line, `cur` correspond to the value of `main_field` at iteration
+In the first line, `cur` corresponds to the value of `main_field` at iteration
 `ii=4`. As `ii` is a metadata, the value is stored by pdi.
 Hence, in this first line the value of `ii` is equal to 3.
 
