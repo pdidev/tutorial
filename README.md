@@ -433,8 +433,8 @@ in the arguments of the function corresponds to the order of the `::PDI_share`.
 
 \attention
 To gain a better understanding of the information provided by the trace plugin,
-the order of calls of differents "share" is changed in the ex6
-after the iteration loops.
+the call order of different "share" is changed in the ex6
+after the main loop.
 
 The order of share are importants when we used a metadata. We explain that
 without `::PDI_multi_expose` to be more clear.
