@@ -447,7 +447,7 @@ decl_hdf5:
       when: '$ii=4'
 ```
 
-In the exercise 6, after the iteration loop, the data `main_field` is shared
+In the exercise 6, after the main loop, the data `main_field` is shared
 before the variable `ii`:
 ```C
 PDI_share("main_field", cur, PDI_OUT);
