@@ -428,8 +428,8 @@ In summary:
 The `::PDI_multi_expose` is implemented with interlaced share/reclaim pairs.
 
 \attention
-When we used  `::PDI_multi_expose` with multiple data, the order of appearance
-in the arguments of the function corresponds to the order of the `::PDI_share`.
+When we used `::PDI_multi_expose` with multiple data, the order of appearance
+of the arguments of the function corresponds to the order of the `::PDI_share`.
 
 \attention
 To gain a better understanding of the information provided by the trace plugin,
