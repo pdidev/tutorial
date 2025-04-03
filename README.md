@@ -484,7 +484,7 @@ PDI_multi_expose("finalization",
 In a `::PDI_multi_expose` if you have a data1 that depend on the data2.
 You need to pass the data2 before the data1
 
-For example, a vector `V` that depend on it size `N`.
+For example, a vector `V` that depends on its size `N`.
 ```C
 PDI_multi_expose("save_vector_V",
           "size_of_vector", &N, PDI_OUT,
