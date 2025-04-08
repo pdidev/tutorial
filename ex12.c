@@ -283,8 +283,8 @@ int main( int argc, char* argv[] )
 	// finally share the main field as well as the loop counter after the loop
 	PDI_multi_expose("finalization",
 			"ii",         &ii, PDI_OUT,
-	        "main_field", cur, PDI_OUT,
-	        NULL);
+			"main_field", cur, PDI_OUT,
+			NULL);
 	
 	// close the file should_output.dat
 	close_file();

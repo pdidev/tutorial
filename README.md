@@ -433,39 +433,48 @@ of the arguments of the function corresponds to the order of the `::PDI_share`.
 
 \attention
 To gain a better understanding of the information provided by the trace plugin,
-the call order of different "share" is changed in the ex6
-after the main loop.
+the call order of different "share" is changed in the ex6 after the main loop.
 
-The order of share are importants when we used a metadata. We explain that
-without `::PDI_multi_expose` to be more clear.
-In `::PDI_share`, the event "on_data" on the shared data are performed.
-An example of this event is
+The order of share is important when we used a metadata. To demonstrate this,
+we decompose `::PDI_multi_expose`.
+
+In the exercise 6, after the main loop, the data `main_field` is shared
+before the variable `ii`:
+```C
+// end of the main loop
+PDI_share("main_field", cur, PDI_OUT); // event "on_data" for "main_field"
+PDI_share("ii",         &ii, PDI_OUT); // update the metadata ii in PDI to 4
+PDI_event("finalization");
+PDI_reclaim("ii");
+PDI_reclaim("main_field");
+```
+
+At the end of the main loop, `ii` is equal to 4. Therefore, `cur` corresponds
+to the value of `main_field` at iteration 4.
+
+As `ii` is a metadata, the value is stored by pdi. This value correspond to
+the last value of `ii` shared with pdi. Hence, at the end of the main loop,
+this value is equal to the value of the previous iteration 3.
+
+In `::PDI_share`, an event "on_data" on the shared data is automatically
+performed. An example of this event is
 ```yaml
 decl_hdf5:
     - file: ex6-final-iteration.h5
       write: [ main_field ]
       when: '$ii=4'
 ```
-
-In the exercise 6, after the main loop, the data `main_field` is shared
-before the variable `ii`:
+This event is done when we call
 ```C
-PDI_share("main_field", cur, PDI_OUT);
-PDI_share("ii",         &ii, PDI_OUT); // update the metadata ii in PDI
-PDI_event("finalization");
-PDI_reclaim("ii");
-PDI_reclaim("main_field");
+PDI_share("main_field", cur, PDI_OUT); // event "on_data" for "main_field"
 ```
-In the first line, `cur` corresponds to the value of `main_field` at iteration
-`ii=4`. As `ii` is a metadata, the value is stored by pdi.
-Hence, in this first line the value of `ii` is equal to 3.
-
+But at this moment, the value of `ii` in pdi is still the value of the previous iteration 3.
 Therefore, the file `ex6-final-iteration.h5` is not writing on the disk.
-To solve this issue, we need to change the order of the `::PDI_share`:
 
+To solve this issue, we need to change the order of the `::PDI_share`:
 ```C
-PDI_share("ii",         &ii, PDI_OUT); // update the metadata ii in PDI
-PDI_share("main_field", cur, PDI_OUT);
+PDI_share("ii",         &ii, PDI_OUT); // update the metadata ii in PDI to 4
+PDI_share("main_field", cur, PDI_OUT); // event "on_data" for "main_field"
 PDI_event("finalization");
 PDI_reclaim("main_field");
 PDI_reclaim("ii");
@@ -476,20 +485,21 @@ or with `::PDI_multi_expose`:
 ```C
 PDI_multi_expose("finalization",
           "ii",         &ii, PDI_OUT,
-	        "main_field", cur, PDI_OUT,
-	        NULL);
+          "main_field", cur, PDI_OUT,
+          NULL);
 ```
 
 \attention
 In a `::PDI_multi_expose` if you have a data1 that depend on the data2.
-You need to pass the data2 before the data1
+You need to pass the arguments corresponding to data2 before the arguments
+corresponding to data1 in this function.
 
-For example, a vector `V` that depends on its size `N`.
+For example, a vector `V` that depends on its size `N`:
 ```C
 PDI_multi_expose("save_vector_V",
           "size_of_vector", &N, PDI_OUT,
-	        "vector_V", V, PDI_OUT,
-	        NULL);
+          "vector_V", V, PDI_OUT,
+          NULL);
 ```
 
 ### Ex7. Writing a selection
