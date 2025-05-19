@@ -390,6 +390,9 @@ the comparison between logs.
 * Examine the source code, compile it and run it.
 
 \remark At the end of the iteration loop, a new event `finalization` is added.
+To gain a better understanding of the information provided by the trace plugin,
+the call order of different `::PDI_share` is changed in the ex6 after the main
+loop.
 
 There are lots of matched `::PDI_share`/`::PDI_reclaim` in the code.
 
@@ -421,8 +424,7 @@ In summary:
 `::PDI_share` + `::PDI_event` + `::PDI_reclaim`.
 
 3. `::PDI_multi_expose` for data `A` and data `B` is equivalent to
-`::PDI_share` `A` + `::PDI_share` `B`+ `::PDI_event` + `::PDI_reclaim` `B`
- + `::PDI_reclaim` `A`.
+`::PDI_share` `A` + `::PDI_share` `B`+ `::PDI_event` + `::PDI_reclaim` `B` + `::PDI_reclaim` `A`.
 
 \attention
 The `::PDI_multi_expose` is implemented with interlaced share/reclaim pairs.
@@ -432,76 +434,23 @@ When we used `::PDI_multi_expose` with multiple data, the order of appearance
 of the arguments of the function corresponds to the order of the `::PDI_share`.
 
 \attention
-To gain a better understanding of the information provided by the trace plugin,
-the call order of different "share" is changed in the ex6 after the main loop.
-
-The order of share is important when we used a metadata. To demonstrate this,
-we decompose `::PDI_multi_expose`.
-
-In the exercise 6, after the main loop, the data `main_field` is shared
-before the variable `ii`:
-```C
-// end of the main loop
-PDI_share("main_field", cur, PDI_OUT); // event "on_data" for "main_field"
-PDI_share("ii",         &ii, PDI_OUT); // update the metadata ii in PDI to 4
-PDI_event("finalization");
-PDI_reclaim("ii");
-PDI_reclaim("main_field");
-```
-
-At the end of the main loop, `ii` is equal to 4. Therefore, `cur` corresponds
-to the value of `main_field` at iteration 4.
-
-As `ii` is a metadata, the value is stored by pdi. This value correspond to
-the last value of `ii` shared with pdi. Hence, at the end of the main loop,
-this value is equal to the value of the previous iteration 3.
-
-In `::PDI_share`, an event "on_data" on the shared data is automatically
-performed. An example of this event is
-```yaml
-decl_hdf5:
-    - file: ex6-final-iteration.h5
-      write: [ main_field ]
-      when: '$ii=4'
-```
-This event is done when we call
-```C
-PDI_share("main_field", cur, PDI_OUT); // event "on_data" for "main_field"
-```
-But at this moment, the value of `ii` in pdi is still the value of the previous iteration 3.
-Therefore, the file `ex6-final-iteration.h5` is not writing on the disk.
-
-To solve this issue, we need to change the order of the `::PDI_share`:
-```C
-PDI_share("ii",         &ii, PDI_OUT); // update the metadata ii in PDI to 4
-PDI_share("main_field", cur, PDI_OUT); // event "on_data" for "main_field"
-PDI_event("finalization");
-PDI_reclaim("main_field");
-PDI_reclaim("ii");
-```
-
-or with `::PDI_multi_expose`:
-
-```C
-PDI_multi_expose("finalization",
-          "ii",         &ii, PDI_OUT,
-          "main_field", cur, PDI_OUT,
-          NULL);
-```
-
-\attention
-In a `::PDI_multi_expose` if you have a data1 that depend on the data2.
-You need to pass the arguments corresponding to data2 before the arguments
-corresponding to data1 in this function.
-
+In a `::PDI_multi_expose` if you have a data1 that depend on the data2,
+you need to pass the arguments corresponding to data2 before the arguments
+corresponding to data1 in this function. With `::PDI_share` and
+`::PDI_reclaim` functions, you need to share data2 before data1.
 For example, a vector `V` that depends on its size `N`:
 ```C
-PDI_multi_expose("save_vector_V",
+  PDI_multi_expose("save_vector_V",
           "size_of_vector", &N, PDI_OUT,
           "vector_V", V, PDI_OUT,
           NULL);
 ```
-
+```C
+  PDI_share("size_of_vector", &N, PDI_OUT)
+  PDI_share("vector_V", V, PDI_OUT)
+  PDI_reclaim("size_of_vector")
+  PDI_reclaim("vector_V")
+```
 ### Ex7. Writing a selection
 
 In this exercise, you will only write a selection of the 2D array in memory
@@ -718,9 +667,9 @@ defined in `ex11.c`.
 and `::PDI_release` are called (see \ref annotation "Code annotation").
 For example,
 ```c
-int *iter;
-PDI_access("ii", (void **)&iter, PDI_IN);
-PDI_release("ii");
+  int *iter;
+  PDI_access("ii", (void **)&iter, PDI_IN);
+  PDI_release("ii");
 ```
 `::PDI_access` sets our pointer (`iter`) to the data location of `ii`.
 We need to pass `PDI_IN` because data flows from PDI to our application.
