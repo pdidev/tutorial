@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2015-2019 Commissariat a l'energie atomique et aux energies
+ * Copyright (C) 2015-2025 Commissariat a l'energie atomique et aux energies
  * alternatives (CEA)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -280,8 +280,10 @@ int main(int argc, char *argv[]) {
       fprintf(pFile2, "%d\t%d\t%d\n", ii, tmp_switch, *should_output);
 
     // share the loop counter & main field at each iteration
-    PDI_multi_expose("loop", "ii", &ii, PDI_OUT, "main_field", cur, PDI_OUT,
-                     NULL);
+    PDI_multi_expose("loop",
+                    "ii", &ii, PDI_OUT,
+                    "main_field", cur, PDI_OUT,
+                    NULL);
 
     // compute the values for the next iteration
     iter(cur, next);
@@ -295,8 +297,10 @@ int main(int argc, char *argv[]) {
     next = tmp;
   }
   // finally share the main field as well as the loop counter after the loop
-  PDI_multi_expose("finalization", "ii", &ii, PDI_OUT, "main_field", cur,
-                   PDI_OUT, NULL);
+  PDI_multi_expose("finalization",
+                  "ii", &ii, PDI_OUT,
+                  "main_field", cur, PDI_OUT,
+                  NULL);
 
   // close the file should_output.dat
   close_file();

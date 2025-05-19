@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2015-2019 Commissariat a l'energie atomique et aux energies
+ * Copyright (C) 2015-2025 Commissariat a l'energie atomique et aux energies
  * alternatives (CEA)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -222,8 +222,10 @@ int main(int argc, char *argv[]) {
   for (; ii < 4; ++ii) {
     // share the loop counter & main field at each iteration
     //*** use PDI_multi_expose to replace PDI_share + event + reclaim
-    PDI_multi_expose("loop", "ii", &ii, PDI_OUT, "main_field", cur, PDI_OUT,
-                     NULL);
+    PDI_multi_expose("loop",
+                    "ii", &ii, PDI_OUT,
+                    "main_field", cur, PDI_OUT,
+                    NULL);
 
     // compute the values for the next iteration
     iter(cur, next);
@@ -238,8 +240,10 @@ int main(int argc, char *argv[]) {
   }
   // finally share the main field as well as the loop counter after the loop
   //*** use PDI_multi_expose to replace PDI_share + event + reclaim
-  PDI_multi_expose("finalization", "main_field", cur, PDI_OUT, "ii", &ii,
-                   PDI_OUT, NULL);
+  PDI_multi_expose("finalization",
+                  "ii", &ii, PDI_OUT,
+                  "main_field", cur, PDI_OUT,
+                  NULL);
 
   // finalize PDI
   PDI_finalize();

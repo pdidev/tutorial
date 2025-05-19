@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2015-2019 Commissariat a l'energie atomique et aux energies
+ * Copyright (C) 2015-2025 Commissariat a l'energie atomique et aux energies
  * alternatives (CEA)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
