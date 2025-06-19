@@ -434,7 +434,7 @@ When we used `::PDI_multi_expose` with multiple data, the order of appearance
 of the arguments of the function corresponds to the order of the `::PDI_share`.
 
 \attention
-In a `::PDI_multi_expose` if you have a data1 that depend on the data2,
+In a `::PDI_multi_expose` if you have a data1 that depends on the data2,
 you need to pass the arguments corresponding to data2 before the arguments
 corresponding to data1 in this function. With `::PDI_share` and
 `::PDI_reclaim` functions, you need to share data2 before data1.
