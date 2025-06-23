@@ -378,7 +378,6 @@ in two distinct groups `iter1` and `iter2`.
   To see your `h5` file in readable file format, you can check the section
   [Comparison with the `h5dump` command](#compare_h5_h5dump).
 
-
 ### Ex6. Simplifying the code
 
 As you can notice, the %PDI code is quite redundant.
@@ -391,6 +390,9 @@ the comparison between logs.
 * Examine the source code, compile it and run it.
 
 \remark At the end of the iteration loop, a new event `finalization` is added.
+To gain a better understanding of the information provided by the trace plugin,
+the call order of different `::PDI_share` is changed in the ex6 after the main
+loop.
 
 There are lots of matched `::PDI_share`/`::PDI_reclaim` in the code.
 
@@ -422,12 +424,33 @@ In summary:
 `::PDI_share` + `::PDI_event` + `::PDI_reclaim`.
 
 3. `::PDI_multi_expose` for data `A` and data `B` is equivalent to
-`::PDI_share` `A` + `::PDI_share` `B`+ `::PDI_event` + `::PDI_reclaim` `B`
- + `::PDI_reclaim` `A`.
+`::PDI_share` `A` + `::PDI_share` `B`+ `::PDI_event` + `::PDI_reclaim` `B` + `::PDI_reclaim` `A`.
 
 \attention
 The `::PDI_multi_expose` is implemented with interlaced share/reclaim pairs.
 
+\attention
+When we used `::PDI_multi_expose` with multiple data, the order of appearance
+of the arguments of the function corresponds to the order of the `::PDI_share`.
+
+\attention
+In a `::PDI_multi_expose` if you have a data1 that depends on the data2,
+you need to pass the arguments corresponding to data2 before the arguments
+corresponding to data1 in this function. With `::PDI_share` and
+`::PDI_reclaim` functions, you need to share data2 before data1.
+For example, a vector `V` that depends on its size `N`:
+```C
+  PDI_multi_expose("save_vector_V",
+          "size_of_vector", &N, PDI_OUT,
+          "vector_V", V, PDI_OUT,
+          NULL);
+```
+```C
+  PDI_share("size_of_vector", &N, PDI_OUT)
+  PDI_share("vector_V", V, PDI_OUT)
+  PDI_reclaim("size_of_vector")
+  PDI_reclaim("vector_V")
+```
 ### Ex7. Writing a selection
 
 In this exercise, you will only write a selection of the 2D array in memory
@@ -644,9 +667,9 @@ defined in `ex11.c`.
 and `::PDI_release` are called (see \ref annotation "Code annotation").
 For example,
 ```c
-int *iter;
-PDI_access("ii", (void **)&iter, PDI_IN);
-PDI_release("ii");
+  int *iter;
+  PDI_access("ii", (void **)&iter, PDI_IN);
+  PDI_release("ii");
 ```
 `::PDI_access` sets our pointer (`iter`) to the data location of `ii`.
 We need to pass `PDI_IN` because data flows from PDI to our application.
