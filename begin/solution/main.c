@@ -152,8 +152,9 @@ int main(int argc, char *argv[]) {
   MPI_Init(&argc, &argv);
 
   // load the configuration tree
-  PC_tree_t conf = PC_parse_path("ex1.yml");
-
+  PC_tree_t conf = PC_parse_path("config.yml");
+  PDI_init(PC_get(conf, ".pdi"));
+  
   // NEVER USE MPI_COMM_WORLD IN THE CODE, use our own communicator main_comm
   // instead
   MPI_Comm main_comm = MPI_COMM_WORLD;
@@ -230,6 +231,7 @@ int main(int argc, char *argv[]) {
   // free the allocated memory
   free(cur);
   free(next);
+  PDI_finalize();
 
   // finalize MPI
   MPI_Finalize();

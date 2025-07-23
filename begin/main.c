@@ -30,8 +30,7 @@
 #include <time.h>
 
 #include <paraconf.h>
-// load the PDI header
-#include <pdi.h>
+
 
 // size of the local data as [HEIGHT, WIDTH] including the number of ghost
 // layers for communications or boundary conditions
@@ -152,14 +151,11 @@ int main(int argc, char *argv[]) {
   MPI_Init(&argc, &argv);
 
   // load the configuration tree
-  PC_tree_t conf = PC_parse_path("ex2.yml");
+  PC_tree_t conf = PC_parse_path("config.yml");
 
   // NEVER USE MPI_COMM_WORLD IN THE CODE, use our own communicator main_comm
   // instead
   MPI_Comm main_comm = MPI_COMM_WORLD;
-
-  // initialize PDI, it can replace our main communicator by its own
-  PDI_init(PC_get(conf, ".pdi"));
 
   // load the MPI rank & size
   int psize_1d;
@@ -172,8 +168,9 @@ int main(int argc, char *argv[]) {
   // load the alpha parameter
   PC_double(PC_get(conf, ".alpha"), &alpha);
 
-  // load the global data-size
   int global_size[2];
+  // load the global data-size
+  // you can use paraconf to read some parameters from the yml config file
   PC_int(PC_get(conf, ".global_size.height"), &longval);
   global_size[0] = longval;
   PC_int(PC_get(conf, ".global_size.width"), &longval);
@@ -211,22 +208,8 @@ int main(int argc, char *argv[]) {
   // our loop counter so as to be able to use it outside the loop
   int ii = 0;
 
-  //*** share useful configuration bits with PDI
-  //*** pcoord, psize, dsize
-  PDI_share("pcoord", pcoord, PDI_OUT);
-  PDI_reclaim("pcoord");
-  PDI_share("psize", psize, PDI_OUT);
-  PDI_reclaim("psize");
-  PDI_share("dsize", dsize, PDI_OUT);
-  PDI_reclaim("dsize");
-
   // the main loop
-  for (; ii < 4; ++ii) {
-    // share the loop counter & main field at each iteration
-    PDI_share("ii", &ii, PDI_OUT);
-    PDI_share("main_field", cur, PDI_OUT);
-    PDI_reclaim("main_field");
-    PDI_reclaim("ii");
+  for (; ii < 10; ++ii) {
 
     // compute the values for the next iteration
     iter(cur, next);
@@ -239,14 +222,6 @@ int main(int argc, char *argv[]) {
     cur = next;
     next = tmp;
   }
-  // finally share the loop counter and main field after the main loop body
-  PDI_share("ii", &ii, PDI_OUT);
-  PDI_reclaim("ii");
-  PDI_share("main_field", cur, PDI_OUT);
-  PDI_reclaim("main_field");
-
-  // finalize PDI
-  PDI_finalize();
 
   // destroy the paraconf configuration tree
   PC_tree_destroy(&conf);
