@@ -3,10 +3,13 @@ alpha: 0.125
 # global data-size (excluding the number of ghost layers for boundary conditions)
 global_size: { height: 60, width: 12 }
 # degree of parallelism (number of blocks in each dimension)
-parallelism: { height: 1, width: 1 }
+parallelism: { height: 2, width: 2 }
 
-#*** PDI configuration
 pdi:
+  metadata:
+    local_size: {type: array, subtype: int, size: 2}
+  data:
+    iteration: int
+    temp: {type: array, subtype: double, size: ['$local_size[0]', '$local_size[1]']}
   plugins:
     trace:
-      logging: { pattern: '[PDI][%n-plugin] *** %l: %v' }
