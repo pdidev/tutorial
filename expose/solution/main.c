@@ -213,6 +213,7 @@ int main(int argc, char *argv[]) {
 
   // the main loop
   for (; ii < 10; ++ii) {
+    PDI_expose("iteration", &ii, PDI_OUT);
     PDI_expose("temp", cur, PDI_OUT);
     // compute the values for the next iteration
     iter(cur, next);
@@ -225,6 +226,7 @@ int main(int argc, char *argv[]) {
     cur = next;
     next = tmp;
   }
+  PDI_expose("iteration", &ii, PDI_OUT);
   PDI_expose("temp", cur, PDI_OUT);
 
   // destroy the paraconf configuration tree
