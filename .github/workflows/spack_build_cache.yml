@@ -1,0 +1,27 @@
+name: spack build cache
+
+on:
+  push:
+    branches: [ main, numpex ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-cache:
+    runs-on: ubuntu-24.04
+    permissions:
+      packages: write
+    steps:
+      - name: Build & Push Spack Buildcache
+        uses: numpex/spack-buildcache-action@v1
+        with:
+          env-variant: default
+          mirror: pdidev/tutorial
+          repo-packages: pdidev/tutorial
+          repo-packages-path: spack_env
+          # spack-path: _spack
+          # base-image: ubuntu:24.04
+      name: List installed specs
+        run: |
+          . _spack/share/spack/setup-env.sh
+          spack find -lv
