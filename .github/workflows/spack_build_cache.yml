@@ -21,7 +21,7 @@ jobs:
           repo-packages-path: spack_env
           # spack-path: _spack
           # base-image: ubuntu:24.04
-      name: List installed specs
+      - name: List installed specs
         run: |
           . _spack/share/spack/setup-env.sh
           spack find -lv
