@@ -213,10 +213,12 @@ int main(int argc, char *argv[]) {
 
   // the main loop
   for (; ii < 10; ++ii) {
+
     PDI_multi_expose("loop", 
-                     "iteration", &ii, PDI_OUT,
-                     "temp", cur, PDI_OUT,
+                     "iteration", &ii, PDI_INOUT,
+                     "temp", cur, PDI_INOUT,
                      NULL);
+
     // compute the values for the next iteration
     iter(cur, next);
 
@@ -228,18 +230,19 @@ int main(int argc, char *argv[]) {
     cur = next;
     next = tmp;
   }
+  
   PDI_multi_expose("loop", 
-                   "iteration", &ii, PDI_OUT,
-                   "temp", cur, PDI_OUT,
-                  NULL);
+                   "iteration", &ii, PDI_INOUT,
+                   "temp", cur, PDI_INOUT,
+                   NULL);
 
+  PDI_finalize();
   // destroy the paraconf configuration tree
   PC_tree_destroy(&conf);
 
   // free the allocated memory
   free(cur);
   free(next);
-  PDI_finalize();
 
   // finalize MPI
   MPI_Finalize();

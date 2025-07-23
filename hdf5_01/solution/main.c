@@ -194,6 +194,7 @@ int main(int argc, char *argv[]) {
   dsize[1] = global_size[1] / psize[1] + 2;
 
   PDI_expose("local_size", dsize, PDI_OUT);
+  PDI_expose("rank", &pcoord_1d, PDI_OUT);
 
   // create a 2D Cartesian MPI communicator & get our coordinate (rank) in it
   int cart_period[2] = {1, 1};
@@ -213,10 +214,12 @@ int main(int argc, char *argv[]) {
 
   // the main loop
   for (; ii < 10; ++ii) {
+
     PDI_multi_expose("loop", 
-                     "iteration", &ii, PDI_OUT,
-                     "temp", cur, PDI_OUT,
+                     "iteration", &ii, PDI_INOUT,
+                     "temp", cur, PDI_INOUT,
                      NULL);
+
     // compute the values for the next iteration
     iter(cur, next);
 
@@ -228,18 +231,19 @@ int main(int argc, char *argv[]) {
     cur = next;
     next = tmp;
   }
+  
   PDI_multi_expose("loop", 
-                   "iteration", &ii, PDI_OUT,
-                   "temp", cur, PDI_OUT,
-                  NULL);
+                   "iteration", &ii, PDI_INOUT,
+                   "temp", cur, PDI_INOUT,
+                   NULL);
 
+  PDI_finalize();
   // destroy the paraconf configuration tree
   PC_tree_destroy(&conf);
 
   // free the allocated memory
   free(cur);
   free(next);
-  PDI_finalize();
 
   // finalize MPI
   MPI_Finalize();
