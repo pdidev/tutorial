@@ -200,6 +200,7 @@ int main(int argc, char *argv[]) {
   MPI_Comm cart_comm;
   MPI_Cart_create(main_comm, 2, psize, cart_period, 1, &cart_comm);
   MPI_Cart_coords(cart_comm, pcoord_1d, 2, pcoord);
+  PDI_expose("pcoord", pcoord, PDI_OUT);
 
   // allocate memory for the double buffered data
   double(*cur)[dsize[1]] = malloc(sizeof(double) * dsize[1] * dsize[0]);
@@ -215,7 +216,8 @@ int main(int argc, char *argv[]) {
   for (; ii < 10; ++ii) {
     PDI_multi_expose("loop", 
                      "iteration", &ii, PDI_OUT,
-                     "temp", cur, PDI_OUT);
+                     "temp", cur, PDI_OUT,
+                     NULL);
     // compute the values for the next iteration
     iter(cur, next);
 
@@ -229,7 +231,8 @@ int main(int argc, char *argv[]) {
   }
   PDI_multi_expose("loop", 
                    "iteration", &ii, PDI_OUT,
-                   "temp", cur, PDI_OUT);
+                   "temp", cur, PDI_OUT,
+                  NULL);
 
   // destroy the paraconf configuration tree
   PC_tree_destroy(&conf);

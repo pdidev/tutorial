@@ -1,0 +1,33 @@
+# the alpha parameter
+alpha: 0.125
+# global data-size (excluding the number of ghost layers for boundary conditions)
+global_size: { height: 60, width: 12 }
+# degree of parallelism (number of blocks in each dimension)
+parallelism: { height: 2, width: 2 }
+
+pdi:
+  metadata:
+    local_size: {type: array, subtype: int, size: 2}
+    rank: int
+    pcoord: {type: array, subtype: int, size: 2}
+    psize: {type: array, subtype: int, size: 2}
+  data:
+    iteration: int
+    temp: {type: array, subtype: double, size: ['$local_size[0]', '$local_size[1]']}
+  plugins:
+    trace: 
+    mpi:
+    decl_hdf5:
+      - file: output_iter${iteration:02}.h5
+        communicator: $MPI_COMM_WORLD
+        datasets: 
+          temp: {type: array, subtype: double, size: ['$psize[0]*($local_size[0]-2)', '$psize[1]*($local_size[1]-2)' ] }
+        on_event: loop
+        write: 
+          temp:
+            memory_selection:
+              size: ['$local_size[0]-2', '$local_size[1]-2' ] # number of elements to transfer in each dimension
+              start: [1, 1] 
+            dataset_selection:
+              size: ['$local_size[0]-2', '$local_size[1]-2' ] # number of elements to transfer in each dimension
+              start: ['$pcoord[0]*($local_size[0]-2)', '$pcoord[1]*($local_size[1]-2)'] 

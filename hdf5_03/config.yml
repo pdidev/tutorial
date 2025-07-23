@@ -8,19 +8,15 @@ parallelism: { height: 2, width: 2 }
 pdi:
   metadata:
     local_size: {type: array, subtype: int, size: 2}
+    rank: int
     pcoord: {type: array, subtype: int, size: 2}
+    psize: {type: array, subtype: int, size: 2}
+    max_iter: int
   data:
     iteration: int
     temp: {type: array, subtype: double, size: ['$local_size[0]', '$local_size[1]']}
   plugins:
-    trace:
-    pycall:
-      on_event:
-        loop:
-          with: { iter_id: $iteration, source_field: $temp, coord: $pcoord}
-          exec: |
-            import numpy as np
-            import matplotlib.pyplot as plt
-            plt.imshow(source_field[1:-1, 1:-1], cmap='viridis', aspect='auto')
-            plt.savefig("output_r"+str(coord[0])+"x"+str(coord[1])+"_iter"+str(iter_id))
-            
+    trace: 
+    mpi:
+    decl_hdf5:
+      
