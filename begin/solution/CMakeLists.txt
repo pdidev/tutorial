@@ -33,4 +33,11 @@ set(CMAKE_C_STANDARD 99)
 add_executable(main main.c)
 target_link_libraries(main m MPI::MPI_C paraconf::paraconf PDI::pdi)
 
+# for users with mac linking error:
+# dyld[76918]: Library not loaded: @rpath/libpdi.1.dylib
+# fix:
+# set_target_properties(main PROPERTIES
+#     INSTALL_RPATH "/Users/yushan/Codes/GitHub/pdi_mac/pdi/install/lib"
+#     BUILD_WITH_INSTALL_RPATH TRUE
+# )
 
