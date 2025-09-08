@@ -70,6 +70,10 @@ echo "THIS ENVIRONMENT IS OK FOR THE PDI TUTORIAL."
 echo "################"
 echo ""
 
+# for users with mac linking error:
+# dyld[76918]: Library not loaded: @rpath/libpdi.1.dylib
+# fix: export DYLD_LIBRARY_PATH=$pdirun_directory/../lib
+
 cd "$(dirname "${BASH_SOURCE[0]}")/begin/solution"
 mkdir build && cd build
 cp ../config.yml .
