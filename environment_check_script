@@ -76,4 +76,6 @@ cp ../config.yml .
 cmake ..
 make
 mpirun -np 4 ./main
+cd ..
 rm -rf build
+cd ../..
