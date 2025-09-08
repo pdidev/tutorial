@@ -1,0 +1,25 @@
+[11:16:28][Trace] *** info: Welcome!
+[11:16:28][PDI] *** info: Initialization successful
+[11:16:28][Trace] *** info: =>>   data becoming available in the store: local_size
+[11:16:28][Trace] *** info: <<= data stop being available in the store: local_size
+[11:16:28][Trace] *** info: =>>   data becoming available in the store: iteration
+[11:16:28][Trace] *** info: =>>   data becoming available in the store: temp
+[11:16:28][Trace] *** info: <<= data stop being available in the store: iteration
+[11:16:28][Trace] *** info: <<= data stop being available in the store: temp
+[11:16:28][Trace] *** info: =>>   data becoming available in the store: iteration
+[11:16:28][Trace] *** info: =>>   data becoming available in the store: temp
+[11:16:28][Trace] *** info: <<= data stop being available in the store: iteration
+[11:16:28][Trace] *** info: <<= data stop being available in the store: temp
+[11:16:28][Trace] *** info: =>>   data becoming available in the store: iteration
+[11:16:28][Trace] *** info: =>>   data becoming available in the store: temp
+[11:16:28][Trace] *** info: <<= data stop being available in the store: iteration
+[11:16:28][Trace] *** info: <<= data stop being available in the store: temp
+[11:16:28][Trace] *** info: =>>   data becoming available in the store: iteration
+[11:16:28][Trace] *** info: =>>   data becoming available in the store: temp
+[11:16:28][Trace] *** info: <<= data stop being available in the store: iteration
+[11:16:28][Trace] *** info: <<= data stop being available in the store: temp
+[11:16:28][PDI] *** info: Finalization
+[11:16:28][Trace] *** info: Goodbye!
+[0] SUCCESS
+
+
