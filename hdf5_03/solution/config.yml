@@ -16,7 +16,7 @@ pdi:
     iteration: int
     temp: {type: array, subtype: double, size: ['$local_size[0]', '$local_size[1]']}
   plugins:
-    trace: 
+    # trace: 
     mpi:
     decl_hdf5:
       - file: output.h5
