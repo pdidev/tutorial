@@ -54,6 +54,83 @@ double source1[4] = {0.4, 0.4, 0.2, 100};
 double source2[4] = {0.7, 0.8, 0.1, 200};
 // the order of the coordinates of the center (XX,YY) is inverted in the vector
 
+FILE *pFile2 = NULL;
+
+void open_file(void) {
+  int rank;
+  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+
+  if (rank > 0)
+    return;
+  printf("\n Call open_file.\n");
+  pFile2 = fopen("integral.dat", "w");
+}
+
+void close_file(void) {
+  int rank;
+  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+
+  if (rank > 0)
+    return;
+  printf("\n Call close_file.\n");
+
+  if (pFile2 == NULL) {
+    fprintf(stderr, "\n error: The file integral.dat is not open. You must "
+                    "call open_file before.\n \n");
+    exit(1);
+  }
+  fclose(pFile2);
+}
+
+void compute_integral(void) {
+  int rank;
+  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+
+  if (rank == 0)
+    printf("\n Call compute_integral.\n");
+
+  int *iter;
+  PDI_access("iteration", (void **)&iter, PDI_IN);
+  PDI_release("iteration");
+
+  int *local_size;
+  PDI_access("local_size", (void **)&local_size, PDI_IN);
+  PDI_release("local_size");
+
+  int *psize;
+  PDI_access("psize", (void **)&psize, PDI_IN);
+  PDI_release("psize");
+
+  double dy = L / ((local_size[0] - 2) * psize[0]);
+  double dx = L / ((local_size[1] - 2) * psize[1]);
+
+  double *field;
+  double integral_of_main_field = 0.0;
+  PDI_access("temp", (void **)&field, PDI_IN);
+  for (int i = 1; i < local_size[0] - 1; i++) {
+    for (int j = 1; j < local_size[1] - 1; j++) {
+      integral_of_main_field += field[i * local_size[1] + j];
+    }
+  }
+  MPI_Allreduce(MPI_IN_PLACE, &integral_of_main_field, 1, MPI_DOUBLE, MPI_SUM,
+                MPI_COMM_WORLD);
+  // multiply by the area of a cell (cells are uniform here)
+  integral_of_main_field *= dx * dy;
+  printf("At iteration %d, integral of main field = %.6f\n", *iter,
+         integral_of_main_field);
+  PDI_release("temp");
+
+  if (rank > 0)
+    return;
+
+  if (pFile2 == NULL) {
+    fprintf(stderr, "\n error: The file integral.dat is not open. You must "
+                    "call open_file before.\n \n");
+    exit(1);
+  }
+  fprintf(pFile2, "%d\t%.6f\n", *iter, integral_of_main_field);
+}
+
 /** Initialize all the data to 0, with the exception of each cells
  *  whose center (cpos_x,cpos_y) is inside of the disks
  *  defined by source1 or source2
@@ -210,6 +287,7 @@ int main(int argc, char *argv[]) {
   double(*next)[dsize[1]] = malloc(sizeof(double) * dsize[1] * dsize[0]);
 
   // initialize the data content
+  PDI_event("initialization");
   init(cur);
 
   // our loop counter so as to be able to use it outside the loop
@@ -234,12 +312,12 @@ int main(int argc, char *argv[]) {
     cur = next;
     next = tmp;
   }
-  
-  PDI_multi_expose("loop", 
+  PDI_multi_expose("loop",
                    "iteration", &ii, PDI_INOUT,
                    "temp", cur, PDI_INOUT,
                    NULL);
 
+  PDI_event("finalization");
   PDI_finalize();
   // destroy the paraconf configuration tree
   PC_tree_destroy(&conf);

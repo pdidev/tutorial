@@ -17,6 +17,11 @@ pdi:
     temp: {type: array, subtype: double, size: ['$local_size[0]', '$local_size[1]']}
   plugins:
     # trace: 
-    mpi:
-    decl_hdf5:
-      
+    user_code:
+      on_event:
+        initialization:
+          open_file: {}
+        finalization:
+          close_file: {}
+        loop:
+          compute_integral: {}
