@@ -72,14 +72,30 @@ echo ""
 
 # for users with mac linking error:
 # dyld[76918]: Library not loaded: @rpath/libpdi.1.dylib
-# fix: export DYLD_LIBRARY_PATH=$pdirun_directory/../lib
+# fix: 
+# export DYLD_LIBRARY_PATH=$pdirun_directory/../lib
 
 cd "$(dirname "${BASH_SOURCE[0]}")/begin/solution"
 mkdir build && cd build
 cp ../config.yml .
 cmake ..
-make
-mpirun -np 4 ./main
+
+# Only run make if CMake succeeded
+if [ -f "Makefile" ]; then
+    make
+else
+    echo "ERROR: Makefile was not generated! CMake likely failed."
+    exit 1
+fi
+
+# Run the program if it was built
+if [ -f "./main" ]; then
+    mpirun -np 4 ./main
+else
+    echo "ERROR: ./main executable was not built!"
+    exit 1
+fi
+
 cd ..
 rm -rf build
 cd ../..
