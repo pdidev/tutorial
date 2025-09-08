@@ -2,7 +2,7 @@ name: spack build cache
 
 on:
   push:
-    branches: [ main, numpex ]
+    branches: [ main ]
   pull_request:
     branches: [ main ]
 
@@ -12,15 +12,38 @@ jobs:
     permissions:
       packages: write
     steps:
-      - name: Build & Push Spack Buildcache
-        uses: numpex/spack-buildcache-action@v1
+      - name: Checkout action
+        uses: actions/checkout@v4
+      
+      - name: Set up Spack
+        uses: spack/setup-spack@v2.1.1
         with:
-          env-variant: default
-          mirror: pdidev/tutorial
-          repo-packages: pdidev/tutorial
-          repo-packages-path: spack_env
-          # spack-path: _spack
-          # base-image: ubuntu:24.04
+          buildcache: true
+          path: _spack
+          color: true
+      
+      - name: Add custom Spack mirror
+        shell: bash
+        run: |
+          . _spack/share/spack/setup-env.sh
+          spack mirror add my_registry oci://github.com/pdidev/tutorial
+
+      - name: Install & Push buildcache
+        shell: bash
+        env:
+          SPACK_MIRROR_TOKEN: ${{ inputs.mirror-token }}
+        run: |
+          . _spack/share/spack/setup-env.sh
+          spack -e tutorial/spack_env install --no-check-signature
+          #          spack -e "${{ inputs.env-path }}/${{ inputs.env-variant }}" mirror set --push \
+          #  --oci-username "${{ github.actor }}" \
+          #  --oci-password "${SPACK_MIRROR_TOKEN}" \
+          #  "${{ inputs.mirror }}"
+          spack -e tutorial/spack_env buildcache push \
+            --base-image "ubuntu-24.04" \
+            --unsigned \
+            --update-index "my_registry"
+
       - name: List installed specs
         run: |
           . _spack/share/spack/setup-env.sh
