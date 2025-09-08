@@ -26,7 +26,7 @@ project(pdi_init LANGUAGES C)
 find_package(spdlog)
 find_package(MPI REQUIRED COMPONENTS C)
 find_package(paraconf 1.0.0 REQUIRED COMPONENTS C)
-find_package(PDI 1.9.0 REQUIRED COMPONENTS C)
+# find_package(PDI 1.9.0 REQUIRED COMPONENTS C)
 
 set(CMAKE_C_STANDARD 99)
 
