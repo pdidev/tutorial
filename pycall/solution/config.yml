@@ -21,7 +21,7 @@ pdi:
           exec: |
             import matplotlib.pyplot as plt
             plt.imshow(source_field[1:-1, 1:-1], cmap='viridis', aspect='auto', vmax=200)
-            plt.colorbar() # Add a colorbar to see the scale
+            plt.colorbar()
             plt.savefig("output_r"+str(coord[0])+"x"+str(coord[1])+"_iter"+str(iter_id))
             plt.close()
             
