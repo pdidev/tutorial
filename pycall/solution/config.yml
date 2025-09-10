@@ -1,7 +1,7 @@
 # the alpha parameter
 alpha: 0.125
 # global data-size (excluding the number of ghost layers for boundary conditions)
-global_size: { height: 60, width: 12 }
+global_size: { height: 60, width: 40 }
 # degree of parallelism (number of blocks in each dimension)
 parallelism: { height: 2, width: 2 }
 
@@ -20,8 +20,9 @@ pdi:
           with: { iter_id: $iteration, source_field: $temp, coord: $pcoord}
           exec: |
             import matplotlib.pyplot as plt
-            plt.imshow(source_field[1:-1, 1:-1], cmap='viridis', aspect='auto', vmax=200)
+            plt.imshow(source_field[1:-1, 1:-1], cmap='viridis', vmax=200)
             plt.colorbar()
+            plt.axis('off')
             plt.savefig("output_r"+str(coord[0])+"x"+str(coord[1])+"_iter"+str(iter_id))
             plt.close()
             
