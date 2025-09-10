@@ -1,7 +1,7 @@
 # the alpha parameter
 alpha: 0.125
 # global data-size (excluding the number of ghost layers for boundary conditions)
-global_size: { height: 60, width: 12 }
+global_size: { height: 60, width: 40 }
 # degree of parallelism (number of blocks in each dimension)
 parallelism: { height: 2, width: 2 }
 
