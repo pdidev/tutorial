@@ -3,7 +3,7 @@ alpha: 0.125
 # global data-size (excluding the number of ghost layers for boundary conditions)
 global_size: { height: 60, width: 40 }
 # degree of parallelism (number of blocks in each dimension)
-parallelism: { height: 1, width: 1 }
+parallelism: { height: 2, width: 2 }
 
 pdi:
   metadata:
@@ -26,6 +26,6 @@ pdi:
             plt.savefig("output_r"+str(coord[0])+"x"+str(coord[1])+"_iter"+str(iter_id))
             plt.close()
             
-            
+
             from myplot import plot_global_image
             plot_global_image(source_field, coord, iter_id)
