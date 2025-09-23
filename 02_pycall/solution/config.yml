@@ -17,15 +17,23 @@ pdi:
     pycall:
       on_event:
         loop:
-          with: { iter_id: $iteration, source_field: $temp, coord: $pcoord}
+          with: { iter_id: $iteration, source_field: $temp, py_pcoord: $pcoord }
           exec: |
             import matplotlib.pyplot as plt
-            plt.imshow(source_field[1:-1, 1:-1], cmap='viridis', vmax=200)
+            plt.imshow(source_field[1:-1, 1:-1], origin='lower', cmap='viridis', vmax=200)
             plt.colorbar()
             plt.axis('off')
-            plt.savefig("output_r"+str(coord[0])+"x"+str(coord[1])+"_iter"+str(iter_id))
+            plt.savefig("output_r"+str(py_pcoord[0])+"x"+str(py_pcoord[1])+"_iter"+str(iter_id))
             plt.close()
             
-
+            # import function from a user python file
             from myplot import plot_global_image
-            plot_global_image(source_field, coord, iter_id)
+            plot_global_image(source_field, py_pcoord, iter_id)
+
+            # Remark: 
+            #     In this function, the data "psize" (see main.c) is recomputed with "pcoord".
+            #     In a real case, it is better to pass this argument to "plot_global_image"
+            #     to avoid communication as the parameter "pcoord". This corresponds to:
+            #          1. define "psize" as metadata
+            #          2. expose "psize" to pdi in main.c
+            #          3. Add "psize" in the list of variables shared with python in line 22 ("with" keyword)
