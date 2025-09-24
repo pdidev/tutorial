@@ -3,31 +3,32 @@
 # It describes a set of packages to be installed, along with
 # configuration settings.
 spack:
-  definitions:
-  - compilers: [gcc@11.5.0]
-  #- compilers: [gcc@15.1.0]
-  - packages:
-    - cmake
-    - pdi
-    - pdiplugin-decl-hdf5
-    - pdiplugin-mpi
-    - pdiplugin-pycall
-    - pdiplugin-user-code
-    - pdiplugin-trace
-    - python
-    - py-numpy
-    - py-matplotlib
-    #- py-dask
-    #- py-distributed
-    #- py-bokeh
-  specs:
-  - $compilers
-  - matrix:
-    - [$packages]
-    - [$%compilers]
-
   view: true
   concretizer:
-    unify: when_possible
+    unify: true
+
+  # add package specs to the `specs` list
+  specs:
+  - cmake
+  - pdi~fortran
+  - pdiplugin-decl-hdf5
+  - pdiplugin-mpi
+  - pdiplugin-pycall
+  - pdiplugin-user-code
+  - pdiplugin-trace
+  - kokkos
+  - python
+  - py-dask
+  - py-distributed
+  - py-bokeh
+  - py-matplotlib
+
+
   mirrors:
-    develop: https://binaries.spack.io/develop
+    numpex-buildcache:
+      url: oci://ghcr.io/benoitmartin88/spack-numpex-stack
+      binary: true
+      signed: false
+  config:
+    install_tree:
+      padded_length: 512
