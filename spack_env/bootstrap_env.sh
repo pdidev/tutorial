@@ -8,4 +8,6 @@ if [ -d "$SPACK_ENV_DIR" ]; then
     spack env activate $SPACK_ENV_DIR
     spack install -p16
     spack find
+else
+    echo "Please source this file from the repository root."
 fi
