@@ -50,10 +50,10 @@ check_command pdirun
 
 pdirun_binary=$(whereis pdirun | awk '{print $2}')
 pdirun_directory=$(dirname "$pdirun_binary")
-cd "$(dirname "$pdirun_directory")/lib/pdi/" > /dev/null
+cd "$(dirname "$pdirun_directory")/lib/" > /dev/null
 find_output=$(find . -name "libpdi_*")
 
-plugins_to_check=("mpi" "serialize" "trace" "hdf5" "pycall" "user_code" "set_value")
+plugins_to_check=("mpi" "trace" "hdf5" "pycall" "user_code" )
 
 for plugin in "${plugins_to_check[@]}"; do
     if ! grep -q "$plugin" <<< "$find_output"; then
@@ -75,7 +75,7 @@ echo ""
 # fix: 
 # export DYLD_LIBRARY_PATH=$pdirun_directory/../lib
 
-cd "$(dirname "${BASH_SOURCE[0]}")/begin/solution"
+cd "$(dirname "${BASH_SOURCE[0]}")/00_begin/solution"
 mkdir build && cd build
 cp ../config.yml .
 cmake ..
