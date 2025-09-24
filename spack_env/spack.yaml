@@ -29,3 +29,8 @@ spack:
       url: oci://ghcr.io/benoitmartin88/spack-numpex-stack
       binary: true
       signed: false
+
+  packages:
+    all:
+      require:
+        - target=x86_64
