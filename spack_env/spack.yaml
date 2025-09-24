@@ -29,6 +29,3 @@ spack:
       url: oci://ghcr.io/benoitmartin88/spack-numpex-stack
       binary: true
       signed: false
-  config:
-    install_tree:
-      padded_length: 512
