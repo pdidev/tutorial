@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
 
 SPACK_DIR=/srv/storage/numpexexadi@storage2.grenoble.grid5000.fr/opt/spack
-SCRIPT_DIR=$( dirname "${BASH_SOURCE[0]}" )
+SPACK_ENV_DIR="spack_env"
 
-source $SPACK_DIR/share/spack/setup-env.sh
-cd $SCRIPT_DIR/..
-spack env activate spack_env
-spack install -p16
-spack find
+if [ -d "$SPACK_ENV_DIR" ]; then
+    source $SPACK_DIR/share/spack/setup-env.sh
+    spack env activate $SPACK_ENV_DIR
+    spack install -p16
+    spack find
+fi
