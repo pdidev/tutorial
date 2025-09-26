@@ -32,5 +32,6 @@ set(CMAKE_C_STANDARD 99)
 
 add_executable(main main.c)
 target_link_libraries(main m MPI::MPI_C paraconf::paraconf PDI::pdi)
+set_target_properties(main PROPERTIES ENABLE_EXPORTS TRUE)
 
 
