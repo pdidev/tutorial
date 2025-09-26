@@ -27,8 +27,13 @@ pdi:
             plt.close()
             
             # import function from a user python file
-            from myplot import plot_global_image
-            plot_global_image(source_field, py_pcoord, iter_id)
+            from myplot import plot_local_image
+            plot_local_image(source_field, py_pcoord, iter_id)
+
+            ## import function from a user python file
+            ## function to obtain the global using mpi4py (not including in the spack environnement of this tutorial)
+            # from myplot import plot_global_image
+            # plot_global_image(source_field, py_pcoord, iter_id)
 
             # Remark: 
             #     In this function, the data "psize" (see main.c) is recomputed with "pcoord".
