@@ -16,11 +16,7 @@ spack:
   - pdiplugin-pycall
   - pdiplugin-user-code
   - pdiplugin-trace
-  - kokkos
   - python
-  - py-dask
-  - py-distributed
-  - py-bokeh
   - py-matplotlib
   - py-mpi4py
 
