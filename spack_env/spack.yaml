@@ -22,6 +22,7 @@ spack:
   - py-distributed
   - py-bokeh
   - py-matplotlib
+  - py-mpi4py
 
 
   mirrors:
