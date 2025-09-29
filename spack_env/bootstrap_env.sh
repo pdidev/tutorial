@@ -6,8 +6,8 @@ SPACK_ENV_DIR="spack_env"
 if [ -d "$SPACK_ENV_DIR" ]; then
     echo "preparing spack environment "
     source $SPACK_DIR/share/spack/setup-env.sh
-    spack -e $SPACK_ENV_DIR install -p16
-    spack -e $SPACK_ENV_DIR find
+    spack env activate pdi-tutorial
+    spack find
 else
     echo "Please source this file from the repository root."
 fi
