@@ -1,0 +1,79 @@
+Catalyst plugin is under review process and can be changed in the future.
+
+The first implementation is done by François Mazen in https://github.com/francois-kitware/pdi in the branch catalyst-plugin
+
+The caltalyst plugin used in this demo is based on a fork
+https://github.com/Yushan-Wang/pdi_dev/tree/numpex-septembre-2025-demo
+
+
+Complilation and execution:
+
+1. compilation of catalyst and paraview:
+
+https://kitware.github.io/paraview-catalyst/guide/getting-started.html
+
+# Remark: The catalyst and paraview need to be compile with MPI support
+# Remark: If you want to used live option of catalyst, you need to compile paraview with the GUI
+# Remark: For catalyst plugin, the python library mumpy and mpi4py are needed
+# Remark: The demo has been tested with Catalyst 2.0 and Paraview 6.0.0 or Paraview 5.13.2
+
+2. compilation of PDI:
+
+You need to clone the branch "numpex-septembre-2025-demo" of the fork of Yushan: https://github.com/Yushan-Wang/pdi_dev/tree/numpex-septembre-2025-demo
+You need to compile PDI with the following option (the last option is needed for compile the catalyst example)
+
+-DBUILD_CATALYST_PLUGIN=ON -DBUILD_PYTHON=ON -DBUILD_TESTING=ON
+
+and export the following two variables:
+
+export catalyst_DIR=path_to_install_catalyst/lib/cmake/catalyst-2.0
+export Catalyst_DIR=path_to_install_catalyst/lib/cmake/catalyst-2.0
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:path_to_install_catalyst/install_catalyst/lib
+
+
+```bash
+cd path_to_pdi_root_repository
+mkdir build
+cd build
+
+export catalyst_DIR=path_to_install_catalyst/lib/cmake/catalyst-2.0
+export Catalyst_DIR=path_to_install_catalyst/lib/cmake/catalyst-2.0
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:path_to_install_catalyst/install_catalyst/lib
+
+cmake -DCMAKE_INSTALL_PREFIX=../install -DBUILD_CATALYST_PLUGIN=ON -DBUILD_PYTHON=ON -DBUILD_TESTING=ON ..
+make
+make install
+```
+
+# Remark: The used of catalyst_DIR and Catalyst_DIR will be removed when catalyst plugin will be merged with the main branch of PDI.
+
+3. execution of demo
+
+You need to export and to source the following lines
+
+# execution
+export CATALYST_IMPLEMENTATION_NAME=paraview
+export CATALYST_IMPLEMENTATION_PATHS=path_to_install_paraview/lib/catalyst
+
+# python venv
+source $HOME/local_paraview_6.0.0_catalyst_2.0/python_env_catalyst/bin/activate
+# pdi environnement
+source path_to_install_pdi/share/pdi/env.bash
+
+# update python path
+
+export PYTHONPATH=path_to_install_catalyst/lib/python3.**/site-packages:$PYTHONPATH
+export PYTHONPATH=path_to_install_paraview/lib/python3.**/site-packages:$PYTHONPATH
+
+Here, `3.**` correspond to your python version.
+
+# remark: If you used a python venv environement, you need to pass
+export PYTHONPATH=path_to_my_venv/lib/python3.**/site-packages:$PYTHONPATH
+
+```bash
+mkdir build
+cd build
+cmake ..
+
+mpirun -np 4 ./demo_catalyst config.yml
+```

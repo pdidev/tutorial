@@ -1,9 +1,9 @@
 # the alpha parameter
 alpha: 0.125
 # global data-size (excluding the number of ghost layers for boundary conditions)
-global_size: { height: 10, width: 8 }
+global_size: { height: 60, width: 40 }
 # degree of parallelism (number of blocks in each dimension)
-parallelism: { height: 1, width: 1 }
+parallelism: { height: 2, width: 2 }
 
 pdi:
   metadata:
@@ -17,14 +17,11 @@ pdi:
     temp: {type: array, subtype: double, size: ['$local_size[0]', '$local_size[1]']}
     cycle: int
     time: double
-    mask_ghosts: {  type: array, subtype: uint8_t, size: '$local_size[0]*$local_size[1]' }
-    coords_x:  {  type: array, subtype: double, size: '($local_size[0]+1)*($local_size[1]+1)' }
-    coords_y:  {  type: array, subtype: double, size: '($local_size[0]+1)*($local_size[1]+1)' }
-    cells_definition:  {  type: array, subtype: uint32, size: '4*($local_size[0])*($local_size[1])' }
-  logging:
-    trace
+    mask_ghosts: {type: array, subtype: uint8_t, size: '$local_size[0]*$local_size[1]'}
+    coords_x: {type: array, subtype: double, size: '($local_size[0]+1)*($local_size[1]+1)'}
+    coords_y: {type: array, subtype: double, size: '($local_size[0]+1)*($local_size[1]+1)'}
+    cells_definition: {type: array, subtype: uint32, size: '4*($local_size[0])*($local_size[1])'}
   plugins:
-    trace: 
     mpi:
     catalyst:
       scripts:
@@ -37,33 +34,27 @@ pdi:
           multiblock: 1
         channels:
           grid:
-            type: "mesh"
+            type: "mesh" # the chanel used is the conduit Blueprint mesh
             data:
               coordsets:
-                my_coords:
+                my_coords:  # coordinates of the vertices of the mesh
                   type: "explicit"
                   values:
                     x:
                       PDI_data_array: "coords_x"
-                      size: '($local_size[0]+1)*($local_size[1]+1)'
+                      size: '($local_size[0]+1)*($local_size[1]+1)' # local_size correspond to the number of cells
                     y:
                       PDI_data_array: "coords_y"
                       size: '($local_size[0]+1)*($local_size[1]+1)'
               topologies:
-                my_mesh:
-                  # type: "structured"
-                  # coordset: "my_coords"
-                  # elements:
-                  #   dims:
-                  #     i: '$local_size[1]'
-                  #     j: '$local_size[0]'
+                my_mesh:   # definition of the mesh
                   type: "unstructured"
                   coordset: "my_coords"
                   elements:
                       shape: "quad"
-                      connectivity:
+                      connectivity: # Array that defined the list of the quad cells in the mesh
                         PDI_data_array: "cells_definition"
-                        size: '4*$local_size[0]*$local_size[1]'
+                        size: '4*$local_size[0]*$local_size[1]' # need for 4 vertices to define a cell
               fields:
                 temperature:
                   association: "element"
@@ -72,10 +63,10 @@ pdi:
                   values:
                     PDI_data_array: "temp"
                     size: '$local_size[0]*$local_size[1]'
-                vtkGhostType:
+                vtkGhostType: # Array that define the type of the cells (can be viewed as a boolean: 0(interior cells), 1:(ghost cells))
                   association: "element"
                   topology: "my_mesh"
                   volume_dependent: "false"
                   values:
                     PDI_data_array: "mask_ghosts"
-                    size: '$local_size[0]*$local_size[1]'
+                    size: '$local_size[0]*$local_size[1]' # one value for each cells
