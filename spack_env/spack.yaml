@@ -31,3 +31,6 @@ spack:
     all:
       require:
         - target=x86_64
+  config:
+    install_tree:
+      padded_length: 128
