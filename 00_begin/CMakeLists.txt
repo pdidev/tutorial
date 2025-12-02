@@ -23,6 +23,19 @@
 cmake_minimum_required(VERSION 3.16)
 project(pdi_init LANGUAGES C)
 
+if(CMAKE_BINARY_DIR STREQUAL CMAKE_SOURCE_DIR)
+    message(FATAL_ERROR
+            "\n=============================================================\n"
+            "  ERROR: Building inside source directory is not allowed!\n"
+            "  This would pollute your git repository with build files.\n"
+            "  Recommended:\n"
+            "    mkdir -p build && cd build && cmake ..\n"
+            "  Or with modern CMake:\n"
+            "    cmake -B build   \n"
+            "    cmake --build build \n"
+            "=============================================================\n")
+endif()
+
 find_package(spdlog)
 find_package(MPI REQUIRED COMPONENTS C)
 find_package(paraconf 1.0.0 REQUIRED COMPONENTS C)
@@ -32,4 +45,5 @@ set(CMAKE_C_STANDARD 99)
 add_executable(main main.c)
 target_link_libraries(main m MPI::MPI_C paraconf::paraconf)
 
+file(COPY ${CMAKE_SOURCE_DIR}/config.yml DESTINATION ${CMAKE_BINARY_DIR})
 
