@@ -23,7 +23,7 @@ You may test that your environment is properly set up using the dedicated script
 
 ## API used in this tutorial
 
-```C++
+```C
 PDI_status_t PDI_init(PC_tree_t conf) 
 PDI_status_t PDI_finalize(PC_tree_t conf) 
 
@@ -68,14 +68,14 @@ Part of the research presented here has received funding from the Horizon 2020 (
 * `config.yml`:  
   * This file is used to set the simulation parameters.
 
-      ```C++
+      ```C
       PC_tree_t conf = PC_parse_path("config.yml"); 
       ```
 
   * We will also use this file to configure PDI.  
   * The parameter is passed to the simulation using:
 
-    ```C++
+    ```C
     long longval; 
     PC_int(PC_get(conf, ".parallelism.height"), &longval); 
     psize[0] = longval; 
@@ -96,7 +96,7 @@ Part of the research presented here has received funding from the Horizon 2020 (
 
 * Include the PDI header file `<pdi.h>` and initialize the PDI environment with:
 
-   ```C++
+   ```C
    PDI_init(PC_get(conf, ".pdi")); 
    PDI_finalize();
    ```
@@ -145,16 +145,19 @@ Part of the research presented here has received funding from the Horizon 2020 (
 
 * Use `PDI_expose` to make buffers available by PDI.
 
-   ```C++
+   ```C
    PDI_expose("local_size", dsize, PDI_OUT);
    ```
 
-* Expose to PDI before the temporal loop, the variable `dsize` with the name  `local_size`, and set it as PDI metadata:
+* Expose to PDI before the temporal loop, the variable `dsize` with the name  `local_size`, and set it as PDI `metadata`:
 
    ```yaml
    metadata: 
      local_size: {type: array, subtype: int, size: 2}
    ```
+
+* By definition, a `metadata` is a variable that can be used to describe other data (for example, the size of a vector). You can reference them from dynamic `$-expressions` in the configuration file.
+  
 
 * Expose at the beginning of each iteration, and at the end of the temporal loop, the variable `ii` with the name `iteration`, and `cur` with the name `temp`. Set `temp` as PDI data:  
 
@@ -162,6 +165,12 @@ Part of the research presented here has received funding from the Horizon 2020 (
    data:
      temp: {type: array, subtype: double, size: ['$local_size[0]', '$local_size[1]']}
    ```
+  
+  Unlike the other fields manipulated until now, the type of `temp` is not fully known: its size is dynamic. Therefore, we need to define the `local_size` in YAML file in advance for PDI using `$-expressions`.
+
+* A definition of `metadata` and `data` can be:
+  * `metadata`: small values for which PDI keeps a copy. These value can be referenced by using `$-expressions` in the configuration YAML file.
+  * `data` : values for which PDI does not keep a copy.
 
 * Use the trace plugin:
 
@@ -173,8 +182,8 @@ Part of the research presented here has received funding from the Horizon 2020 (
 
 * Limit the total iterations to 3
 
-   ```C++
-   for (; ii < 3; ++ii) { 
+   ```C
+   for (; ii < 3; ++ii)
    ```
 
 * and set use 1 process MPI
@@ -184,21 +193,44 @@ Part of the research presented here has received funding from the Horizon 2020 (
    ```
 
 * Run the test and compare the output with the reference `trace_reference.txt`  
-* Try with `PDI_multi_expose` and `PDI_share + PDI_reclaim`
+* Try with `PDI_multi_expose`
 
-   ```C++
+   ```C
    PDI_expose("local_size", dsize, PDI_OUT);
    // is equivalent to
    PDI_share("local_size", dsize, PDI_OUT); 
    PDI_reclaim("local_size");
+   ```
 
-   PDI_multi_expose("loop", "iteration", &ii, PDI_OUT, "temp", cur, PDI_OUT, NULL);
+* The `PDI_multi_expose` is implemented with interlaced share/reclaim pairs. When we used `PDI_multi_expose` with multiple data, the order of appearance of the arguments of the function corresponds to the order of the `PDI_share`.
+
+   ```C
+   PDI_multi_expose("loop", 
+                    "iteration", &ii, PDI_OUT, 
+                    "temp", cur, PDI_OUT, 
+                    NULL);
    // is equivalent to
    PDI_share("iteration", &ii, PDI_OUT); 
    PDI_share("temp", cur, PDI_OUT); 
    PDI_event("loop"); 
    PDI_reclaim("temp"); 
    PDI_reclaim("local_size");
+   ```
+
+  In a `PDI_multi_expose` if you have a `data1` that depends on the `data2`, you need to pass the arguments corresponding to `data2` before the arguments corresponding to `data1` in this function. With `PDI_share` and `PDI_reclaim` functions, you need to share `data2` before `data1`.
+  For example, a vector `V` that depends on its size `N`:
+
+   ```C
+   PDI_multi_expose("save_vector_V",
+                    "size_of_vector", &N, PDI_OUT,
+                    "vector_V", V, PDI_OUT,
+                    NULL);
+   // is equivalent to
+   PDI_share("size_of_vector", &N, PDI_OUT)
+   PDI_share("vector_V", V, PDI_OUT)
+   PDI_reclaim("vector_V")
+   PDI_reclaim("size_of_vector")
+   
    ```
 
 ## 4. [02_pycall] Use Pycall to generate partial images of the simulation
@@ -208,7 +240,7 @@ Part of the research presented here has received funding from the Horizon 2020 (
 * You need to share the variable pcoord with PDI to set up the output image name. It is already declared in the `config.yml` as `metadata`.  
 * Several options are available to call the Python script. We will use the `on_event` trigger. You can then use `PDI_multi_expose` to share data and trigger an event.  
 
-   ```C++
+   ```C
    PDI_multi_expose("loop", 
                     "iteration", &ii, PDI_OUT,
                     "temp", cur, PDI_OUT,
@@ -261,19 +293,32 @@ Part of the research presented here has received funding from the Horizon 2020 (
            temp:
    ```
 
-* Several attributes are necessary for the HDF5 plugin:  
-  * `file`: name of the ourput file. This can be a mix of string and `(meta)data $-expression`.  
+* Several attributes are necessary for this exercise with HDF5 plugin:  
+  * `file`: name of the output file. This can be a mix of string and `(meta)data $-expression`.  
   * Similar to the Pycall plugin, we chose to trigger the HDF5 plugin with the `on_event` method.  
   * Use the `write` keyword to specify the content to write in a list  
 
-  To use the `rank` to name the file, you need to expose it with PDI in advance. Declare the `rank` as `metadata` in `config.yml` so you can reference its value.
+  In order to use `rank` for naming the file, you need to expose it with PDI in advance. Declare the `rank` as `metadata` in `config.yml` so you can reference its value.
+
+* **warning** If you relaunch the executable `./main`, remember to delete your old `.h5` files before, otherwise the data will not be changed.
+  This behavior can be configured with `collision_policy` atrtibute under the `file` specification tree.
+  A COLLISION_POLICY is a string that identifies what to do when writing to a file or dataset that already exists. Available policies are listed below:
+
+  * `skip` - do not do anything
+  * `skip_and_warn` - do not do anything, only generate a warning message
+  * `error` - do not do anything, only throw an error
+  * `write_into` - [default] write into the existing file/dataset (potentially overwriting existing data in it)
+  * `write_into_and_warn` - write into the existing file/dataset (potentially overwriting existing data in it) and generate a warning message
+  * `replace` - delete the existing file/dataset and create a new one
+  * `replace_and_warn` - delete the existing file/dataset, create a new one, but generate a warning message
 
 * Try to generate some output files and check the data size with
 
    ```bash
+   mpirun -np 4 ./main
    h5dump -A output_rank0_iter00.h5
    ```
-
+  
   And you should have something similar to:
 
    ```text
@@ -362,7 +407,7 @@ Part of the research presented here has received funding from the Horizon 2020 (
 
 * In `main.c` you need to implement routines for file opening and closing.
 
-   ```C++
+   ```C
    void open_file(void) {
       // … only rank 0 will perform 
    } 
@@ -374,7 +419,7 @@ Part of the research presented here has received funding from the Horizon 2020 (
 
 * Similarly, when the `loop` event is triggered, we will call the function `compute_integral`, which computes the integral.
 
-   ```C++
+   ```C
    void compute_integral(void) {   
       // get the MPI rank   
       // use PDI_access to get:
