@@ -58,8 +58,10 @@ Part of the research presented here has received funding from the Horizon 2020 (
 
 ## 1. PDI HANDS-ON
 
-* The main program simulates two-dimensional heat diffusion in a square domain with two heat sources, using periodic boundary conditions.
-* Variables used in the main program `main.c`:  
+* The main program implements a simple heat equation solver using an explicit forward finite difference scheme parallelized with MPI. The code uses a block domain decomposition where each process holds a 2D block of data.
+* In the following exercises however, PDI will only be used to decouple I/O operations. There is no need to fully dive in the core of the solver implemented in the `iter` and `exchange` functions.
+* The specification tree in the `config.yml` files and the `main` function are the locations where all the I/O-related aspects will be handled and the only ones you will actually need to fully understand or modify.
+* Variables used in `main.c`:  
   * `int dsize[2]`:  size of the local data as `[HEIGHT, WIDTH]`, including the number of ghost layers  
   * `int psize[2]`: 2D size of the process grid as `[HEIGHT, WIDTH]`
   * `double **cur`: local data, of size `[dsize[0],dsize[1]]`, representing the temperature  
@@ -87,6 +89,9 @@ Part of the research presented here has received funding from the Horizon 2020 (
    mpirun -np 4 ./main 
    ```
 
+* There is no input/output operations in the code yet, so you can not see any result.
+* If you're not familiar with YAML, please have a look at our quick [YAML format](https://pdi.dev/main/YAML.html) to understand it. The example uses the [paraconf library](https://github.com/pdidev/paraconf) to read this file.
+
 ## 2. [00_begin] Instrument the simulation with PDI
 
 * Include the PDI header file `<pdi.h>` and initialize the PDI environment with:
@@ -101,6 +106,8 @@ Part of the research presented here has received funding from the Horizon 2020 (
    ```yaml
    pdi:
    ```
+
+   The sub-tree, defined after this `.pdi` key, is the PDI specification tree passed to PDI at initialization.
 
 * Modify the `CMakeLists.txt` to link the executable with PDI
 
@@ -129,6 +136,8 @@ Part of the research presented here has received funding from the Horizon 2020 (
    [0] SUCCESS 
    [2] SUCCESS
    ```
+
+   Additionally, we can run sequentially to facilitate the comparison between logs (in parallel each rank send a `trace` message and the order of writing can be different).
 
 * The warning states that no data definition can be found for PDI's configuration. We shall add some data to PDI in the next step.
 
