@@ -1,6 +1,12 @@
 # Decoupling I/O in HPC Codes with PDI: From File-based I/O to In Situ Data Analytics
 
-## Prepare the tutorial material
+## [TO BE COMPLETED] Prepare the tutorial material
+
+### Docker environment
+
+Download [Docker Desktop](https://www.docker.com/products/docker-desktop/)
+
+Get the docker image.
 
 Get the sources from GitHub and set up the environment:
 
@@ -21,7 +27,7 @@ You may test that your environment is properly set up using the dedicated script
 [3] SUCCESS
 ```
 
-## API used in this tutorial
+### API used in this tutorial
 
 ```C
 PDI_status_t PDI_init(PC_tree_t conf) 
@@ -59,6 +65,13 @@ Part of the research presented here has received funding from the Horizon 2020 (
 ## 1. PDI HANDS-ON
 
 * The main program implements a simple heat equation solver using an explicit forward finite difference scheme parallelized with MPI. The code uses a block domain decomposition where each process holds a 2D block of data.
+
+  ![Data domain decomposition in the example](images/heat_global_matrix.jpg)
+  
+  Locally, each process holds its local block of data with one additional element on each side for ghost zones.
+
+  ![Data domain decomposition in the example](images/heat_local_matrix.jpg)
+
 * In the following exercises however, PDI will only be used to decouple I/O operations. There is no need to fully dive in the core of the solver implemented in the `iter` and `exchange` functions.
 * The specification tree in the `config.yml` files and the `main` function are the locations where all the I/O-related aspects will be handled and the only ones you will actually need to fully understand or modify.
 * Variables used in `main.c`:  
@@ -158,7 +171,6 @@ Part of the research presented here has received funding from the Horizon 2020 (
 
 * By definition, a `metadata` is a variable that can be used to describe other data (for example, the size of a vector). You can reference them from dynamic `$-expressions` in the configuration file.
   
-
 * Expose at the beginning of each iteration, and at the end of the temporal loop, the variable `ii` with the name `iteration`, and `cur` with the name `temp`. Set `temp` as PDI data:  
 
    ```yaml
@@ -331,6 +343,8 @@ Part of the research presented here has received funding from the Horizon 2020 (
    ```
 
 * The size (32,22) corresponds to the local size with 2 ghost layers. Now, we will remove the ghost layers in our output data using `memory_selection`, which allows us to make a selection on the data passed to PDI from the simulation.
+  
+  ![graphical representation](images/PDI_hdf5_selection.jpg)
 
    ```yaml
    write:   
@@ -378,8 +392,13 @@ Part of the research presented here has received funding from the Horizon 2020 (
        communicator: $MPI_COMM_WORLD
    ```
 
-* Similar to the previous exercise, we need to specify the `datasets` used in the HDF5 output file. **Attention**, it is the global size of the domain! Hint: Use `psize` and `local_size` to define the correct global size.  
-* Also, we need to use the `dataset_selection` attribute to specify the starting position for each process’s data in the global dataset. Hint: Use `pcoord` to determine the correct position.
+* Similar to the previous exercise, we need to specify the `datasets` used in the HDF5 output file. **Attention**, it is the global size of the domain!
+
+* Set the size of the dataset to take the global (parallel) array size into account. You will need to multiply the local size by the number of processes in each dimension (use `psize` and `local_size`).
+
+* Ensure the dataset selection of each process does not overlap with the others. You will need to make a selection in the dataset that depends on the global coordinate of the local data block (use `pcoord`).
+
+  ![graphical representation of the parallel I/O](images/PDI_hdf5_parallel.jpg)
 
 ## 7. [03_hdf5_C] Use HDF5 to save the simulation data to disk in parallel
 
@@ -387,6 +406,8 @@ Part of the research presented here has received funding from the Horizon 2020 (
 * Modify the `datasets` to extend their dimension to 3 (one for the time dimension, and 2 for the space dimension)  
 * The size of the temporal dimension is `$max_iter+1`.  
 * Similarly, modify the `dataset_selection` section to choose the correct size and start position to receive data from each MPI process.  
+
+  ![graphical representation](images/PDI_hdf5_selection_advanced.jpg)
 
 ## 8. [04_usercode] Use the user_code plugin to compute some numerical metrics
 
