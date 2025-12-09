@@ -33,6 +33,7 @@ if(CMAKE_BINARY_DIR STREQUAL CMAKE_SOURCE_DIR)
             "  Or with modern CMake:\n"
             "    cmake -B build   \n"
             "    cmake --build build \n"
+            "  And don't forget to remove the old CMakeCache.txt \n"
             "=============================================================\n")
 endif()
 
