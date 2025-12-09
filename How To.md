@@ -66,7 +66,7 @@ As part of the "France 2030" initiative, this work has benefited from a State gr
 
 Part of the research presented here has received funding from the Horizon 2020 (H2020) funding framework under grant/award number: 676629 (EoCoE) and 824158 (EoCoE-II). The present publication reflects only the authors views. The European Commission is not liable for any use that might be made of the information contained therein.
 
-## 1. PDI HANDS-ON
+## PDI HANDS-ON
 
 * The main program implements a simple heat equation solver using an explicit forward finite difference scheme parallelized with MPI. The code uses a block domain decomposition where each process holds a 2D block of data.
 
@@ -109,7 +109,7 @@ Part of the research presented here has received funding from the Horizon 2020 (
 * There is no input/output operations in the code yet, so you can not see any result.
 * If you're not familiar with YAML, please have a look at our quick [YAML format](https://pdi.dev/main/YAML.html) to understand it. The example uses the [paraconf library](https://github.com/pdidev/paraconf) to read this file.
 
-## 2. [00_begin] Instrument the simulation with PDI
+## [00_begin] Instrument the simulation with PDI
 
 * Include the PDI header file `<pdi.h>` and initialize the PDI environment with:
 
@@ -158,7 +158,7 @@ Part of the research presented here has received funding from the Horizon 2020 (
 
 * The warning states that no data definition can be found for PDI's configuration. We shall add some data to PDI in the next step.
 
-## 2. [01_trace] Use the trace plugin to observe the data movement in the PDI data_store
+## [01_trace] Use the trace plugin to observe the data movement in the PDI data_store
 
 * Use `PDI_expose` to make buffers available by PDI.
 
@@ -249,59 +249,7 @@ Part of the research presented here has received funding from the Horizon 2020 (
    
    ```
 
-## 4. [02_pycall] Use Pycall to generate partial images of the simulation
-
-* With variables properly exposed with PDI, we can start using PDI plugins for various purposes.  
-* Let's begin with the Pycall plugin to code Python scripts using `matplotlib`.  
-* You need to share the variable pcoord with PDI to set up the output image name. It is already declared in the `config.yml` as `metadata`.  
-* Several options are available to call the Python script. We will use the `on_event` trigger. You can then use `PDI_multi_expose` to share data and trigger an event.  
-
-   ```C
-   PDI_multi_expose("loop", 
-                    "iteration", &ii, PDI_OUT,
-                    "temp", cur, PDI_OUT,
-                    NULL);
-   ```
-
-   ```yaml
-   plugins:
-     pycall:
-      on_event:
-         loop:
-         with: # insert here your list of arguments       
-         exec: | # insert your Python script below 
-            [...]
-   ```
-
-* When passing arguments from PDI to Python, you can use:
-
-   ```yaml
-   with: { iter_id: $iteration}
-   ```
-
-  where `py_iter`, whose value is defined by `iteration`, can be used inside the Python environment.
-
-* Here is an example of a Python script for generating the partial images without the ghost layer. You are free to do it differently.
-
-   ```python
-   import matplotlib.pyplot as plt 
-   plt.imshow(source_field[1:-1, 1:-1], origin='lower', cmap='viridis', vmax=200) 
-   plt.colorbar() 
-   plt.axis('off') 
-   plt.savefig("output_r"+str(py_pcoord[0])+"x"+str(py_pcoord[1])+"_iter"+ str(iter_id)) 
-   plt.close()
-   ```
-
-* Below is an example of the partial images at iteration 0.  
-
-| | |
-|:-------------------------:|:-------------------------:|
-|  ![example output](images/output_r1x0_iter0.png) |  ![example output](images/output_r1x1_iter0.png)|
-|  ![example output](images/output_r0x0_iter0.png) |  ![example output](images/output_r0x1_iter0.png)|
-
-* Note: It is also possible to generate global images via the pycall plugin. Please check in the solution folder.  
-
-## 5. [03_hdf5_A] Use HDF5 to save the simulation data to disk sequentially
+## [03_hdf5_A] Use HDF5 to save the simulation data to disk sequentially
 
 * Activate the `decl_hdf5` plugin with:
 
@@ -388,7 +336,7 @@ Part of the research presented here has received funding from the Horizon 2020 (
 
 * Now re-run the test, and the error should have disappeared.
 
-## 6. [03_hdf5_B] Use HDF5 to write selections in datasets
+## [03_hdf5_B] Use HDF5 to write selections in datasets
 
 * In this exercise, we want to write all iterations in a single HDF5 dataset. To do so, you will once again change the `config.yml` to handle a selection in the dataset in addition to the selection in memory from the previous exercise.
 
@@ -402,7 +350,7 @@ Part of the research presented here has received funding from the Horizon 2020 (
   
   ![graphical representation](images/PDI_hdf5_selection_advanced.jpg)
 
-## 6. [03_hdf5_C] Use HDF5 to perform writing in parallel
+## [03_hdf5_C] Use HDF5 to perform writing in parallel
 
 * Running the code from the previous exercises in parallel should already work and yield one file per process containing the local data block. In this exercise you will write one single file (e.g. `output.h5`) with parallel HDF5 whose content should be independent from the number of processes used. Once again, you only need to modify the YAML file in this exercise, no need to touch the C file.
 
@@ -424,7 +372,7 @@ Part of the research presented here has received funding from the Horizon 2020 (
 
   ![graphical representation of the parallel I/O](images/PDI_hdf5_parallel.jpg)
 
-## 7. [03_hdf5_D] Use regex in HDF5 to define dataset patterns
+## [03_hdf5_D] Use regex in HDF5 to define dataset patterns
 
 * This bonus section explains the use of the `regex` in the `decl_hdf5` plugin. This is a feature introduced in PDI 1.9.3 and later. The `regex` uses the Modiﬁed ECMAScript regular expression grammar.
 
@@ -460,9 +408,62 @@ Part of the research presented here has received funding from the Horizon 2020 (
    }
    ```
 
-## 8. [04_usercode] Use the user_code plugin to compute some numerical metrics
+## [02_pycall] Use Pycall to generate partial images of the simulation
 
-* The `user_code` plugin allows us to call a C function.  
+* We can use PDI to perform some in-situ analysis with the Pycall plugin, which allows you to call some Python scripts using the same process.
+* In this exercise, we will generate simulation images using `matplotlib` from Python.  
+<!-- * You need to share the variable pcoord with PDI to set up the output image name. It is already declared in the `config.yml` as `metadata`.   -->
+* Several options are available to call the Python script. We will use the `on_event` trigger. You can then use `PDI_multi_expose` to share data and trigger an event.  
+
+   ```C
+   PDI_multi_expose("loop", 
+                    "iteration", &ii, PDI_OUT,
+                    "temp", cur, PDI_OUT,
+                    NULL);
+   ```
+
+   ```yaml
+   plugins:
+     pycall:
+      on_event:
+         loop:
+         with: # insert here your list of arguments       
+         exec: | # insert your Python script below 
+            [...]
+   ```
+
+* When passing arguments from PDI to Python, you can use:
+
+   ```yaml
+   with: { iter_id: $iteration}
+   ```
+
+  where `py_iter`, whose value is defined by `iteration`, can be used inside the Python environment.
+
+* Here is an example of a Python script for generating the partial images without the ghost layer. You are free to do it differently.
+
+   ```python
+   import matplotlib.pyplot as plt 
+   plt.imshow(source_field[1:-1, 1:-1], origin='lower', cmap='viridis', vmax=200) 
+   plt.colorbar() 
+   plt.axis('off') 
+   plt.savefig("output_r"+str(py_pcoord[0])+"x"+str(py_pcoord[1])+"_iter"+ str(iter_id)) 
+   plt.close()
+   ```
+
+* Below is an example of the partial images at iteration 0.  
+
+| | |
+|:-------------------------:|:-------------------------:|
+|  ![example output](images/output_r1x0_iter0.png) |  ![example output](images/output_r1x1_iter0.png)|
+|  ![example output](images/output_r0x0_iter0.png) |  ![example output](images/output_r0x1_iter0.png)|
+
+* Note: It is also possible to generate global images via the pycall plugin. Please check in the solution folder.  
+
+
+## [04_usercode] Use the user_code plugin to compute some numerical metrics
+
+* While Pycall plugins calls Python scripts, the `user_code` plugin allows us to call a C function.  
 * This C function takes no arguments, but it can access the content of variables available in the PDI data store.  
 * In this exercise, we want to compute the sum of the temperature across the whole domain, and the result at each iteration will be written to a file.  
 * To write to a file, we must open and close it properly. We choose to use the `on_event` trigger. We will trigger the initialization event before the temporal loop and a finalization event after it. Upon triggering of these events, a corresponding C function will be called to open and close the file.  
