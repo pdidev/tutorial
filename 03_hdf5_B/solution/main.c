@@ -214,9 +214,10 @@ int main(int argc, char *argv[]) {
 
   // our loop counter so as to be able to use it outside the loop
   int ii = 0;
-
+  int max_iter = 10;
+  PDI_expose("max_iter", &max_iter, PDI_OUT);
   // the main loop
-  for (; ii < 10; ++ii) {
+  for (; ii < max_iter; ++ii) {
 
     PDI_multi_expose("loop", 
                      "iteration", &ii, PDI_INOUT,
