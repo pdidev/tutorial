@@ -430,6 +430,36 @@ Part of the research presented here has received funding from the Horizon 2020 (
 
 * In this exercise, you will write a generic dataset pattern using regex. For example, each iteration data will be outputted in a dedicated group inside the unique file `output.h5`.
 
+* For example, we would like to have:
+
+   ```bash
+   GROUP "/" {
+      GROUP "iteration_00" {
+         DATASET "temperature" {
+            DATATYPE  H5T_IEEE_F64LE
+            DATASPACE  SIMPLE { ( 60, 40 ) / ( 60, 40 ) }
+            DATA {
+            (0,0): ... 
+            (0,20): ...
+            ... 
+            }
+         }
+      }
+      GROUP "iteration_01" {
+         DATASET "temperature" {
+            DATATYPE  H5T_IEEE_F64LE
+            DATASPACE  SIMPLE { ( 60, 40 ) / ( 60, 40 ) }
+            DATA {
+            (0,0): ... 
+            (0,20): ...
+            ... 
+            }
+         }
+      }
+      ...
+   }
+   ```
+
 ## 8. [04_usercode] Use the user_code plugin to compute some numerical metrics
 
 * The `user_code` plugin allows us to call a C function.  
