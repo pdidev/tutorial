@@ -44,6 +44,10 @@ PDI_status_t PDI_access(const char *name, void **data, PDI_inout_t access)
 PDI_status_t PDI_release(const char *name)
 ```
 
+## HPCAsia PDI tutorial webpage
+
+[https://pdi.dev/hpcasia26](https://pdi.dev/hpcasia26)
+
 ## PDI official webpage
 
 [https://pdi.dev](https://pdi.dev)
@@ -289,7 +293,12 @@ Part of the research presented here has received funding from the Horizon 2020 (
    ```
 
 * Below is an example of the partial images at iteration 0.  
-  TODO: add images  
+
+| | |
+|:-------------------------:|:-------------------------:|
+|  ![example output](images/output_r1x0_iter0.png) |  ![example output](images/output_r1x1_iter0.png)|
+|  ![example output](images/output_r0x0_iter0.png) |  ![example output](images/output_r0x1_iter0.png)|
+
 * Note: It is also possible to generate global images via the pycall plugin. Please check in the solution folder.  
 
 ## 5. [03_hdf5_A] Use HDF5 to save the simulation data to disk sequentially
@@ -379,20 +388,35 @@ Part of the research presented here has received funding from the Horizon 2020 (
 
 * Now re-run the test, and the error should have disappeared.
 
-## 6. [03_hdf5_B] Use HDF5 to save the simulation data to disk in parallel
+## 6. [03_hdf5_B] Use HDF5 to write selections in datasets
 
-* In this exercise, we aim to save global data to a file for each iteration.  
+* In this exercise, we want to write all iterations in a single HDF5 dataset. To do so, you will once again change the `config.yml` to handle a selection in the dataset in addition to the selection in memory from the previous exercise.
+
+* The objective is to write the 2D array from the previous exercise as a slice of 3D dataset including a dimension for time. Once again, you only need to modify the YAML file in this exercise, no need to touch the C file.
+
+* As HDF5 does not allow an unlimited dimension, unlike netCDF, you need to expose to PDI the maximum number of iterations (`max_iter`) and let the HDF5 plugin acknowledge this information to reserve the correct memory space for the dataset.
+
+* Modify the `datasets` to extend their dimension to 3 (one for the time dimension, and 2 for the space dimension).
+
+* Similarly, modify the `dataset_selection` section to choose the correct size and start position to receive data from each MPI process.
+  
+  ![graphical representation](images/PDI_hdf5_selection_advanced.jpg)
+
+## 6. [03_hdf5_C] Use HDF5 to perform writing in parallel
+
+* Running the code from the previous exercises in parallel should already work and yield one file per process containing the local data block. In this exercise you will write one single file (e.g. `output.h5`) with parallel HDF5 whose content should be independent from the number of processes used. Once again, you only need to modify the YAML file in this exercise, no need to touch the C file.
+
 * To enable the parallel write with HDF5, we need to give it the context of the MPI communicator `MPI_COMM_WORLD` by activating the `MPI` plugin:  
 
    ```yaml
    plugins:   
      mpi:   
      decl_hdf5:     
-     - file: output_iter${iteration:02}.h5   
+     - file: output.h5   
        communicator: $MPI_COMM_WORLD
    ```
 
-* Similar to the previous exercise, we need to specify the `datasets` used in the HDF5 output file. **Attention**, it is the global size of the domain!
+* Similar to the previous exercise, we need to specify the `datasets` used in the HDF5 output file. **Attention**, it is now the global size of the domain!
 
 * Set the size of the dataset to take the global (parallel) array size into account. You will need to multiply the local size by the number of processes in each dimension (use `psize` and `local_size`).
 
@@ -400,14 +424,11 @@ Part of the research presented here has received funding from the Horizon 2020 (
 
   ![graphical representation of the parallel I/O](images/PDI_hdf5_parallel.jpg)
 
-## 7. [03_hdf5_C] Use HDF5 to save the simulation data to disk in parallel
+## 7. [03_hdf5_D] Use regex in HDF5 to define dataset patterns
 
-* This exercise allows you to put all the data into a single file. As HDF5 does not allow an unlimited dimension, unlike netCDF, you need to define the maximum number of iterations (`max_iter`) and let the HDF5 plugin acknowledge this information to reserve the correct memory space for the dataset.  
-* Modify the `datasets` to extend their dimension to 3 (one for the time dimension, and 2 for the space dimension)  
-* The size of the temporal dimension is `$max_iter+1`.  
-* Similarly, modify the `dataset_selection` section to choose the correct size and start position to receive data from each MPI process.  
+* This bonus section explains the use of the `regex` in the `decl_hdf5` plugin. This is a feature introduced in PDI 1.9.3 and later. The `regex` uses the Modiﬁed ECMAScript regular expression grammar.
 
-  ![graphical representation](images/PDI_hdf5_selection_advanced.jpg)
+* In this exercise, you will write a generic dataset pattern using regex. For example, each iteration data will be outputted in a dedicated group inside the unique file `output.h5`.
 
 ## 8. [04_usercode] Use the user_code plugin to compute some numerical metrics
 
