@@ -212,9 +212,10 @@ int main(int argc, char *argv[]) {
 
   // our loop counter so as to be able to use it outside the loop
   int ii = 0;
-
+  int max_iter = 10;
+  
   // the main loop
-  for (; ii < 3; ++ii) {
+  for (; ii < max_iter; ++ii) {
     
     PDI_share("iteration", &ii, PDI_OUT);
     PDI_share("temp", cur, PDI_OUT);

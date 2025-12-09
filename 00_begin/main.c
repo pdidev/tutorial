@@ -207,9 +207,10 @@ int main(int argc, char *argv[]) {
 
   // our loop counter so as to be able to use it outside the loop
   int ii = 0;
-
+  int max_iter = 10;
+  
   // the main loop
-  for (; ii < 10; ++ii) {
+  for (; ii < max_iter; ++ii) {
 
     // compute the values for the next iteration
     iter(cur, next);
