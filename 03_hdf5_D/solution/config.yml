@@ -22,11 +22,11 @@ pdi:
       - file: output.h5
         communicator: $MPI_COMM_WORLD
         datasets: 
-          group[0-9]+/temperature: {type: array, subtype: double, size: ['$psize[0]*($local_size[0]-2)', '$psize[1]*($local_size[1]-2)' ] }
+          iteration_[0-9]+/temperature: {type: array, subtype: double, size: ['$psize[0]*($local_size[0]-2)', '$psize[1]*($local_size[1]-2)' ] }
         on_event: loop
         write: 
           temp:
-            dataset: 'group${iteration:02}/temperature'
+            dataset: 'iteration_${iteration:02}/temperature'
             memory_selection:
               size: ['$local_size[0]-2', '$local_size[1]-2' ] # number of elements to transfer in each dimension
               start: [1, 1] 
