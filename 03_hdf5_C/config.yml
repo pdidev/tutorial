@@ -9,14 +9,11 @@ pdi:
   metadata:
     local_size: {type: array, subtype: int, size: 2}
     rank: int
-    pcoord: {type: array, subtype: int, size: 2}
-    psize: {type: array, subtype: int, size: 2}
     max_iter: int
   data:
     iteration: int
     temp: {type: array, subtype: double, size: ['$local_size[0]', '$local_size[1]']}
   plugins:
     # trace: 
-    mpi:
     decl_hdf5:
       
