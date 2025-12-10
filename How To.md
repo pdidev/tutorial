@@ -320,10 +320,11 @@ Part of the research presented here has received funding from the Horizon 2020 (
                     "vector_V", V, PDI_OUT,
                     NULL);
    // is equivalent to
-   PDI_share("size_of_vector", &N, PDI_OUT)
-   PDI_share("vector_V", V, PDI_OUT)
-   PDI_reclaim("vector_V")
-   PDI_reclaim("size_of_vector")
+   PDI_share("size_of_vector", &N, PDI_OUT);
+   PDI_share("vector_V", V, PDI_OUT);
+   PDI_event("save_vector_V");
+   PDI_reclaim("vector_V");
+   PDI_reclaim("size_of_vector");
    
    ```
 
