@@ -196,10 +196,10 @@ Part of the research presented here has received funding from the Horizon 2020 (
        logging: {pattern: '[PDI][%n-plugin] *** %l: %v' }
    ```
 
-* Limit the total iterations to 3
+* Limit the max iterations to 3
 
    ```C
-   for (; ii < 3; ++ii)
+   int max_iter = 3;
    ```
 
 * and set use 1 process MPI
@@ -208,8 +208,9 @@ Part of the research presented here has received funding from the Horizon 2020 (
    parallelism: { height: 1, width: 1 }
    ```
 
-* Run the test and compare the output with the reference `trace_reference.txt`  
-* Try with `PDI_multi_expose`
+* Run the test and compare the output with the reference `trace_reference.txt`
+
+* `PDI_expose` is actually a consecutive call of two PDI functions:
 
    ```C
    PDI_expose("local_size", dsize, PDI_OUT);
@@ -218,36 +219,20 @@ Part of the research presented here has received funding from the Horizon 2020 (
    PDI_reclaim("local_size");
    ```
 
-* The `PDI_multi_expose` is implemented with interlaced share/reclaim pairs. When we used `PDI_multi_expose` with multiple data, the order of appearance of the arguments of the function corresponds to the order of the `PDI_share`.
+* In some cases, you may want to overlap IO operations with computes. To do so, you can rely on the `PDI_share` and `PDI_reclaim` calls.
 
    ```C
-   PDI_multi_expose("loop", 
-                    "iteration", &ii, PDI_OUT, 
-                    "temp", cur, PDI_OUT, 
-                    NULL);
-   // is equivalent to
-   PDI_share("iteration", &ii, PDI_OUT); 
-   PDI_share("temp", cur, PDI_OUT); 
-   PDI_event("loop"); 
-   PDI_reclaim("temp"); 
-   PDI_reclaim("local_size");
+   PDI_share("my_data", data, PDI_OUT); 
+   // after PDI_share, the data buffer is available for PDI plugins
+   // while PDI plugins are performing operations on the data buffer for IO, 
+   // simulation is free to :
+   //     read the data buffer
+   //     perform other computations
+   PDI_reclaim("my_data");
+   // simulation get back the control of data buffer
    ```
 
-  In a `PDI_multi_expose` if you have a `data1` that depends on the `data2`, you need to pass the arguments corresponding to `data2` before the arguments corresponding to `data1` in this function. With `PDI_share` and `PDI_reclaim` functions, you need to share `data2` before `data1`.
-  For example, a vector `V` that depends on its size `N`:
-
-   ```C
-   PDI_multi_expose("save_vector_V",
-                    "size_of_vector", &N, PDI_OUT,
-                    "vector_V", V, PDI_OUT,
-                    NULL);
-   // is equivalent to
-   PDI_share("size_of_vector", &N, PDI_OUT)
-   PDI_share("vector_V", V, PDI_OUT)
-   PDI_reclaim("vector_V")
-   PDI_reclaim("size_of_vector")
-   
-   ```
+* You can replace `PDI_expose` with `share+reclaim` and observe the trace results.
 
 ## [03_hdf5_A] Use HDF5 to save the simulation data to disk sequentially
 
@@ -256,15 +241,15 @@ Part of the research presented here has received funding from the Horizon 2020 (
    ```yaml
    plugins:   
      decl_hdf5:     
-       - file: output_rank${rank:01}_iter${iteration:02}.h5       
-         on_event: loop       
+       - file: output_rank${rank:01}_iter${iteration:02}.h5              
          write:         
            temp:
+           iteration:
    ```
 
 * Several attributes are necessary for this exercise with HDF5 plugin:  
   * `file`: name of the output file. This can be a mix of string and `(meta)data $-expression`.  
-  * Similar to the Pycall plugin, we chose to trigger the HDF5 plugin with the `on_event` method.  
+  <!-- * Similar to the Pycall plugin, we chose to trigger the HDF5 plugin with the `on_event` method.   -->
   * Use the `write` keyword to specify the content to write in a list  
 
   In order to use `rank` for naming the file, you need to expose it with PDI in advance. Declare the `rank` as `metadata` in `config.yml` so you can reference its value.
@@ -335,6 +320,53 @@ Part of the research presented here has received funding from the Horizon 2020 (
    ```
 
 * Now re-run the test, and the error should have disappeared.
+
+* BONUS. Let's go a little bit further to optimise the file writing with HDF5. In the current state, two varaibles are outputted to file. What is actully called inside the decl_hdf5 plugin is:
+
+  * `PDI_expose("iteration")` -> create/open `.h5` file -> write the content of `iteration` to file -> close the file
+  * `PDI_expose("temp")` -> create/open `.h5` file -> write the content of `temp` to file -> close the file
+
+  The output file is indeed opened twice and closed twice in this scenario. However, we would like to open the file once, put all necessary content, and then close the file. We can achieve this with the `event` mechanism in PDI. By adding the `event ` key word to the `config.yml`, we notify the plugin that the writing process can not begin unless the event `loop` is issued.
+
+   ```yaml
+   on_event: loop
+     write:
+       iteration: 
+       temp:
+  ```
+  
+  On the simulation side, we shall use the `PDI_multi_expose` function to trigger an event and to expose buffers to PDI.
+
+* Similarly to `PDI_expose`, the `PDI_multi_expose` is implemented with interlaced share/reclaim pairs.
+
+   ```C
+   PDI_multi_expose("loop", 
+                    "iteration", &ii, PDI_OUT, 
+                    "temp", cur, PDI_OUT, 
+                    NULL);
+   // is equivalent to
+   PDI_share("iteration", &ii, PDI_OUT); 
+   PDI_share("temp", cur, PDI_OUT); 
+   PDI_event("loop"); 
+   PDI_reclaim("temp"); 
+   PDI_reclaim("local_size");
+   ```
+
+   When we used `PDI_multi_expose` with multiple data, the order of appearance of the arguments of the function corresponds to the order of the `PDI_share`. In a `PDI_multi_expose` if you have a `data1` that depends on the `data2`, you need to pass the arguments corresponding to `data2` before the arguments corresponding to `data1` in this function. With `PDI_share` and `PDI_reclaim` functions, you need to share `data2` before `data1`.
+  For example, a vector `V` that depends on its size `N`:
+
+   ```C
+   PDI_multi_expose("save_vector_V",
+                    "size_of_vector", &N, PDI_OUT,
+                    "vector_V", V, PDI_OUT,
+                    NULL);
+   // is equivalent to
+   PDI_share("size_of_vector", &N, PDI_OUT)
+   PDI_share("vector_V", V, PDI_OUT)
+   PDI_reclaim("vector_V")
+   PDI_reclaim("size_of_vector")
+   
+   ```
 
 ## [03_hdf5_B] Use HDF5 to write selections in datasets
 
