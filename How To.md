@@ -254,9 +254,7 @@ Part of the research presented here has received funding from the Horizon 2020 (
 
   In order to use `rank` for naming the file, you need to expose it with PDI in advance. Declare the `rank` as `metadata` in `config.yml` so you can reference its value.
 
-* **warning** If you relaunch the executable `./main`, remember to delete your old `.h5` files before, otherwise the data will not be changed.
-  This behavior can be configured with `collision_policy` atrtibute under the `file` specification tree.
-  A COLLISION_POLICY is a string that identifies what to do when writing to a file or dataset that already exists. Available policies are listed below:
+* **Attention!** If you relaunch the executable `./main`, remember to delete your old `.h5` files before, otherwise the data will not be changed. This behavior can be configured with `collision_policy` atrtibute under the `file` specification tree. A COLLISION_POLICY is a string that identifies what to do when writing to a file or dataset that already exists. Available policies are listed below:
 
   * `skip` - do not do anything
   * `skip_and_warn` - do not do anything, only generate a warning message
@@ -266,7 +264,70 @@ Part of the research presented here has received funding from the Horizon 2020 (
   * `replace` - delete the existing file/dataset and create a new one
   * `replace_and_warn` - delete the existing file/dataset, create a new one, but generate a warning message
 
-* Try to generate some output files and check the data size with
+* Let's go a little bit further to understand the file writing process with HDF5. In the current state, two varaibles are outputted to file. What is actully called inside the decl_hdf5 plugin is:
+
+  * `PDI_expose("iteration")` : `iteration` is available in PDI data store and it needs be outputted to file
+    * create/open `.h5` file
+    * write the content of `iteration` to file
+    * close the file
+  * `PDI_expose("temp")` : `temp` is available in PDI data store and it needs be outputted to file
+    * create/open `.h5` file
+    * write the content of `temp` to file
+    * close the file
+
+  In this scenario, the output file is indeed opened **twice** and closed **twice**. However, we would like to open the file only once, put all necessary content, and then close the file. We can achieve this with the `event` mechanism in PDI. By adding the `event` key word to the `config.yml`, we notify the plugin that the writing process can begin once the event `loop` is issued.
+
+   ```yaml
+   on_event: loop
+     write:
+       iteration: 
+       temp:
+  ```
+  
+  On the simulation side, we shall use the `PDI_multi_expose` function to expose buffers to PDI, and to trigger an event.
+
+   ```C
+   PDI_multi_expose("loop", 
+                    "iteration", &ii, PDI_OUT, 
+                    "temp", cur, PDI_OUT, 
+                    NULL);
+   ```
+
+* Similarly to `PDI_expose`, the `PDI_multi_expose` is implemented with interlaced share/reclaim pairs. The above call to `PDI_nulti_expose` is equivalent to:
+
+   ```C
+   PDI_share("iteration", &ii, PDI_OUT); 
+   PDI_share("temp", cur, PDI_OUT); 
+   PDI_event("loop"); 
+   PDI_reclaim("temp"); 
+   PDI_reclaim("local_size");
+   ```
+
+* The execution workflow inside the plugin is now:
+  * `iteration` is becoming available in PDI data store
+  * `temp` is becoming available in PDI data store
+  * an event named `loop` is triggered and the writing process can begin:
+    * open the `.h5` file
+    * write `iteration` and `temp` to the file
+    * close the file
+
+* **Attention!** When using `PDI_multi_expose` with multiple data, the order of appearance of the arguments of the function corresponds to the order of the `PDI_share`. In a `PDI_multi_expose` if you have a `data1` that depends on the `data2`, you need to pass the arguments corresponding to `data2` before the arguments corresponding to `data1` in this function. With `PDI_share` and `PDI_reclaim` functions, you need to share `data2` before `data1`.
+  For example, a vector `V` that depends on its size `N`:
+
+   ```C
+   PDI_multi_expose("save_vector_V",
+                    "size_of_vector", &N, PDI_OUT,
+                    "vector_V", V, PDI_OUT,
+                    NULL);
+   // is equivalent to
+   PDI_share("size_of_vector", &N, PDI_OUT)
+   PDI_share("vector_V", V, PDI_OUT)
+   PDI_reclaim("vector_V")
+   PDI_reclaim("size_of_vector")
+   
+   ```
+
+* Now let's generate some output files and check the data
 
    ```bash
    mpirun -np 4 ./main
@@ -320,53 +381,6 @@ Part of the research presented here has received funding from the Horizon 2020 (
    ```
 
 * Now re-run the test, and the error should have disappeared.
-
-* BONUS. Let's go a little bit further to optimise the file writing with HDF5. In the current state, two varaibles are outputted to file. What is actully called inside the decl_hdf5 plugin is:
-
-  * `PDI_expose("iteration")` -> create/open `.h5` file -> write the content of `iteration` to file -> close the file
-  * `PDI_expose("temp")` -> create/open `.h5` file -> write the content of `temp` to file -> close the file
-
-  The output file is indeed opened twice and closed twice in this scenario. However, we would like to open the file once, put all necessary content, and then close the file. We can achieve this with the `event` mechanism in PDI. By adding the `event ` key word to the `config.yml`, we notify the plugin that the writing process can not begin unless the event `loop` is issued.
-
-   ```yaml
-   on_event: loop
-     write:
-       iteration: 
-       temp:
-  ```
-  
-  On the simulation side, we shall use the `PDI_multi_expose` function to trigger an event and to expose buffers to PDI.
-
-* Similarly to `PDI_expose`, the `PDI_multi_expose` is implemented with interlaced share/reclaim pairs.
-
-   ```C
-   PDI_multi_expose("loop", 
-                    "iteration", &ii, PDI_OUT, 
-                    "temp", cur, PDI_OUT, 
-                    NULL);
-   // is equivalent to
-   PDI_share("iteration", &ii, PDI_OUT); 
-   PDI_share("temp", cur, PDI_OUT); 
-   PDI_event("loop"); 
-   PDI_reclaim("temp"); 
-   PDI_reclaim("local_size");
-   ```
-
-   When we used `PDI_multi_expose` with multiple data, the order of appearance of the arguments of the function corresponds to the order of the `PDI_share`. In a `PDI_multi_expose` if you have a `data1` that depends on the `data2`, you need to pass the arguments corresponding to `data2` before the arguments corresponding to `data1` in this function. With `PDI_share` and `PDI_reclaim` functions, you need to share `data2` before `data1`.
-  For example, a vector `V` that depends on its size `N`:
-
-   ```C
-   PDI_multi_expose("save_vector_V",
-                    "size_of_vector", &N, PDI_OUT,
-                    "vector_V", V, PDI_OUT,
-                    NULL);
-   // is equivalent to
-   PDI_share("size_of_vector", &N, PDI_OUT)
-   PDI_share("vector_V", V, PDI_OUT)
-   PDI_reclaim("vector_V")
-   PDI_reclaim("size_of_vector")
-   
-   ```
 
 ## [03_hdf5_B] Use HDF5 to write selections in datasets
 
