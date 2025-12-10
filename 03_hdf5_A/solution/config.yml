@@ -19,7 +19,8 @@ pdi:
         datasets: 
           temp: { type: array, subtype: double, size: [ '$local_size[0]-2', '$local_size[1]-2' ] }
         on_event: loop
-        write: 
+        write:
+          iteration: 
           temp:
             memory_selection:
               size: [ '$local_size[0]-2', '$local_size[1]-2' ] # number of elements to transfer in each dimension
