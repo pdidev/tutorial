@@ -38,7 +38,7 @@ PDI_status_t PDI_reclaim(const char *name)
 
 PDI_status_t PDI_expose(const char *name, const void *data, PDI_inout_t access) 
 PDI_status_t PDI_multi_expose(const char *event_name, const char *name, 
-                              const void *data, PDI_inout_t access, …) 
+                              const void *data, PDI_inout_t access, ...) 
 
 PDI_status_t PDI_access(const char *name, void **data, PDI_inout_t access) 
 PDI_status_t PDI_release(const char *name)
@@ -348,7 +348,8 @@ Part of the research presented here has received funding from the Horizon 2020 (
 
 * The size (32,22) corresponds to the local size with 2 ghost layers. Now, we will remove the ghost layers in our output data using `memory_selection`, which allows us to make a selection on the data passed to PDI from the simulation.
   
-  ![graphical representation](images/PDI_hdf5_selection.jpg)
+  <!-- ![graphical representation](images/PDI_hdf5_selection.jpg) -->
+  ![graphical representation](images/PDI_hdf5_selection2.png)
 
    ```yaml
    write:   
