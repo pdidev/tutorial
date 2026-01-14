@@ -456,59 +456,6 @@ Part of the research presented here has received funding from the Horizon 2020 (
    }
    ```
 
-## [02_pycall] Use Pycall to generate partial images of the simulation
-
-* We can use PDI to perform some in-situ analysis with the Pycall plugin, which allows you to call some Python scripts using the same process.
-* In this exercise, we will generate simulation images using `matplotlib` from Python.  
-<!-- * You need to share the variable pcoord with PDI to set up the output image name. It is already declared in the `config.yml` as `metadata`.   -->
-* Several options are available to call the Python script. We will use the `on_event` trigger. You can then use `PDI_multi_expose` to share data and trigger an event.  
-
-   ```C
-   PDI_multi_expose("loop", 
-                    "iteration", &ii, PDI_OUT,
-                    "temp", cur, PDI_OUT,
-                    NULL);
-   ```
-
-   ```yaml
-   plugins:
-     pycall:
-      on_event:
-         loop:
-         with: # insert here your list of arguments       
-         exec: | # insert your Python script below 
-            [...]
-   ```
-
-* When passing arguments from PDI to Python, you can use:
-
-   ```yaml
-   with: { iter_id: $iteration}
-   ```
-
-  where `py_iter`, whose value is defined by `iteration`, can be used inside the Python environment.
-
-* Here is an example of a Python script for generating the partial images without the ghost layer. You are free to do it differently.
-
-   ```python
-   import matplotlib.pyplot as plt 
-   plt.imshow(source_field[1:-1, 1:-1], origin='lower', cmap='viridis', vmax=200) 
-   plt.colorbar() 
-   plt.axis('off') 
-   plt.savefig("output_r"+str(py_pcoord[0])+"x"+str(py_pcoord[1])+"_iter"+ str(iter_id)) 
-   plt.close()
-   ```
-
-* Below is an example of the partial images at iteration 0.  
-
-| | |
-|:-------------------------:|:-------------------------:|
-|  ![example output](images/output_r1x0_iter0.png) |  ![example output](images/output_r1x1_iter0.png)|
-|  ![example output](images/output_r0x0_iter0.png) |  ![example output](images/output_r0x1_iter0.png)|
-
-* Note: It is also possible to generate global images via the pycall plugin. Please check in the solution folder.  
-
-
 ## [04_usercode] Use the user_code plugin to compute some numerical metrics
 
 * While Pycall plugins calls Python scripts, the `user_code` plugin allows us to call a C function.  
@@ -568,3 +515,57 @@ Part of the research presented here has received funding from the Horizon 2020 (
    ```
 
 * You can compare the results with `integral_reference.dat`.
+
+## [02_pycall] Use Pycall to generate partial images of the simulation
+
+* We can use PDI to perform some in-situ analysis with the Pycall plugin, which allows you to call some Python scripts using the same process.
+* In this exercise, we will generate simulation images using `matplotlib` from Python.  
+<!-- * You need to share the variable pcoord with PDI to set up the output image name. It is already declared in the `config.yml` as `metadata`.   -->
+* Several options are available to call the Python script. We will use the `on_event` trigger. You can then use `PDI_multi_expose` to share data and trigger an event.  
+
+   ```C
+   PDI_multi_expose("loop", 
+                    "iteration", &ii, PDI_OUT,
+                    "temp", cur, PDI_OUT,
+                    NULL);
+   ```
+
+   ```yaml
+   plugins:
+     pycall:
+      on_event:
+         loop:
+         with: # insert here your list of arguments       
+         exec: | # insert your Python script below 
+            [...]
+   ```
+
+* When passing arguments from PDI to Python, you can use:
+
+   ```yaml
+   with: { iter_id: $iteration}
+   ```
+
+  where `py_iter`, whose value is defined by `iteration`, can be used inside the Python environment.
+
+* Here is an example of a Python script for generating the partial images without the ghost layer. You are free to do it differently.
+
+   ```python
+   import matplotlib.pyplot as plt 
+   plt.imshow(source_field[1:-1, 1:-1], origin='lower', cmap='viridis', vmax=200) 
+   plt.colorbar() 
+   plt.axis('off') 
+   plt.savefig("output_r"+str(py_pcoord[0])+"x"+str(py_pcoord[1])+"_iter"+ str(iter_id)) 
+   plt.close()
+   ```
+
+* Below is an example of the partial images at iteration 0.  
+
+| | |
+|:-------------------------:|:-------------------------:|
+|  ![example output](images/output_r1x0_iter0.png) |  ![example output](images/output_r1x1_iter0.png)|
+|  ![example output](images/output_r0x0_iter0.png) |  ![example output](images/output_r0x1_iter0.png)|
+
+* Note: It is also possible to generate global images via the pycall plugin. Please check in the solution folder.  
+
+
