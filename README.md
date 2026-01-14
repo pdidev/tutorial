@@ -1,4 +1,5 @@
-# Hands-on tutorial {#Hands_on}
+\page Hands_on Hands-on tutorial
+# Hands-on tutorial
 
 In this tutorial, you will build a PDI-enabled application step-by-step from a
 PDI-free base.
