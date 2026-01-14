@@ -420,7 +420,7 @@ Part of the research presented here has received funding from the Horizon 2020 (
 
   ![graphical representation of the parallel I/O](images/PDI_hdf5_parallel.jpg)
 
-## [03_hdf5_D] Use regex in HDF5 to define dataset patterns
+<!-- ## [03_hdf5_D] Use regex in HDF5 to define dataset patterns
 
 * This bonus section explains the use of the `regex` in the `decl_hdf5` plugin. This is a feature introduced in PDI 1.9.3 and later. The `regex` uses the Modiﬁed ECMAScript regular expression grammar.
 
@@ -454,7 +454,7 @@ Part of the research presented here has received funding from the Horizon 2020 (
       }
       ...
    }
-   ```
+   ``` -->
 
 ## [04_usercode] Use the user_code plugin to compute some numerical metrics
 
