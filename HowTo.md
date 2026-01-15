@@ -38,7 +38,7 @@ PDI_status_t PDI_reclaim(const char *name)
 
 PDI_status_t PDI_expose(const char *name, const void *data, PDI_inout_t access) 
 PDI_status_t PDI_multi_expose(const char *event_name, const char *name, 
-                              const void *data, PDI_inout_t access, …) 
+                              const void *data, PDI_inout_t access, ...) 
 
 PDI_status_t PDI_access(const char *name, void **data, PDI_inout_t access) 
 PDI_status_t PDI_release(const char *name)
@@ -275,7 +275,7 @@ Part of the research presented here has received funding from the Horizon 2020 (
     * write the content of `temp` to file
     * close the file
 
-  In this scenario, the output file is indeed opened **twice** and closed **twice**. However, we would like to open the file only once, put all necessary content, and then close the file. We can achieve this with the `event` mechanism in PDI. By adding the `event` key word to the `config.yml`, we notify the plugin that the writing process can begin once the event `loop` is issued.
+  In this scenario, the output file is indeed opened **twice** and closed **twice**. However, for better performance, we would like to open the file only once, put all necessary content, and then close the file. We can achieve this with the `event` mechanism in PDI. By adding the `event` key word to the `config.yml`, we notify the plugin that the writing process can begin once the event `loop` is issued.
 
    ```yaml
    on_event: loop
@@ -293,7 +293,7 @@ Part of the research presented here has received funding from the Horizon 2020 (
                     NULL);
    ```
 
-* Similarly to `PDI_expose`, the `PDI_multi_expose` is implemented with interlaced share/reclaim pairs. The above call to `PDI_nulti_expose` is equivalent to:
+* Similarly to `PDI_expose`, the `PDI_multi_expose` is implemented with interlaced `share/reclaim` pairs. The above call to `PDI_multi_expose` is equivalent to:
 
    ```C
    PDI_share("iteration", &ii, PDI_OUT); 
@@ -346,9 +346,10 @@ Part of the research presented here has received funding from the Horizon 2020 (
    } 
    ```
 
-* The size (32,22) corresponds to the local size with 2 ghost layers. Now, we will remove the ghost layers in our output data using `memory_selection`, which allows us to make a selection on the data passed to PDI from the simulation.
+* The size `(32,22)` corresponds to the local size with 2 ghost layers. Now, we will remove the ghost layers in our output data using `memory_selection`, which allows us to make a selection on the data passed to PDI from the simulation.
   
-  ![graphical representation](images/PDI_hdf5_selection.jpg)
+  <!-- ![graphical representation](images/PDI_hdf5_selection.jpg) -->
+  ![graphical representation](images/PDI_hdf5_selection2.png)
 
    ```yaml
    write:   
@@ -361,11 +362,11 @@ Part of the research presented here has received funding from the Horizon 2020 (
 * Add the selection to the `config.yml` and run the test. You should encounter an error at runtime:
 
    ```bash
-   [PDI] *** error: Error while triggering event `loop`: 
-   Config_error: Incompatible selections while writing `temp': [ (1-30/0-31) (1-20/0-21) ] -> [ (0-31/0-31) (0-21/0-21) ] |
+   [PDI] *** error: Error while triggering event 'loop': 
+   Config_error: Incompatible selections while writing 'temp': [ (1-30/0-31) (1-20/0-21) ] -> [ (0-31/0-31) (0-21/0-21) ] |
    ```
 
-  This error indicates that we have a size issue with our data. Each time the HDF5 plugin writes data to a file, if the HDF5 dataset is not defined explicitly, it uses the default dataset, which has the same size as the declared data. You can use the datasets attribute in order to specify the dataset in which the data will be written:
+  This error indicates that we have a size issue with our data. Each time the HDF5 plugin writes data to a file, it actually writes to a dataset inside the file. If the dataset is not defined explicitly, a default dataset will be used, which has the same size as the declared data. To define the dataset in which the data should be written, you can use the `datasets` attribute:
 
    ```yaml
    - file: output_rank${rank:01}_iter${iteration:02}.h5   
@@ -419,7 +420,7 @@ Part of the research presented here has received funding from the Horizon 2020 (
 
   ![graphical representation of the parallel I/O](images/PDI_hdf5_parallel.jpg)
 
-## [03_hdf5_D] Use regex in HDF5 to define dataset patterns
+<!-- ## [03_hdf5_D] Use regex in HDF5 to define dataset patterns
 
 * This bonus section explains the use of the `regex` in the `decl_hdf5` plugin. This is a feature introduced in PDI 1.9.3 and later. The `regex` uses the Modiﬁed ECMAScript regular expression grammar.
 
@@ -453,60 +454,7 @@ Part of the research presented here has received funding from the Horizon 2020 (
       }
       ...
    }
-   ```
-
-## [02_pycall] Use Pycall to generate partial images of the simulation
-
-* We can use PDI to perform some in-situ analysis with the Pycall plugin, which allows you to call some Python scripts using the same process.
-* In this exercise, we will generate simulation images using `matplotlib` from Python.  
-<!-- * You need to share the variable pcoord with PDI to set up the output image name. It is already declared in the `config.yml` as `metadata`.   -->
-* Several options are available to call the Python script. We will use the `on_event` trigger. You can then use `PDI_multi_expose` to share data and trigger an event.  
-
-   ```C
-   PDI_multi_expose("loop", 
-                    "iteration", &ii, PDI_OUT,
-                    "temp", cur, PDI_OUT,
-                    NULL);
-   ```
-
-   ```yaml
-   plugins:
-     pycall:
-      on_event:
-         loop:
-         with: # insert here your list of arguments       
-         exec: | # insert your Python script below 
-            [...]
-   ```
-
-* When passing arguments from PDI to Python, you can use:
-
-   ```yaml
-   with: { iter_id: $iteration}
-   ```
-
-  where `py_iter`, whose value is defined by `iteration`, can be used inside the Python environment.
-
-* Here is an example of a Python script for generating the partial images without the ghost layer. You are free to do it differently.
-
-   ```python
-   import matplotlib.pyplot as plt 
-   plt.imshow(source_field[1:-1, 1:-1], origin='lower', cmap='viridis', vmax=200) 
-   plt.colorbar() 
-   plt.axis('off') 
-   plt.savefig("output_r"+str(py_pcoord[0])+"x"+str(py_pcoord[1])+"_iter"+ str(iter_id)) 
-   plt.close()
-   ```
-
-* Below is an example of the partial images at iteration 0.  
-
-| | |
-|:-------------------------:|:-------------------------:|
-|  ![example output](images/output_r1x0_iter0.png) |  ![example output](images/output_r1x1_iter0.png)|
-|  ![example output](images/output_r0x0_iter0.png) |  ![example output](images/output_r0x1_iter0.png)|
-
-* Note: It is also possible to generate global images via the pycall plugin. Please check in the solution folder.  
-
+   ``` -->
 
 ## [04_usercode] Use the user_code plugin to compute some numerical metrics
 
@@ -567,3 +515,57 @@ Part of the research presented here has received funding from the Horizon 2020 (
    ```
 
 * You can compare the results with `integral_reference.dat`.
+
+## [02_pycall] Use Pycall to generate partial images of the simulation
+
+* We can use PDI to perform some in-situ analysis with the Pycall plugin, which allows you to call some Python scripts using the same process.
+* In this exercise, we will generate simulation images using `matplotlib` from Python.  
+<!-- * You need to share the variable pcoord with PDI to set up the output image name. It is already declared in the `config.yml` as `metadata`.   -->
+* Several options are available to call the Python script. We will use the `on_event` trigger. You can then use `PDI_multi_expose` to share data and trigger an event.  
+
+   ```C
+   PDI_multi_expose("loop", 
+                    "iteration", &ii, PDI_OUT,
+                    "temp", cur, PDI_OUT,
+                    NULL);
+   ```
+
+   ```yaml
+   plugins:
+     pycall:
+      on_event:
+         loop:
+         with: # insert here your list of arguments       
+         exec: | # insert your Python script below 
+            [...]
+   ```
+
+* When passing arguments from PDI to Python, you can use:
+
+   ```yaml
+   with: { iter_id: $iteration}
+   ```
+
+  where `py_iter`, whose value is defined by `iteration`, can be used inside the Python environment.
+
+* Here is an example of a Python script for generating the partial images without the ghost layer. You are free to do it differently.
+
+   ```python
+   import matplotlib.pyplot as plt 
+   plt.imshow(source_field[1:-1, 1:-1], origin='lower', cmap='viridis', vmax=200) 
+   plt.colorbar() 
+   plt.axis('off') 
+   plt.savefig("output_r"+str(py_pcoord[0])+"x"+str(py_pcoord[1])+"_iter"+ str(iter_id)) 
+   plt.close()
+   ```
+
+* Below is an example of the partial images at iteration 0.  
+
+| | |
+|:-------------------------:|:-------------------------:|
+|  ![example output](images/output_r1x0_iter0.png) |  ![example output](images/output_r1x1_iter0.png)|
+|  ![example output](images/output_r0x0_iter0.png) |  ![example output](images/output_r0x1_iter0.png)|
+
+* Note: It is also possible to generate global images via the pycall plugin. Please check in the solution folder.  
+
+
