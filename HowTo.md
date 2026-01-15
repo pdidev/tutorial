@@ -275,7 +275,7 @@ Part of the research presented here has received funding from the Horizon 2020 (
     * write the content of `temp` to file
     * close the file
 
-  In this scenario, the output file is indeed opened **twice** and closed **twice**. However, we would like to open the file only once, put all necessary content, and then close the file. We can achieve this with the `event` mechanism in PDI. By adding the `event` key word to the `config.yml`, we notify the plugin that the writing process can begin once the event `loop` is issued.
+  In this scenario, the output file is indeed opened **twice** and closed **twice**. However, for better performance, we would like to open the file only once, put all necessary content, and then close the file. We can achieve this with the `event` mechanism in PDI. By adding the `event` key word to the `config.yml`, we notify the plugin that the writing process can begin once the event `loop` is issued.
 
    ```yaml
    on_event: loop
@@ -293,7 +293,7 @@ Part of the research presented here has received funding from the Horizon 2020 (
                     NULL);
    ```
 
-* Similarly to `PDI_expose`, the `PDI_multi_expose` is implemented with interlaced share/reclaim pairs. The above call to `PDI_nulti_expose` is equivalent to:
+* Similarly to `PDI_expose`, the `PDI_multi_expose` is implemented with interlaced `share/reclaim` pairs. The above call to `PDI_multi_expose` is equivalent to:
 
    ```C
    PDI_share("iteration", &ii, PDI_OUT); 
@@ -346,7 +346,7 @@ Part of the research presented here has received funding from the Horizon 2020 (
    } 
    ```
 
-* The size (32,22) corresponds to the local size with 2 ghost layers. Now, we will remove the ghost layers in our output data using `memory_selection`, which allows us to make a selection on the data passed to PDI from the simulation.
+* The size `(32,22)` corresponds to the local size with 2 ghost layers. Now, we will remove the ghost layers in our output data using `memory_selection`, which allows us to make a selection on the data passed to PDI from the simulation.
   
   <!-- ![graphical representation](images/PDI_hdf5_selection.jpg) -->
   ![graphical representation](images/PDI_hdf5_selection2.png)
@@ -362,11 +362,11 @@ Part of the research presented here has received funding from the Horizon 2020 (
 * Add the selection to the `config.yml` and run the test. You should encounter an error at runtime:
 
    ```bash
-   [PDI] *** error: Error while triggering event `loop`: 
-   Config_error: Incompatible selections while writing `temp': [ (1-30/0-31) (1-20/0-21) ] -> [ (0-31/0-31) (0-21/0-21) ] |
+   [PDI] *** error: Error while triggering event 'loop': 
+   Config_error: Incompatible selections while writing 'temp': [ (1-30/0-31) (1-20/0-21) ] -> [ (0-31/0-31) (0-21/0-21) ] |
    ```
 
-  This error indicates that we have a size issue with our data. Each time the HDF5 plugin writes data to a file, if the HDF5 dataset is not defined explicitly, it uses the default dataset, which has the same size as the declared data. You can use the datasets attribute in order to specify the dataset in which the data will be written:
+  This error indicates that we have a size issue with our data. Each time the HDF5 plugin writes data to a file, it actually writes to a dataset inside the file. If the dataset is not defined explicitly, a default dataset will be used, which has the same size as the declared data. To define the dataset in which the data should be written, you can use the `datasets` attribute:
 
    ```yaml
    - file: output_rank${rank:01}_iter${iteration:02}.h5   
