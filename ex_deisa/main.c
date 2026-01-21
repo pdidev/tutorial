@@ -187,9 +187,6 @@ int main(int argc, char *argv[]) {
   char* dask_addr;
   PC_string(PC_get(conf, ".dask_addr"), &dask_addr);
 
-  printf(">>> <%s> \n", dask_addr);
-  printf(">>> <%li> \n", strlen(dask_addr)),
-
   // check the configuration is coherent
   assert(global_size[0] % psize[0] == 0);
   assert(global_size[1] % psize[1] == 0);
@@ -222,7 +219,7 @@ int main(int argc, char *argv[]) {
 
   PDI_multi_expose("init",
                    "rank", &pcoord_1d, PDI_OUT,
-                   "comm_size", &psize_1d, PDI_OUT,
+                   "psize", &psize, PDI_OUT,
                    "dask_addr", dask_addr, PDI_OUT,
                    "local_size", &dsize, PDI_OUT,
                    NULL);

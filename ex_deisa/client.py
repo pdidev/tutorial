@@ -36,8 +36,8 @@ nb_iterations = 10
 class GenerateGlobalImage:
     def __init__(self):
         # print("> GenerateGlobalImage.__init__", flush=True)
-        self.max_sub_domain = 1
-        self.max_coord_x_y = (1, 1)
+        self.nb_ranks = config['parallelism']['height'] * config['parallelism']['width']
+        self.max_coord_x_y = config['parallelism']
         self.current_sub_images = dict()
 
     def sub_image_saved(self, ts, x, y, filename):
@@ -47,7 +47,7 @@ class GenerateGlobalImage:
             res.append(filename)
             self.current_sub_images[ts] = res
 
-            if len(res) == self.max_sub_domain:
+            if len(res) == self.nb_ranks:
                 GenerateGlobalImage.stitch_iteration_to_png(res, ts, f"results/img/global/heat-{ts}.png")
                 self.current_sub_images.pop(ts)  # remove the entry
         except Exception as e:

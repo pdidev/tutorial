@@ -11,6 +11,7 @@ pdi:
   metadata:
     local_size: {type: array, subtype: int, size: 2}
     pcoord: {type: array, subtype: int, size: 2}
+    psize: {type: array, subtype: int, size: 2}
     rank: int
     comm_size: int
     dask_addr: {type: array, subtype: char, size: 20}
@@ -23,22 +24,21 @@ pdi:
     pycall:
       on_event:
         init:
-          with: { rank: $rank, comm_size: $comm_size, dask_addr: $dask_addr, local_size: $local_size }
+          with: { rank: $rank, psize: $psize, dask_addr: $dask_addr, local_size: $local_size }
           exec: |
             from deisa.dask import Bridge, get_connection_info
             
-            i = local_size[0] * local_size[1]
-            print(f"local_size={local_size}, i={i}")
+            print(f"init: rank={rank}, psize={psize}, dask_addr={dask_addr}, local_size={local_size}")
             
             arrays_metadata = {
                                  'my_array': {
-                                     'size': (int(local_size[0]), int(local_size[1])),
+                                     'size': (int(local_size[0] * psize[0]), int(local_size[1] * psize[1])),
                                      'subsize': (int(local_size[0]), int(local_size[1]))
                                  }
                              }
             system_metadata = {
                                 'connection': get_connection_info(dask_addr.tobytes().decode("utf-8")),
-                                'nb_bridges': int(comm_size)
+                                'nb_bridges': int(psize[0] * psize[1])
                               }
             
             print(f"arrays_metadata={arrays_metadata}")
