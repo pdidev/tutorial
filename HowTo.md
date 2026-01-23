@@ -4,6 +4,8 @@
 
 ### Docker environment
 
+Please refer to the [tutorial website](https://pdi.dev/hpcasia26/material/) for detailed information.
+
 Download [Docker Desktop](https://www.docker.com/products/docker-desktop/)
 
 Get the docker image.
