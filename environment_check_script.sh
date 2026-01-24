@@ -90,7 +90,7 @@ fi
 
 # Run the program if it was built
 if [ -f "./main" ]; then
-    mpirun -np 4 ./main
+    mpirun -np 4 --allow-run-as-root ./main
 else
     echo "ERROR: ./main executable was not built!"
     exit 1
@@ -99,3 +99,4 @@ fi
 cd ..
 rm -rf build
 cd ../..
+
