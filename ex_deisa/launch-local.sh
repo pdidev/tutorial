@@ -29,17 +29,10 @@ dask_worker_pid=$!
 
 sleep 1
 
-# bokeh app
-#echo Running bokeh web app
-#bokeh serve --show ../bokeh.py &
-#bokeh_pid=$!
-
-#sleep 1
-
 # Launch the analytics
-echo Running analytics
-python client.py &
-analytics_pid=$!
+#echo Running analytics
+#python client.py &
+#analytics_pid=$!
 
 sleep 1
 
@@ -49,4 +42,4 @@ mpirun --allow-run-as-root -np ${SIMU_NPROC} ./main
 
 sleep 1
 
-kill -9 ${dask_worker_pid} ${dask_sch_pid} #${bokeh_pid}
+kill -9 ${dask_worker_pid} ${dask_sch_pid}

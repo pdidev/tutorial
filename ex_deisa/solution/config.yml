@@ -1,0 +1,55 @@
+# the alpha parameter
+alpha: 0.125
+# global data-size (excluding the number of ghost layers for boundary conditions)
+global_size: { height: 60, width: 40 }
+# degree of parallelism (number of blocks in each dimension)
+parallelism: { height: 1, width: 1 }
+# Address of the dask scheduler
+dask_addr: tcp://127.0.0.1:8786
+
+pdi:
+  metadata:
+    local_size: {type: array, subtype: int, size: 2}
+    pcoord: {type: array, subtype: int, size: 2}
+    psize: {type: array, subtype: int, size: 2}
+    rank: int
+    comm_size: int
+    dask_addr: {type: array, subtype: char, size: 20}
+  data:
+    iteration: int
+    temp: {type: array, subtype: double, size: ['$local_size[0]', '$local_size[1]']}
+  plugins:
+    mpi:
+    trace:
+    pycall:
+      on_event:
+        init:
+          with: { rank: $rank, psize: $psize, dask_addr: $dask_addr, local_size: $local_size }
+          exec: |
+            from deisa.dask import Bridge, get_connection_info
+            
+            print(f"init: rank={rank}, psize={psize}, dask_addr={dask_addr}, local_size={local_size}")
+            
+            arrays_metadata = {
+                                 'my_array': {
+                                     'size': (int(local_size[0] * psize[0]), int(local_size[1] * psize[1])),
+                                     'subsize': (int(local_size[0]), int(local_size[1]))
+                                 }
+                             }
+            system_metadata = {
+                                'connection': get_connection_info(dask_addr.tobytes().decode("utf-8")),
+                                'nb_bridges': int(psize[0] * psize[1])
+                              }
+            
+            print(f"arrays_metadata={arrays_metadata}")
+            print(f"system_metadata={system_metadata}")
+            
+            bridge = Bridge(id=rank, 
+                            arrays_metadata=arrays_metadata,
+                            system_metadata=system_metadata)
+        loop:
+          with: { iter_id: $iteration, source_field: $temp, py_pcoord: $pcoord }
+          exec: |
+            import time
+            bridge.send('my_array', source_field, iter_id)  # TODO: remove ghost
+            time.sleep(.5)

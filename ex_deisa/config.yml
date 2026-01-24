@@ -26,30 +26,8 @@ pdi:
         init:
           with: { rank: $rank, psize: $psize, dask_addr: $dask_addr, local_size: $local_size }
           exec: |
-            from deisa.dask import Bridge, get_connection_info
-            
             print(f"init: rank={rank}, psize={psize}, dask_addr={dask_addr}, local_size={local_size}")
-            
-            arrays_metadata = {
-                                 'my_array': {
-                                     'size': (int(local_size[0] * psize[0]), int(local_size[1] * psize[1])),
-                                     'subsize': (int(local_size[0]), int(local_size[1]))
-                                 }
-                             }
-            system_metadata = {
-                                'connection': get_connection_info(dask_addr.tobytes().decode("utf-8")),
-                                'nb_bridges': int(psize[0] * psize[1])
-                              }
-            
-            print(f"arrays_metadata={arrays_metadata}")
-            print(f"system_metadata={system_metadata}")
-            
-            bridge = Bridge(id=rank, 
-                            arrays_metadata=arrays_metadata,
-                            system_metadata=system_metadata)
         loop:
           with: { iter_id: $iteration, source_field: $temp, py_pcoord: $pcoord }
           exec: |
-            import time
-            bridge.send('my_array', source_field, iter_id)  # TODO: remove ghost
-            time.sleep(.5)
+            print(f"loop: iteration={iter_id}, pcoord={py_pcoord}")
