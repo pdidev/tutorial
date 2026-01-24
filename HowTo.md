@@ -1,6 +1,9 @@
 # Decoupling I/O in HPC Codes with PDI: From File-based I/O to In Situ Data Analytics
 
-## [TO BE COMPLETED] Prepare the tutorial material
+## Prepare the tutorial material
+Please refer to the dedicated material page on the tutorial's [webpage](https://pdi.dev/hpcasia26/material/).
+
+TLDR: Please use our docker/podman image: `docker run -it ghcr.io/thomas-bouvier/numpex-pdi-tutorial:latest`
 
 ### Docker environment
 
